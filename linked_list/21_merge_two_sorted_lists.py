@@ -10,18 +10,7 @@ The list should be made by splicing together the nodes of the first two lists.
 
 Return the head of the merged linked list.
 """
-
-
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
-
-    def __lt__(self, other):
-        return self.val < other.val
-
-    def __gt__(self, other):
-        return self.val > other.val
+from linked_list.shared import ListNode, LinkedList
 
 
 def merge_two_lists(list1: ListNode, list2: ListNode) -> ListNode:
@@ -42,21 +31,9 @@ def merge_two_lists(list1: ListNode, list2: ListNode) -> ListNode:
 
 
 def test_merge_two_lists():
-    list1 = ListNode(
-        1, ListNode(
-            2, ListNode(
-                4
-            )
-        )
-    )
-    list2 = ListNode(
-        1, ListNode(
-            3, ListNode(
-                4
-            )
-        )
-    )
-    merged_list = merge_two_lists(list1, list2)
+    list1 = LinkedList([1, 2, 4])
+    list2 = LinkedList([1, 3, 4])
+    merged_list = merge_two_lists(list1.head, list2.head)
     assert merged_list.val == 1
     assert merged_list.next.val == 1
     assert merged_list.next.next.val == 2

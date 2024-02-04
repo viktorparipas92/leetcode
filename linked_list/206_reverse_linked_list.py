@@ -7,10 +7,7 @@ Given the head of a singly linked list, reverse the list, and return the reverse
 """
 
 
-class ListNode:
-    def __init__(self, val=0, next=None):
-        self.val = val
-        self.next = next
+from linked_list.shared import ListNode, LinkedList
 
 
 def reverse_linked_list(head: ListNode) -> ListNode:
@@ -25,17 +22,7 @@ def reverse_linked_list(head: ListNode) -> ListNode:
 
 
 def test_reverse_linked_list():
-    head = ListNode(
-        1, ListNode(
-            2, ListNode(
-                3, ListNode(
-                    4, ListNode(
-                        5
-                    )
-                )
-            )
-        )
-    )
+    head = LinkedList([1, 2, 3, 4, 5]).head
     reversed_head = reverse_linked_list(head)
     assert reversed_head.val == 5
     assert reversed_head.next.val == 4
