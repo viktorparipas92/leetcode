@@ -8,26 +8,43 @@ of well-formed parentheses.
 '''
 
 
-def generate_parentheses(n: int) -> list[str]:
-    def backtrack(sequence: str, num_open: int, num_closed: int):
-        if len(sequence) == 2 * n:
-            result.append(sequence)
+class Solution:
+    def __init__(self):
+        self.result = []
+        self.stack = []
+
+    def generate_parentheses(self, n: int) -> list[str]:
+        self.backtrack(n, num_open=0, num_closed=0)
+        return self.result
+
+    def backtrack(self, n, num_open: int, num_closed: int):
+        if len(self.stack) == 2 * n:
+            self.result.append(''.join(self.stack))
             return
 
         if num_open < n:
-            backtrack(f'{sequence}(', num_open + 1, num_closed)
+            self.stack.append('(')
+            self.backtrack(n, num_open + 1, num_closed)
+            self.stack.pop()
 
         if num_closed < num_open:
-            backtrack(f'{sequence})', num_open, num_closed + 1)
+            self.stack.append(')')
+            self.backtrack(n, num_open, num_closed + 1)
+            self.stack.pop()
 
-    result = []
-    backtrack('', num_open=0, num_closed=0)
-    return result
+    def reset(self):
+        self.result = []
+        self.stack = []
 
 
 def test_generate_parentheses():
-    assert generate_parentheses(3) == ['((()))', '(()())', '(())()', '()(())', '()()()']
-    assert generate_parentheses(1) == ['()']
+    solution = Solution()
+    assert solution.generate_parentheses(3) == [
+        '((()))', '(()())', '(())()', '()(())', '()()()'
+    ]
+
+    solution.reset()
+    assert solution.generate_parentheses(1) == ['()']
 
 
 if __name__ == '__main__':
