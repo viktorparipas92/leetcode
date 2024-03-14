@@ -5,21 +5,7 @@ Difficulty: Easy
 
 Given the roots of two binary trees p and q, write a function to check if they are the same or not.
 """
-from trees.shared import TreeNode
-
-
-def is_same_tree(p: TreeNode, q: TreeNode) -> bool:
-    if p is None and q is None:
-        return True
-
-    if p is None or q is None:
-        return False
-
-    return (
-        p.value == q.value
-        and is_same_tree(p.left, q.left)
-        and is_same_tree(p.right, q.right)
-    )
+from trees.shared import TreeNode, is_same_tree
 
 
 def test_is_same_tree():
