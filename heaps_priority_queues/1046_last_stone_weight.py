@@ -63,11 +63,7 @@ class Solution:
 
                 position = left_idx
                 remaining += 1
-                stones.append(0)
-                for i in range(remaining - 1, position, -1):
-                    stones[i] = stones[i - 1]
-
-                stones[position] = current
+                stones[position:position] = [current]
 
         return stones[0] if remaining > 0 else 0
 
