@@ -44,6 +44,32 @@ class Solution:
 
         return stones[0] if stones else 0
 
+    def last_stone_weight_with_binary_search(self, stones: list[int]) -> int:
+        """Time complexity: O(n^2)"""
+        stones.sort()
+        remaining = len(stones)
+
+        while remaining > 1:
+            remaining -= 2
+            if current := (stones.pop() - stones.pop()) > 0:
+                left_idx, right_idx = 0, remaining
+                while left_idx < right_idx:
+                    middle = (left_idx + right_idx) // 2
+                    if stones[middle] < current:
+                        left_idx = middle + 1
+                    else:
+                        right_idx = middle
+
+                position = left_idx
+                remaining += 1
+                stones.append(0)
+                for i in range(remaining - 1, position, -1):
+                    stones[i] = stones[i - 1]
+
+                stones[position] = current
+
+        return stones[0] if remaining > 0 else 0
+
 
 TEST_INPUTS = [
     [2, 3, 6, 2, 4],
@@ -56,6 +82,7 @@ def test_last_stone_weight():
     solution = Solution()
     solutions = [
         solution.last_stone_weight_with_sorting,
+        solution.last_stone_weight_with_binary_search,
     ]
 
     for solution_method in solutions:
