@@ -32,6 +32,7 @@ Constraints:
 1 <= stones[i] <= 100
 
 """
+import heapq
 
 
 class Solution:
@@ -70,6 +71,20 @@ class Solution:
 
         return stones[0] if remaining > 0 else 0
 
+    def last_stone_weight_with_heap(self, stones: list[int]) -> int:
+        """Time complexity: O(n * log(n))"""
+        stones = [-s for s in stones]
+        heapq.heapify(stones)
+
+        while len(stones) > 1:
+            first = heapq.heappop(stones)
+            second = heapq.heappop(stones)
+            if second > first:
+                heapq.heappush(stones, first - second)
+
+        stones.append(0)
+        return abs(stones[0])
+
 
 TEST_INPUTS = [
     [2, 3, 6, 2, 4],
@@ -83,11 +98,14 @@ def test_last_stone_weight():
     solutions = [
         solution.last_stone_weight_with_sorting,
         solution.last_stone_weight_with_binary_search,
+        solution.last_stone_weight_with_heap,
     ]
 
     for solution_method in solutions:
         for input_, output in zip(TEST_INPUTS, TEST_OUTPUTS):
             assert solution_method(input_) == output
+
+        print(f'All tests passed for {solution_method.__name__}')
 
 
 if __name__ == '__main__':
