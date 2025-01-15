@@ -35,7 +35,7 @@ class Solution:
     def can_attend_meetings_brute_force(intervals: list[Interval]) -> bool:
         """Time complexity: O(n^2)"""
         for i, first_interval in enumerate(intervals):
-            for j, second_interval  in enumerate(intervals[i+1:]):
+            for j, second_interval in enumerate(intervals[i+1:]):
                 if (
                     min(first_interval.end, second_interval.end)
                     > max(first_interval.start, second_interval.start)
@@ -44,11 +44,23 @@ class Solution:
 
         return True
 
+    @staticmethod
+    def can_attend_meetings_sorting(intervals: list[Interval]) -> bool:
+        """Time complexity: O(n * log(n))"""
+        intervals.sort(key=lambda i: i.start)
+        for i, interval in enumerate(intervals[1:], 1):
+            interval_1 = intervals[i - 1]
+            if interval_1.end > interval.start:
+                return False
+
+        return True
+
 
 def test_can_attend_meetings():
     solution = Solution()
     solution_methods = [
         solution.can_attend_meetings_brute_force,
+        solution.can_attend_meetings_sorting,
     ]
     intervals_1 = [Interval(0, 30), Interval(5, 10), Interval(15, 20)]
     test_cases = [
