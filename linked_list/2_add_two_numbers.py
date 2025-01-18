@@ -58,7 +58,7 @@ def add_recursive(
     return ListNode(value, next_node)
 
 
-def add_two_numbers(
+def add_two_numbers_recursive(
     list_1: Optional[ListNode], list_2: Optional[ListNode]
 ) -> Optional[ListNode]:
     """
@@ -69,13 +69,39 @@ def add_two_numbers(
     return add_recursive(list_1, list_2, 0)
 
 
+def add_two_numbers_iterative(
+    list_1: Optional[ListNode], list_2: Optional[ListNode]
+) -> Optional[ListNode]:
+    """
+    Solution with iteration.
+    Time complexity: O(m + n), where m and n are the lengths of the linked lists.
+    Space complexity: O(1).
+    """
+    dummy = ListNode()
+    current = dummy
+
+    carry = 0
+    while list_1 or list_2 or carry:
+        value_1 = list_1.val if list_1 else 0
+        value_2 = list_2.val if list_2 else 0
+
+        carry, value = divmod(value_1 + value_2 + carry, 10)
+        current.next = ListNode(value)
+
+        current = current.next
+        list_1 = list_1.next if list_1 else None
+        list_2 = list_2.next if list_2 else None
+
+    return dummy.next
+
+
 def test_case_1(method_under_test):
     # Arrange
     list_1 = LinkedList([1, 2, 3])
     list_2 = LinkedList([4, 5, 6])
 
     # Act
-    result = add_two_numbers(list_1.head, list_2.head)
+    result = method_under_test(list_1.head, list_2.head)
 
     # Assert
     assert result.val == 5
@@ -96,11 +122,10 @@ def test_case_2(method_under_test):
     assert result.next.val == 1
 
 
-
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     methods = [
-        add_two_numbers,
+        add_two_numbers_recursive,
+        add_two_numbers_iterative,
     ]
 
     for solution in methods:
