@@ -25,6 +25,7 @@ Explanation:
 Constraints:
 1 <= n <= 30
 """
+import math
 
 
 def climb_stairs_recursion(n: int) -> int:
@@ -59,6 +60,52 @@ def climb_stairs_dynamic_top_down(n: int) -> int:
     return depth_first_search(0)
 
 
+def climb_stairs_dynamic_bottom_up(n: int) -> int:
+    """
+    Time complexity: O(n), space complexity: O(n)
+    """
+    if n <= 2:
+        return n
+
+    arr = [0] * (n + 1)
+    arr[1], arr[2] = 1, 2
+    for i in range(3, n + 1):
+        arr[i] = arr[i - 1] + arr[i - 2]
+
+    return arr[n]
+
+
+def climb_stairs_dynamic_space_optimized(n: int) -> int:
+    """
+    Time complexity: O(n), space complexity: O(1)
+    :param n:
+    :return:
+    """
+    # Initialize the number of ways to reach the first step and the second step
+    # from the ground. Note that this is a simplification for the dynamic programming
+    # approach.
+    previous, current = 1, 1
+    # Iterate from the third step to the nth step
+    for _ in range(n - 1):
+        temp = previous
+        current += previous
+        previous = temp
+
+    return current
+
+
+SQRT_5 = math.sqrt(5)
+
+
+def climb_stairs_math(n: int) -> int:
+    """
+    Time complexity: O(log(n)), space complexity: O(1)
+    """
+    phi = (1 + SQRT_5) / 2
+    psi = (1 - SQRT_5) / 2
+    return round((phi ** (n + 1) - psi ** (n + 1)) / SQRT_5)
+
+
 if __name__ == '__main__':
     assert climb_stairs_recursion(2) == 2
     assert climb_stairs_recursion(3) == 3
@@ -67,3 +114,15 @@ if __name__ == '__main__':
     assert climb_stairs_dynamic_top_down(2) == 2
     assert climb_stairs_dynamic_top_down(3) == 3
     print(f'All tests passed for climb_stairs_dynamic_top_down()')
+
+    assert climb_stairs_dynamic_bottom_up(2) == 2
+    assert climb_stairs_dynamic_bottom_up(3) == 3
+    print(f'All tests passed for climb_stairs_dynamic_bottom_up()')
+
+    assert climb_stairs_dynamic_space_optimized(2) == 2
+    assert climb_stairs_dynamic_space_optimized(3) == 3
+    print(f'All tests passed for climb_stairs_dynamic_space_optimized()')
+
+    assert climb_stairs_math(2) == 2
+    assert climb_stairs_math(3) == 3
+    print(f'All tests passed for climb_stairs_math()')
