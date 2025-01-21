@@ -31,7 +31,7 @@ def climb_stairs_recursion(n: int) -> int:
     """
     Time complexity: O(2^n), space complexity: O(n)
     """
-    def depth_first_search(i: int):
+    def depth_first_search(i: int) -> int:
         if i >= n:
             return i == n
 
@@ -40,6 +40,30 @@ def climb_stairs_recursion(n: int) -> int:
     return depth_first_search(0)
 
 
+def climb_stairs_dynamic_top_down(n: int) -> int:
+    """
+    Time complexity: O(n), space complexity: O(n)
+    """
+    cache = [-1] * n
+
+    def depth_first_search(i: int):
+        if i >= n:
+            return i == n
+
+        if cache[i] != -1:
+            return cache[i]
+
+        cache[i] = depth_first_search(i + 1) + depth_first_search(i + 2)
+        return cache[i]
+
+    return depth_first_search(0)
+
+
 if __name__ == '__main__':
     assert climb_stairs_recursion(2) == 2
     assert climb_stairs_recursion(3) == 3
+    print(f'All tests passed for climb_stairs_recursion()')
+
+    assert climb_stairs_dynamic_top_down(2) == 2
+    assert climb_stairs_dynamic_top_down(3) == 3
+    print(f'All tests passed for climb_stairs_dynamic_top_down()')
