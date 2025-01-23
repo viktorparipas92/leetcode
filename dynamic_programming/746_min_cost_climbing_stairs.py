@@ -47,9 +47,29 @@ def min_cost_climbing_stairs_recursion(cost: list[int]) -> int:
     return min(min_cost(0), min_cost(1))
 
 
+def min_cost_climbing_stairs_dynamic_top_down(cost: list[int]) -> int:
+    """
+    Time complexity: O(n), space complexity: O(n)
+    """
+    memo = [-1] * len(cost)
+
+    def min_cost(i: int) -> int:
+        if i >= len(cost):
+            return 0
+
+        if memo[i] != -1:
+            return memo[i]
+
+        memo[i] = cost[i] + min(min_cost(i + 1), min_cost(i + 2))
+        return memo[i]
+
+    return min(min_cost(0), min_cost(1))
+
+
 def test_min_cost_climbing_stairs():
     solutions = [
         min_cost_climbing_stairs_recursion,
+        min_cost_climbing_stairs_dynamic_top_down,
     ]
 
     test_cases = [
