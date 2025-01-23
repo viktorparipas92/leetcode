@@ -81,11 +81,32 @@ def min_cost_climbing_stairs_dynamic_bottom_up(cost: list[int]) -> int:
     return min_cost[length]
 
 
+def min_cost_climbing_stairs_dynamic_bottom_up_space_optimized(cost: list[int]) -> int:
+    """
+    Time complexity: O(n), space complexity: O(1)
+    """
+    length = len(cost)
+    # Update the cost array with the minimum cost to reach the top from each step.
+    # Start from the third-to-last step because the last two steps do not need updating
+    length = len(cost)
+    if length == 0:
+        return 0
+    elif length == 1:
+        return cost[0]
+
+    for i in range(2, length):
+        cost[i] += min(cost[i - 1], cost[i - 2])
+
+    return min(cost[-1], cost[-2])
+
+
+
 def test_min_cost_climbing_stairs():
     solutions = [
         min_cost_climbing_stairs_recursion,
         min_cost_climbing_stairs_dynamic_top_down,
         min_cost_climbing_stairs_dynamic_bottom_up,
+        min_cost_climbing_stairs_dynamic_bottom_up_space_optimized,
     ]
 
     test_cases = [
