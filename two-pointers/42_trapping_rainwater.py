@@ -83,12 +83,36 @@ def trap_stack(heights: list[int]) -> int:
     return total_water_area
 
 
+def trap_two_pointers(heights: list[int]) -> int:
+    """
+    Time complexity: O(n), space complexity: O(1)
+    """
+    if not heights:
+        return 0
+
+    left_index, right_index = 0, len(heights) - 1
+    left_max, right_max = heights[left_index], heights[right_index]
+    total_area = 0
+    while left_index < right_index:
+        if left_max < right_max:
+            left_index += 1
+            left_max = max(left_max, heights[left_index])
+            total_area += left_max - heights[left_index]
+        else:
+            right_index -= 1
+            right_max = max(right_max, heights[right_index])
+            total_area += right_max - heights[right_index]
+
+    return total_area
+
+
 def test_trap_rainwater():
     # Arrange
     solutions = [
         trap_brute_force,
         trap_prefix_suffix_arrays,
         trap_stack,
+        trap_two_pointers,
     ]
     test_cases = [
         ([0, 2, 0, 3, 1, 0, 1, 3, 2, 1], 9),
