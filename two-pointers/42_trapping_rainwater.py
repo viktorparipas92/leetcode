@@ -38,10 +38,35 @@ def trap_brute_force(heights: list[int]) -> int:
     return total_water_area
 
 
+def trap_prefix_suffix_arrays(heights: list[int]) -> int:
+    """
+    Time complexity: O(n), space complexity: O(n)
+    """
+    length = len(heights)
+    if len(heights) == 0: return 0
+
+    left_maximums = [height if i == 0 else 0 for i, height in enumerate(heights)]
+    # List comprehension does not work here because we need to access the last element
+    for i, height in enumerate(heights[1:], 1):
+        left_maximums[i] = max(left_maximums[i - 1], height)
+
+    right_maximums = [0] * length
+    right_maximums[-1] = heights[-1]
+    for i in range(length - 2, -1, -1):
+        right_maximums[i] = max(right_maximums[i + 1], heights[i])
+
+    total_water_area = sum(
+        min(left_max, right_max) - height
+        for left_max, right_max, height in zip(left_maximums, right_maximums, heights)
+    )
+    return total_water_area
+
+
 def test_trap_rainwater():
     # Arrange
     solutions = [
         trap_brute_force,
+        trap_prefix_suffix_arrays,
     ]
     test_cases = [
         ([0, 2, 0, 3, 1, 0, 1, 3, 2, 1], 9),
