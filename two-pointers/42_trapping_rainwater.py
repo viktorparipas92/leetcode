@@ -62,11 +62,33 @@ def trap_prefix_suffix_arrays(heights: list[int]) -> int:
     return total_water_area
 
 
+def trap_stack(heights: list[int]) -> int:
+    """
+    Time complexity: O(n), space complexity: O(n)
+    """
+    indices_stack : list[int] = []
+    total_water_area = 0
+    for i, height in enumerate(heights):
+        while indices_stack and height >= heights[indices_stack[-1]]:
+            middle_height = heights[indices_stack.pop()]
+            if indices_stack:
+                right_height = height
+                left_height = heights[indices_stack[-1]]
+                water_height = min(right_height, left_height) - middle_height
+                width = i - indices_stack[-1] - 1
+                total_water_area += water_height * width
+
+        indices_stack.append(i)
+
+    return total_water_area
+
+
 def test_trap_rainwater():
     # Arrange
     solutions = [
         trap_brute_force,
         trap_prefix_suffix_arrays,
+        trap_stack,
     ]
     test_cases = [
         ([0, 2, 0, 3, 1, 0, 1, 3, 2, 1], 9),
