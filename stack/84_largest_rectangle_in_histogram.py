@@ -104,12 +104,32 @@ def largest_rectangle_area_stack_optimized(heights: list[int]) -> int:
     return max_area
 
 
+def largest_rectangle_area_stack_one_pass(heights: list[int]) -> int:
+    """
+    Time complexity: O(n), space complexity: O(n)
+    """
+    length = len(heights)
+    max_area = 0
+    stack = []
+    for i in range(length + 1):
+        while stack and (i == length or heights[stack[-1]] >= heights[i]):
+            height = heights[stack.pop()]
+            width = i if not stack else i - stack[-1] - 1
+            max_area = max(max_area, height * width)
+
+        stack.append(i)
+
+    return max_area
+
+
+
 def test_largest_rectangle_area():
     # Arrange
     solutions = [
         largest_rectangle_area_brute_force,
         largest_rectangle_area_stack,
         largest_rectangle_area_stack_optimized,
+        largest_rectangle_area_stack_one_pass,
     ]
     test_cases = [
         ([7, 1, 7, 2, 2, 4], 8),
