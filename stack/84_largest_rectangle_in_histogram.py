@@ -45,10 +45,45 @@ def largest_rectangle_area_brute_force(heights: list[int]) -> int:
     return max_area
 
 
+def largest_rectangle_area_stack(heights: list[int]) -> int:
+    length = len(heights)
+    leftmost = [-1] * length
+
+    stack = []
+    for i, height in enumerate(heights):
+        while stack and heights[stack[-1]] >= height:
+            stack.pop()
+
+        if stack:
+            leftmost[i] = stack[-1]
+
+        stack.append(i)
+
+    stack = []
+    rightmost = [length] * length
+    for i, height in reversed(list(enumerate(heights))):
+        while stack and heights[stack[-1]] >= heights[i]:
+            stack.pop()
+
+        if stack:
+            rightmost[i] = stack[-1]
+
+        stack.append(i)
+
+    max_area = 0
+    for left, right, height in zip(leftmost, rightmost, heights):
+        left += 1
+        right -= 1
+        max_area = max(max_area, height * (right - left + 1))
+
+    return max_area
+
+
 def test_largest_rectangle_area():
     # Arrange
     solutions = [
         largest_rectangle_area_brute_force,
+        largest_rectangle_area_stack,
     ]
     test_cases = [
         ([7, 1, 7, 2, 2, 4], 8),
