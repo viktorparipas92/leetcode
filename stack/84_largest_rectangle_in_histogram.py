@@ -46,6 +46,9 @@ def largest_rectangle_area_brute_force(heights: list[int]) -> int:
 
 
 def largest_rectangle_area_stack(heights: list[int]) -> int:
+    """
+    Time complexity: O(n), space complexity: O(n)
+    """
     length = len(heights)
     leftmost = [-1] * length
 
@@ -79,11 +82,34 @@ def largest_rectangle_area_stack(heights: list[int]) -> int:
     return max_area
 
 
+def largest_rectangle_area_stack_optimized(heights: list[int]) -> int:
+    """
+    Time complexity: O(n), space complexity: O(n)
+    """
+    max_area = 0
+    stack: list[tuple[int, int]] = []  # (index, height)
+
+    for input_index, input_height in enumerate(heights):
+        start_index = input_index
+        while stack and stack[-1][1] > input_height:
+            stack_index, stack_height = stack.pop()
+            max_area = max(max_area, stack_height * (input_index - stack_index))
+            start_index = stack_index
+
+        stack.append((start_index, input_height))
+
+    for stack_index, stack_height in stack:
+        max_area = max(max_area, stack_height * (len(heights) - stack_index))
+
+    return max_area
+
+
 def test_largest_rectangle_area():
     # Arrange
     solutions = [
         largest_rectangle_area_brute_force,
         largest_rectangle_area_stack,
+        largest_rectangle_area_stack_optimized,
     ]
     test_cases = [
         ([7, 1, 7, 2, 2, 4], 8),
