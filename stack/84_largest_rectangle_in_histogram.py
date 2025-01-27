@@ -31,16 +31,21 @@ def largest_rectangle_area_brute_force(heights: list[int]) -> int:
     max_area = 0
     for i, height in enumerate(heights):
         rightmost = i + 1
+        # Extend the right boundary while bars are at least as tall as the current bar
         while rightmost < length and heights[rightmost] >= height:
             rightmost += 1
 
         leftmost = i
+        # Extend the left boundary while bars are at least as tall as the current bar
         while leftmost >= 0 and heights[leftmost] >= height:
             leftmost -= 1
 
+        # Adjust boundaries after overshooting
         rightmost -= 1
         leftmost += 1
-        max_area = max(max_area, height * (rightmost - leftmost + 1))
+
+        width = rightmost - leftmost + 1
+        max_area = max(max_area, height * width)
 
     return max_area
 
@@ -54,9 +59,11 @@ def largest_rectangle_area_stack(heights: list[int]) -> int:
 
     stack = []
     for i, height in enumerate(heights):
+        # Pop from the stack until we find a smaller bar than the current one
         while stack and heights[stack[-1]] >= height:
             stack.pop()
 
+        # If the stack is not empty, the bar on top is the closest smaller one
         if stack:
             leftmost[i] = stack[-1]
 
@@ -65,7 +72,7 @@ def largest_rectangle_area_stack(heights: list[int]) -> int:
     stack = []
     rightmost = [length] * length
     for i, height in reversed(list(enumerate(heights))):
-        while stack and heights[stack[-1]] >= heights[i]:
+        while stack and heights[stack[-1]] >= height:
             stack.pop()
 
         if stack:
