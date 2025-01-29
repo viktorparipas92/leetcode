@@ -45,9 +45,44 @@ def find_median_sorted_arrays_brute_force(
         return merged[total_length // 2]
 
 
+def find_median_sorted_arrays_two_pointers(
+    numbers_1: list[int], numbers_2: list[int]
+) -> float:
+    """
+    Time complexity: O(n + m)
+    Space complexity: O(1)
+    """
+    length_1, length_2 = len(numbers_1), len(numbers_2)
+    i = j = 0
+    median_1 = median_2 = 0
+
+    for count in range((length_1 + length_2) // 2 + 1):
+        median_2 = median_1
+        if i < length_1 and j < length_2:
+            if numbers_1[i] > numbers_2[j]:
+                median_1 = numbers_2[j]
+                j += 1
+            else:
+                median_1 = numbers_1[i]
+                i += 1
+
+        elif i < length_1:
+            median_1 = numbers_1[i]
+            i += 1
+        else:
+            median_1 = numbers_2[j]
+            j += 1
+
+    if (length_1 + length_2) % 2 == 1:
+        return float(median_1)
+    else:
+        return (median_1 + median_2) / 2.0
+
+
 def test_find_median_sorted_arrays():
     solutions = [
         find_median_sorted_arrays_brute_force,
+        find_median_sorted_arrays_two_pointers,
     ]
 
     test_cases = [
