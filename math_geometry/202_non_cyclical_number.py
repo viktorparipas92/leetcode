@@ -69,11 +69,28 @@ def is_happy_number_two_pointers(n: int) -> bool:
     return fast == 1
 
 
+def is_happy_number_two_pointer_other(n: int) -> bool:
+    slow, fast = n, sum_of_squares(n)
+    power = cycle_length = 1
+
+    while slow != fast:
+        if power == cycle_length:
+            slow = fast
+            power *= 2
+            cycle_length = 0
+
+        fast = sum_of_squares(fast)
+        cycle_length += 1
+
+    return fast == 1
+
+
 def test_is_happy_number():
     # Arrange
     solutions = [
         is_happy_number_hash_set,
         is_happy_number_two_pointers,
+        is_happy_number_two_pointer_other,
     ]
 
     test_cases = [
