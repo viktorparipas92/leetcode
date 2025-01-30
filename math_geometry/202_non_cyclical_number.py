@@ -55,10 +55,25 @@ def is_happy_number_hash_set(n: int) -> bool:
     return n == 1
 
 
+def is_happy_number_two_pointers(n: int) -> bool:
+    """
+    Time complexity: O(log n)
+    Space complexity: O(1)
+    """
+    slow, fast = n, sum_of_squares(n)
+    while slow != fast:
+        fast = sum_of_squares(fast)
+        fast = sum_of_squares(fast)
+        slow = sum_of_squares(slow)
+
+    return fast == 1
+
+
 def test_is_happy_number():
     # Arrange
     solutions = [
         is_happy_number_hash_set,
+        is_happy_number_two_pointers,
     ]
 
     test_cases = [
@@ -72,7 +87,6 @@ def test_is_happy_number():
         for n, expected_is_happy in test_cases:
             # Act
             is_happy = solution(n)
-
             # Assert
             assert is_happy == expected_is_happy
 
