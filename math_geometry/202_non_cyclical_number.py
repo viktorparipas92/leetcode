@@ -38,6 +38,10 @@ Constraints:
 """
 
 
+def sum_of_squares(n: int) -> int:
+    return sum(int(digit) ** 2 for digit in str(n))
+
+
 def is_happy_number_hash_set(n: int) -> bool:
     """
     Time complexity: O(log n)
@@ -46,7 +50,7 @@ def is_happy_number_hash_set(n: int) -> bool:
     seen = set()
     while n != 1 and n not in seen:
         seen.add(n)
-        n = sum(int(digit) ** 2 for digit in str(n))
+        n = sum_of_squares(n)
 
     return n == 1
 
