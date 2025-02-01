@@ -49,10 +49,22 @@ def plus_one_recursion(digits: list[int]) -> list[int]:
         return plus_one_recursion(digits[:-1]) + [0]
 
 
+def plus_one_iterative(digits: list[int]) -> list[int]:
+    for i, digit in enumerate(digits[::-1]):
+        if digit < 9:
+            digit += 1
+            return digits
+        else:
+            digits[i] = 0
+
+    return [1] + digits
+
+
 def test_plus_one():
     solutions = [
         plus_one,
         plus_one_recursion,
+        plus_one_iterative,
     ]
 
     test_cases = [
