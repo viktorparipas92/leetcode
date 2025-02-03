@@ -54,11 +54,26 @@ def single_number_hash_set(numbers: list[int]) -> int | None:
     return seen.pop()
 
 
+def single_number_sorting(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n log n)
+    Space complexity: O(1)
+    """
+    numbers.sort()
+
+    for i in range(0, len(numbers) - 1, 2):
+        if numbers[i] != numbers[i + 1]:
+            return numbers[i]
+
+    return numbers[-1]
+
+
 def test_single_number():
     # Arrange
     solutions = [
         single_number_brute_force,
         single_number_hash_set,
+        single_number_sorting,
     ]
 
     test_cases = [
