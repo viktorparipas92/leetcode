@@ -68,12 +68,26 @@ def single_number_sorting(numbers: list[int]) -> int:
     return numbers[-1]
 
 
+def single_number_bit_manipulation(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    result = 0
+    # XOR operation: 0 ^ number = number, number ^ number = 0
+    for number in numbers:
+        result = number ^ result
+
+    return result
+
+
 def test_single_number():
     # Arrange
     solutions = [
         single_number_brute_force,
         single_number_hash_set,
         single_number_sorting,
+        single_number_bit_manipulation,
     ]
 
     test_cases = [
