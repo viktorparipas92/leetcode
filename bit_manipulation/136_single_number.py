@@ -39,10 +39,26 @@ def single_number_brute_force(numbers: list[int]) -> int | None:
             return number_1
 
 
+def single_number_hash_set(numbers: list[int]) -> int | None:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    seen = set()
+    for number in numbers:
+        if number not in seen:
+            seen.add(number)
+        else:
+            seen.remove(number)
+
+    return seen.pop()
+
+
 def test_single_number():
     # Arrange
     solutions = [
         single_number_brute_force,
+        single_number_hash_set,
     ]
 
     test_cases = [
