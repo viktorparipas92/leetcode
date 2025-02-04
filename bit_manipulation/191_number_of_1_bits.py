@@ -23,18 +23,38 @@ def hamming_weight_bit_mask(n: int) -> int:
     Time complexity: O(1)
     Space complexity: O(1)
     """
-    result = 0
-    for i in range(32):
+    count_of_1s = 0
+    for i in range(32):  # 32-bit integer
+        # (1 << i) creates a bitmask with only the i-th bit set to 1
+        # (1 << i) & n isolates the i-th bit of n to check if it's 1
         if (1 << i) & n:
-            result += 1
+            count_of_1s += 1
 
-    return result
+    return count_of_1s
+
+
+def hamming_weight_bit_mask_2(n: int) -> int:
+    """
+    Time complexity: O(1)
+    Space complexity: O(1)
+    """
+    count_of_1s = 0
+    while n:
+        # Extract the least significant bit (LSB) using bitwise AND
+        increment = 1 if n & 1 else 0
+        count_of_1s += increment
+
+        # Right shift n by 1 to process the next bit
+        n >>= 1
+
+    return count_of_1s
 
 
 def test_hamming_weight():
     # Arrange
     solutions = [
         hamming_weight_bit_mask,
+        hamming_weight_bit_mask_2,
     ]
 
     test_cases = [
