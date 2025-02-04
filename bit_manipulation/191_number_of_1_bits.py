@@ -70,12 +70,21 @@ def hamming_weight_bit_mask_optimal(n: int) -> int:
     return count_of_1s
 
 
+def hamming_weight_builtin(n: int) -> int:
+    """
+    Time complexity: O(1)
+    Space complexity: O(1)
+    """
+    return bin(n).count('1')
+
+
 def test_hamming_weight():
     # Arrange
     solutions = [
         hamming_weight_bit_mask,
         hamming_weight_bit_mask_2,
         hamming_weight_bit_mask_optimal,
+        hamming_weight_builtin,
     ]
 
     test_cases = [
