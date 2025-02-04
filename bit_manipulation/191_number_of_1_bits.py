@@ -50,11 +50,32 @@ def hamming_weight_bit_mask_2(n: int) -> int:
     return count_of_1s
 
 
+def hamming_weight_bit_mask_optimal(n: int) -> int:
+    """
+    Time complexity: O(1)
+    Space complexity: O(1)
+    """
+    # Kernighan's algorithm
+    count_of_1s = 0
+    while n:
+        # This operation removes the rightmost 1 bit in n.
+        # Explanation:
+        #   - n - 1 flips all bits after the rightmost 1 (including the 1 itself).
+        #   - n &= (n - 1) clears that rightmost 1 while keeping other bits unchanged.
+        #   - This ensures we process only the 1s, skipping the 0s entirely.
+        n &= n - 1
+
+        count_of_1s += 1
+
+    return count_of_1s
+
+
 def test_hamming_weight():
     # Arrange
     solutions = [
         hamming_weight_bit_mask,
         hamming_weight_bit_mask_2,
+        hamming_weight_bit_mask_optimal,
     ]
 
     test_cases = [
