@@ -68,12 +68,30 @@ def count_bits_builtin(n: int) -> list[int]:
     return [bin(i).count('1') for i in range(n + 1)]
 
 
+def count_bits_dynamic_programming(n: int) -> list[int]:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    bit_counts = [0] * (n + 1)
+    power_of_two = 1
+
+    for number in range(1, n + 1):
+        if power_of_two * 2 == number:
+            power_of_two = number
+
+        bit_counts[number] = 1 + bit_counts[number - power_of_two]
+
+    return bit_counts
+
+
 def test_count_bits():
     # Arrange
     solutions = [
         count_bits_bit_manipulation,
         count_bits_bit_manipulation_2,
         count_bits_builtin,
+        count_bits_dynamic_programming,
     ]
     test_cases = [
         (4, [0, 1, 1, 2, 1]),
