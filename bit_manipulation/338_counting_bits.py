@@ -43,10 +43,37 @@ def count_bits_bit_manipulation(n: int) -> list[int]:
     return one_counts
 
 
+def count_bits_bit_manipulation_2(n: int) -> list[int]:
+    """
+    Time complexity: O(n) (?)
+    Space complexity: O(1) (?)
+    """
+    bit_counts = [0] * (n + 1)
+    for _number in range(1, n + 1):
+        number = _number
+        while number != 0:
+            bit_counts[_number] += 1
+            # Remove the rightmost 1 bit in number
+            # eg. 5 & 4 = 101 & 100 = 100, 4 & 3 = 100 & 011 = 0
+            number &= (number - 1)
+
+    return bit_counts
+
+
+def count_bits_builtin(n: int) -> list[int]:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    return [bin(i).count('1') for i in range(n + 1)]
+
+
 def test_count_bits():
     # Arrange
     solutions = [
         count_bits_bit_manipulation,
+        count_bits_bit_manipulation_2,
+        count_bits_builtin,
     ]
     test_cases = [
         (4, [0, 1, 1, 2, 1]),
