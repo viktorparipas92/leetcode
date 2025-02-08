@@ -85,6 +85,20 @@ def count_bits_dynamic_programming(n: int) -> list[int]:
     return bit_counts
 
 
+def count_bits_bit_manipulation_optimal(n: int) -> list[int]:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    bit_counts = [0] * (n + 1)
+    for number in range(n + 1):
+        # number >> 1 shifts the bits to the right by 1 (equivalent to number // 2)
+        # number & 1 isolates the rightmost bit (since it is lost in the right shift)
+        bit_counts[number] = bit_counts[number >> 1] + (number & 1)
+
+    return bit_counts
+
+
 def test_count_bits():
     # Arrange
     solutions = [
@@ -92,6 +106,7 @@ def test_count_bits():
         count_bits_bit_manipulation_2,
         count_bits_builtin,
         count_bits_dynamic_programming,
+        count_bits_bit_manipulation_optimal,
     ]
     test_cases = [
         (4, [0, 1, 1, 2, 1]),
