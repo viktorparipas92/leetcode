@@ -62,12 +62,25 @@ def get_missing_number_bitwise_xor(numbers: list[int]) -> int:
     return missing_number
 
 
+def get_missing_number_math(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    missing_number = len(numbers)
+    for i, number in enumerate(numbers):
+        missing_number += i - number
+
+    return missing_number
+
+
 def test_missing_number():
     # Arrange
     solutions = [
         get_missing_number_sorting,
         get_missing_number_hash_set,
         get_missing_number_bitwise_xor,
+        get_missing_number_math,
     ]
 
     test_cases = [
