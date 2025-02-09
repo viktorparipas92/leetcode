@@ -36,10 +36,22 @@ def get_missing_number_sorting(numbers: list[int]) -> int:
     return len(numbers)
 
 
+def get_missing_number_hash_set(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    number_set = set(numbers)
+    for i in range(len(numbers) + 1):
+        if i not in number_set:
+            return i
+
+
 def test_missing_number():
     # Arrange
     solutions = [
         get_missing_number_sorting,
+        get_missing_number_hash_set,
     ]
 
     test_cases = [
