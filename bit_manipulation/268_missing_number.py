@@ -47,11 +47,27 @@ def get_missing_number_hash_set(numbers: list[int]) -> int:
             return i
 
 
+def get_missing_number_bitwise_xor(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    # Start with the largest number in the range
+    missing_number = len(numbers)
+    for i, number in enumerate(numbers):
+        # XOR of a number with itself is 0
+        # Every number in the range will cancel out except the missing number
+        missing_number ^= (i ^ number)
+
+    return missing_number
+
+
 def test_missing_number():
     # Arrange
     solutions = [
         get_missing_number_sorting,
         get_missing_number_hash_set,
+        get_missing_number_bitwise_xor,
     ]
 
     test_cases = [
