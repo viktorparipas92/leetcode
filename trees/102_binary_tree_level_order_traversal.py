@@ -23,7 +23,7 @@ Constraints:
 0 <= The number of nodes in both trees <= 1000.
 -1000 <= Node.val <= 1000
 """
-
+from collections import deque
 
 from shared import TreeNode
 
@@ -54,9 +54,37 @@ def level_order_traversal_dfs(root: TreeNode) -> list[list[int]]:
     return level_values
 
 
+def level_order_traversal_bfs(root: TreeNode) -> list[list[int]]:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    # Use a breadth-first search to traverse the tree
+    level_order_values = []
+
+    node_queue = deque()
+    node_queue.append(root)  # Start traversal from the root node
+    while node_queue:
+        current_level_size = len(node_queue)
+        current_level_values = []
+        # Process all nodes at the current level
+        for _ in range(current_level_size):
+            if current_node := node_queue.popleft():  # FIFO
+                current_level_values.append(current_node.value)
+
+                node_queue.append(current_node.left)
+                node_queue.append(current_node.right)
+
+        if current_level_values:  # Skip empty levels
+            level_order_values.append(current_level_values)
+
+    return level_order_values
+
+
 def test_level_order_traversal():
     solutions = [
         level_order_traversal_dfs,
+        level_order_traversal_bfs,
     ]
 
     tree_1 = TreeNode(
