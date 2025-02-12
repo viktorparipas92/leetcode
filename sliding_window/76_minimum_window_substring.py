@@ -61,9 +61,48 @@ def min_window_brute_force(text: str, target: str) -> str:
     return text[left: right + 1] if min_length != float('infinity') else ''
 
 
+def min_window_sliding_window(text: str, target: str) -> str:
+    """
+    Time complexity: O(n) where n = len(s)
+    Space complexity: O(m) where m = len(t)
+    """
+    if target == '':
+        return ''
+
+    window_char_counts = Counter()
+    target_char_counts = Counter(target)
+    matched_chars, required_chars = 0, len(target_char_counts)
+
+    min_substring_bounds, min_length = [-1, -1], float('infinity')
+
+    left = 0
+
+    for right, current_char in enumerate(text):
+        window_char_counts[current_char] += 1
+        if window_char_counts[current_char] == target_char_counts[current_char]:
+            matched_chars += 1
+
+        while matched_chars == required_chars:
+            length = right - left + 1
+            if length < min_length:
+                min_substring_bounds = [left, right]
+                min_length = length
+
+            left_char = text[left]
+            window_char_counts[left_char] -= 1
+            if window_char_counts[left_char] < target_char_counts[left_char]:
+                matched_chars -= 1
+
+            left += 1
+
+    left, right = min_substring_bounds
+    return text[left: right + 1] if min_length != float('infinity') else ''
+
+
 def test_min_window():
     solutions = [
         min_window_brute_force,
+        min_window_sliding_window,
     ]
 
     test_cases = [
