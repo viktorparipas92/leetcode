@@ -18,6 +18,8 @@ Constraints:
 0 <= number of nodes in the tree <= 100
 -100 <= Node.val <= 100
 """
+from collections import deque
+
 from trees.shared import TreeNode
 
 
@@ -42,9 +44,33 @@ def right_side_view_dfs(root: TreeNode) -> list[int]:
     return nodes_on_the_right
 
 
+def right_side_view_bfs(root: TreeNode) -> list[int]:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    nodes_on_the_right = []
+    node_queue = deque([root])
+    while node_queue:
+        right_side = None
+        
+        queue_length = len(node_queue)
+        for i in range(queue_length):
+            if node := node_queue.popleft():
+                right_side = node
+                node_queue.append(node.left)
+                node_queue.append(node.right)
+
+        if right_side:
+            nodes_on_the_right.append(right_side.value)
+
+    return nodes_on_the_right
+
+
 def test_right_side_view():
     solutions = [
         right_side_view_dfs,
+        right_side_view_bfs,
     ]
 
     tree_1 = TreeNode(1, TreeNode(2), TreeNode(3))
