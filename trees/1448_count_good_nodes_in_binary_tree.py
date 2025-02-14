@@ -20,6 +20,8 @@ Constraints:
 1 <= number of nodes in the tree <= 100
 -100 <= Node.val <= 100
 """
+from collections import deque
+
 from trees.shared import TreeNode
 
 
@@ -46,9 +48,33 @@ def good_nodes_dfs(root: TreeNode) -> int:
     return depth_first_search(root, root.value)
 
 
+def good_nodes_bfs(root: TreeNode) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    num_good_nodes = 0
+
+    queue: deque[tuple[TreeNode, float]]  = deque()
+    queue.append((root, -float('inf')))
+    while queue:
+        node, maximum_value = queue.popleft()
+        if node.value >= maximum_value:
+            num_good_nodes += 1
+
+        if node.left:
+            queue.append((node.left, max(maximum_value, node.value)))
+
+        if node.right:
+            queue.append((node.right, max(maximum_value, node.value)))
+
+    return num_good_nodes
+
+
 def test_good_nodes():
     solutions = [
         good_nodes_dfs,
+        good_nodes_bfs,
     ]
 
     tree_1 = TreeNode(
