@@ -33,6 +33,10 @@ right_check = staticmethod(lambda val, limit: val > limit)
 
 
 def is_valid_bst_brute_force(root: TreeNode) -> bool:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(n)
+    """
     if not root:
         return True
 
@@ -48,6 +52,26 @@ def is_valid_bst_brute_force(root: TreeNode) -> bool:
     )
 
 
+def is_valid_bst_depth_first(root: TreeNode) -> bool:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    def is_valid(node: TreeNode, left: int | float, right: int | float) -> bool:
+        if not node:
+            return True
+
+        if not (left < node.value < right):
+            return False
+
+        return (
+            is_valid(node.left, left=left, right=node.value)
+            and is_valid(node.right, left=node.value, right=right)
+        )
+
+    return is_valid(root, left=float('-inf'), right=float('inf'))
+
+
 def is_valid(root: TreeNode | None, limit: int, check: callable) -> bool:
     if not root:
         return True
@@ -60,6 +84,7 @@ def is_valid(root: TreeNode | None, limit: int, check: callable) -> bool:
 def test_is_valid_bst():
     solutions = [
         is_valid_bst_brute_force,
+        is_valid_bst_depth_first,
     ]
 
     test_cases = [
