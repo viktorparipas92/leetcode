@@ -25,6 +25,7 @@ Constraints:
 1 <= The number of nodes in the tree <= 1000.
 -1000 <= Node.val <= 1000
 """
+from collections import deque
 
 from trees.shared import TreeNode
 
@@ -72,6 +73,30 @@ def is_valid_bst_depth_first(root: TreeNode) -> bool:
     return is_valid(root, left=float('-inf'), right=float('inf'))
 
 
+def is_valid_bst_breadth_first(root: TreeNode) -> bool:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    if not root:
+        return True
+
+    queue: deque[tuple[TreeNode, float | int, float | int]] = deque(
+        [(root,  float('-inf'), float('inf'))]
+    )
+    while queue:
+        node, left_value, right_value = queue.popleft()
+        if not (left_value < node.value < right_value):
+            return False
+
+        if node.left:
+            queue.append((node.left, left_value, node.value))
+        if node.right:
+            queue.append((node.right, node.value, right_value))
+
+    return True
+
+
 def is_valid(root: TreeNode | None, limit: int, check: callable) -> bool:
     if not root:
         return True
@@ -85,6 +110,7 @@ def test_is_valid_bst():
     solutions = [
         is_valid_bst_brute_force,
         is_valid_bst_depth_first,
+        is_valid_bst_breadth_first,
     ]
 
     test_cases = [
