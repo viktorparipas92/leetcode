@@ -29,7 +29,7 @@ Constraints:
 from trees.shared import TreeNode
 
 
-def kth_smallest_brute_force(root: TreeNode | None, k: int) -> int:
+def kth_smallest_dfs_recursive_preorder_sorting(root: TreeNode | None, k: int) -> int:
     """
     Time complexity: O(n log n)
     Space complexity: O(n)
@@ -49,7 +49,7 @@ def kth_smallest_brute_force(root: TreeNode | None, k: int) -> int:
     return node_values[k - 1]
 
 
-def kth_smallest_inorder_traversal(root: TreeNode | None, k: int) -> int:
+def kth_smallest_dfs_recursive_inorder(root: TreeNode | None, k: int) -> int:
     """
     Time complexity: O(n)
     Space complexity: O(n)
@@ -68,7 +68,7 @@ def kth_smallest_inorder_traversal(root: TreeNode | None, k: int) -> int:
     return node_values[k - 1]
 
 
-def kth_smallest_recursive_dfs_optimal(root: TreeNode | None, k: int) -> int:
+def kth_smallest_dfs_recursive_inorder_optimal(root: TreeNode | None, k: int) -> int:
     """
     Time complexity: O(n)
     Space complexity: O(n)
@@ -95,9 +95,9 @@ def kth_smallest_recursive_dfs_optimal(root: TreeNode | None, k: int) -> int:
 
 def test_kth_smallest():
     solutions = [
-        kth_smallest_brute_force,
-        kth_smallest_inorder_traversal,
-        kth_smallest_recursive_dfs_optimal,
+        kth_smallest_dfs_recursive_preorder_sorting,
+        kth_smallest_dfs_recursive_inorder,
+        kth_smallest_dfs_recursive_inorder_optimal,
     ]
 
     tree_4 = TreeNode(
