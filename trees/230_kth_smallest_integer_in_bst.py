@@ -49,9 +49,29 @@ def kth_smallest_brute_force(root: TreeNode | None, k: int) -> int:
     return node_values[k - 1]
 
 
+def kth_smallest_inorder_traversal(root: TreeNode | None, k: int) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    node_values = []
+
+    def depth_first_search(node: TreeNode):
+        if not node:
+            return
+
+        depth_first_search(node.left)
+        node_values.append(node.value)
+        depth_first_search(node.right)
+
+    depth_first_search(root)
+    return node_values[k - 1]
+
+
 def test_kth_smallest():
     solutions = [
         kth_smallest_brute_force,
+        kth_smallest_inorder_traversal,
     ]
 
     tree_4 = TreeNode(
