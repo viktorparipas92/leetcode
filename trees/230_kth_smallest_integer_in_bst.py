@@ -68,10 +68,36 @@ def kth_smallest_inorder_traversal(root: TreeNode | None, k: int) -> int:
     return node_values[k - 1]
 
 
+def kth_smallest_recursive_dfs_optimal(root: TreeNode | None, k: int) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    count = 0
+    kth_smallest = root.value
+
+    def depth_first_search(node: TreeNode):
+        nonlocal count, kth_smallest
+        if not node:
+            return
+
+        depth_first_search(node.left)
+        count += 1
+        if count == k:
+            kth_smallest = node.value
+            return
+
+        depth_first_search(node.right)
+
+    depth_first_search(root)
+    return kth_smallest
+
+
 def test_kth_smallest():
     solutions = [
         kth_smallest_brute_force,
         kth_smallest_inorder_traversal,
+        kth_smallest_recursive_dfs_optimal,
     ]
 
     tree_4 = TreeNode(
