@@ -93,11 +93,32 @@ def kth_smallest_dfs_recursive_inorder_optimal(root: TreeNode | None, k: int) ->
     return kth_smallest
 
 
+def kth_smallest_dfs_iterative_inorder(root: TreeNode | None, k: int) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    node_stack: list[TreeNode] = []
+    current_node = root
+    while node_stack or current_node:
+        while current_node:
+            node_stack.append(current_node)
+            current_node = current_node.left
+
+        current_node = node_stack.pop()
+        k -= 1
+        if k == 0:
+            return current_node.value
+
+        current_node = current_node.right
+
+
 def test_kth_smallest():
     solutions = [
         kth_smallest_dfs_recursive_preorder_sorting,
         kth_smallest_dfs_recursive_inorder,
         kth_smallest_dfs_recursive_inorder_optimal,
+        kth_smallest_dfs_iterative_inorder,
     ]
 
     tree_4 = TreeNode(
