@@ -42,9 +42,65 @@ def build_tree_dfs(preorder: list[int], inorder: list[int]) -> Node | None:
     return root_node
 
 
+def build_tree_dfs_with_hash_map(preorder: list[int], inorder: list[int]) -> Node:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    inorder_indices: dict[int, int] = {value: i for i, value in enumerate(inorder)}
+    preorder_index = 0
+
+    def construct_tree(left_boundary: int, right_boundary: int) -> Node | None:
+        nonlocal preorder_index
+        if left_boundary > right_boundary:
+            return
+
+        root_value = preorder[preorder_index]
+        root_node = Node(root_value)
+
+        inorder_index = inorder_indices[root_value]
+
+        preorder_index += 1
+
+        root_node.left = construct_tree(left_boundary, inorder_index - 1)
+        root_node.right = construct_tree(inorder_index + 1, right_boundary)
+        return root_node
+
+    return construct_tree(left_boundary=0, right_boundary=len(inorder) - 1)
+
+
+def build_tree_dfs_optimal(preorder: list[int], inorder: list[int]) -> Node:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)  # due to recursion stack
+    """
+    preorder_index = inorder_index = 0
+
+    def construct_tree(limit: float | int) -> Node | None:
+        nonlocal preorder_index, inorder_index
+        if preorder_index >= len(preorder):
+            return
+
+        if inorder[inorder_index] == limit:
+            inorder_index += 1
+            return
+
+        root_node = Node(preorder[preorder_index])
+
+        preorder_index += 1
+
+        root_node.left = construct_tree(root_node.value)
+        root_node.right = construct_tree(limit)
+        return root_node
+
+    return construct_tree(limit=float('inf'))
+
+
 def test_build_tree():
     solutions = [
         build_tree_dfs,
+        build_tree_dfs_with_hash_map,
+        build_tree_dfs_optimal,
     ]
 
     tree_1 = Node(1, Node(2), Node(3, None, Node(4)))
