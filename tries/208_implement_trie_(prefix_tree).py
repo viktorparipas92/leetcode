@@ -41,24 +41,44 @@ word and prefix are made up of lowercase English letters.
 
 class TrieNode:
     def __init__(self):
-        self.children: list[TrieNode | None] = [None] * 26
         self.end_of_word = False
 
 
 class PrefixTree:
+    NODE_CLASS = TrieNode
+
+    def __init__(self):
+        self.root = self.NODE_CLASS()
+
+    def insert(self, word: str) -> None:
+        raise NotImplementedError
+
+    def search(self, word: str) -> bool:
+        raise NotImplementedError
+
+    def starts_with(self, prefix: str) -> bool:
+        raise NotImplementedError
+
+
+class TrieNodeWithArray(TrieNode):
+    def __init__(self):
+        super().__init__()
+        self.children: list[TrieNode | None] = [None] * 26
+
+
+class PrefixTreeWithArray(PrefixTree):
     """
     Time complexity: O(n) for all operations, where n is the length of the word
     Space complexity: O(t) for all operations, where t is the total number of nodes
     """
-    def __init__(self):
-        self.root = TrieNode()
+    NODE_CLASS = TrieNodeWithArray
 
     def insert(self, word: str) -> None:
         current_node = self.root
         for char in word:
             i = self.get_index(char)
             if current_node.children[i] is None:
-                current_node.children[i] = TrieNode()
+                current_node.children[i] = self.NODE_CLASS()
 
             current_node = current_node.children[i]
 
@@ -91,9 +111,54 @@ class PrefixTree:
         return ord(char) - ord('a')
 
 
+class TrieNodeWithHashMap(TrieNode):
+    def __init__(self):
+        super().__init__()
+        self.children: dict[str, TrieNode] = {}
+
+
+class PrefixTreeWithHashMap(PrefixTree):
+    """
+    Time complexity: O(n) for all operations, where n is the length of the word
+    Space complexity: O(t) for all operations, where t is the total number of nodes
+    """
+    NODE_CLASS = TrieNodeWithHashMap
+
+    def insert(self, word: str) -> None:
+        current_node = self.root
+        for char in word:
+            if char not in current_node.children:
+                current_node.children[char] = self.NODE_CLASS()
+
+            current_node = current_node.children[char]
+
+        current_node.end_of_word = True
+
+    def search(self, word: str) -> bool:
+        current_node = self.root
+        for char in word:
+            if char not in current_node.children:
+                return False
+
+            current_node = current_node.children[char]
+
+        return current_node.end_of_word
+
+    def starts_with(self, prefix: str) -> bool:
+        current_node = self.root
+        for char in prefix:
+            if char not in current_node.children:
+                return False
+
+            current_node = current_node.children[char]
+
+        return True
+
+
 def test_prefix_tree() -> None:
     solutions = [
-        PrefixTree,
+        PrefixTreeWithArray,
+        PrefixTreeWithHashMap,
     ]
 
     for Trie in solutions:
@@ -109,7 +174,7 @@ def test_prefix_tree() -> None:
         prefix_tree.insert('do')
         assert prefix_tree.search('do') is True
 
-    print(f'All tests passed for {Trie.__name__}!')
+        print(f'All tests passed for {Trie.__name__}!')
 
 
 if __name__ == '__main__':
