@@ -44,9 +44,22 @@ def subsets_backtracking(numbers: list[int]) -> list[list[int]]:
     return subsets
 
 
+def subsets_iterative(numbers: list[int]) -> list[list[int]]:
+    """
+    Time complexity: O(n * 2^n)
+    Space complexity: O(n)
+    """
+    subsets: list[list[int]] = [[]]
+    for number in numbers:
+        subsets += [subset + [number] for subset in subsets]
+
+    return subsets
+
+
 def test_subsets():
     solutions = [
         subsets_backtracking,
+        subsets_iterative,
     ]
 
     test_cases = [
