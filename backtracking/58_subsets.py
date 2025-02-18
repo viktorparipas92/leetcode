@@ -35,9 +35,10 @@ def subsets_backtracking(numbers: list[int]) -> list[list[int]]:
             return
 
         subset.append(numbers[i])
-        depth_first_search(i + 1)
-        subset.pop()
-        depth_first_search(i + 1)
+        depth_first_search(i + 1)  # Include the current number
+
+        subset.pop()  # Backtrack
+        depth_first_search(i + 1)  # Exclude the current number
 
     depth_first_search(i=0)
     return subsets
