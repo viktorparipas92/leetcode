@@ -87,11 +87,42 @@ def k_closest_max_heap(points: list[POINT], k: int) -> list[POINT]:
     return closest_points
 
 
+def k_closest_quick_select(points: list[POINT], k: int) -> list[POINT]:
+    """
+    Time complexity: O(n) on average, O(n^2) in the worst case
+    Space complexity: O(n)
+    """
+    def partition(_left, _right) -> int:
+        pivot_index = _right
+        pivot_distance = euclidean_distance(points[pivot_index])
+        i = _left
+        for j, point in enumerate(points[_left:_right], start=_left):
+            if euclidean_distance(point) <= pivot_distance:
+                points[i], points[j] = point, points[i]
+                i += 1
+
+        points[i], points[_right] = points[_right], points[i]
+        return i
+
+    left, right = 0, len(points) - 1
+
+    pivot = len(points)
+    while pivot != k:
+        pivot = partition(left, right)
+        if pivot < k:
+            left = pivot + 1
+        else:
+            right = pivot - 1
+
+    return points[:k]
+
+
 def test_k_closest_points():
     solutions = [
         k_closest_sorting,
         k_closest_min_heap,
         k_closest_max_heap,
+        k_closest_quick_select,
     ]
 
     test_cases = [
