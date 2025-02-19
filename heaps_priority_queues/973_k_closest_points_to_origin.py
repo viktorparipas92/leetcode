@@ -48,7 +48,7 @@ def k_closest_sorting(points: list[POINT], k: int) -> list[POINT]:
 
 def k_closest_min_heap(points: list[POINT], k: int) -> list[POINT]:
     """
-    Time complexity: O(k log n)
+    Time complexity: O(k log n) where n is the number of points
     Space complexity: O(n)
     """
     minimum_heap: list[tuple[int, POINT]] = []
@@ -57,11 +57,32 @@ def k_closest_min_heap(points: list[POINT], k: int) -> list[POINT]:
         minimum_heap.append((distance, point))
 
     heapq.heapify(minimum_heap)
+
     closest_points = []
     while k > 0:
-        distance, point = heapq.heappop(minimum_heap)
+        _, point = heapq.heappop(minimum_heap)
         closest_points.append(point)
         k -= 1
+
+    return closest_points
+
+
+def k_closest_max_heap(points: list[POINT], k: int) -> list[POINT]:
+    """
+    Time complexity: O(n log k) where n is the number of points
+    Space complexity: O(k)
+    """
+    maximum_heap: list[tuple[int, POINT]] = []
+    for point in points:
+        distance = -euclidean_distance(point)
+        heapq.heappush(maximum_heap, (distance, point))
+        if len(maximum_heap) > k:
+            heapq.heappop(maximum_heap)
+
+    closest_points = []
+    while maximum_heap:
+        _, point = heapq.heappop(maximum_heap)
+        closest_points.append(point)
 
     return closest_points
 
@@ -70,6 +91,7 @@ def test_k_closest_points():
     solutions = [
         k_closest_sorting,
         k_closest_min_heap,
+        k_closest_max_heap,
     ]
 
     test_cases = [
@@ -85,7 +107,7 @@ def test_k_closest_points():
             k_closest = solution(points, k)
 
             # Assert
-            assert k_closest == expected_k_closest
+            assert sorted(k_closest) == sorted(expected_k_closest)
 
         print(f'All tests passed for {solution.__name__}!')
 
