@@ -56,10 +56,27 @@ def subsets_iterative(numbers: list[int]) -> list[list[int]]:
     return subsets
 
 
+def subsets_bit_manipulation(numbers: list[int]) -> list[list[int]]:
+    """
+    Time complexity: O(n * 2^n)
+    Space complexity: O(n)
+    """
+    length = len(numbers)
+    subsets: list[list[int]] = []
+    # Generate all possible 2^n binary masks
+    for i in range(1 << length):
+        # For each mask, generate a subset
+        subset = [number for j, number in enumerate(numbers) if (i & (1 << j))]
+        subsets.append(subset)
+
+    return subsets
+
+
 def test_subsets():
     solutions = [
         subsets_backtracking,
         subsets_iterative,
+        subsets_bit_manipulation,
     ]
 
     test_cases = [
