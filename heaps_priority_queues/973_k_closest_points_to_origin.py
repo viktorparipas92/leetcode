@@ -27,23 +27,49 @@ Constraints:
 -100 <= points[i][0], points[i][1] <= 100
 """
 
-from heapq import heappop, heappush
+import heapq
 
 
 POINT = tuple[int, int]
+
+
+def euclidean_distance(point: POINT) -> int:
+    return point[0] ** 2 + point[1] ** 2
+
 
 def k_closest_sorting(points: list[POINT], k: int) -> list[POINT]:
     """
     Time complexity: O(n log n)
     Space complexity: O(n)
     """
-    points.sort(key=lambda pt: pt[0]**2 + pt[1]**2)
+    points.sort(key=euclidean_distance)
     return points[:k]
+
+
+def k_closest_min_heap(points: list[POINT], k: int) -> list[POINT]:
+    """
+    Time complexity: O(k log n)
+    Space complexity: O(n)
+    """
+    minimum_heap: list[tuple[int, POINT]] = []
+    for point in points:
+        distance = euclidean_distance(point)
+        minimum_heap.append((distance, point))
+
+    heapq.heapify(minimum_heap)
+    closest_points = []
+    while k > 0:
+        distance, point = heapq.heappop(minimum_heap)
+        closest_points.append(point)
+        k -= 1
+
+    return closest_points
 
 
 def test_k_closest_points():
     solutions = [
         k_closest_sorting,
+        k_closest_min_heap,
     ]
 
     test_cases = [
