@@ -37,7 +37,9 @@ Constraints:
 """
 
 
-def combination_sum_2_brute_force(candidates: list[int], target: int) -> list[list[int]]:
+def combination_sum_2_brute_force(
+    candidates: list[int], target: int
+) -> list[list[int]]:
     """
     Time complexity: O(n 2^n)
     Space complexity: O(n 2^n)
@@ -45,7 +47,7 @@ def combination_sum_2_brute_force(candidates: list[int], target: int) -> list[li
     combinations: set[tuple] = set()
     candidates.sort()
 
-    def generate_subsets(i, current_combination, total):
+    def generate_subsets(i: int, current_combination: list, total: int):
         if total == target:
             combinations.add(tuple(current_combination))
             return
@@ -63,9 +65,42 @@ def combination_sum_2_brute_force(candidates: list[int], target: int) -> list[li
     return [list(combination) for combination in combinations]
 
 
+def combination_sum_2_backtracking(
+    candidates: list[int], target: int
+) -> list[list[int]]:
+    """
+    Time complexity: O(n 2^n)
+    Space complexity: O(n)
+    """
+    combinations: set[tuple] = set()
+    candidates.sort()
+
+    def generate_subsets(i: int, current_combination: list, total: int):
+        if total == target:
+            combinations.add(tuple(current_combination))
+            return
+        elif total > target or i == len(candidates):
+            return
+
+        candidate = candidates[i]
+        current_combination.append(candidate)
+        generate_subsets(i + 1, current_combination, total + candidate)
+
+        current_combination.pop()
+
+        while i + 1 < len(candidates) and candidate == candidates[i + 1]:
+            i += 1
+
+        generate_subsets(i + 1, current_combination, total)
+
+    generate_subsets(0, current_combination=[], total=0)
+    return [list(combination) for combination in combinations]
+
+
 def test_combination_sum_2():
     solutions = [
         combination_sum_2_brute_force,
+        combination_sum_2_backtracking,
     ]
 
     test_cases = [
@@ -86,4 +121,3 @@ def test_combination_sum_2():
 
 if __name__ == '__main__':
     test_combination_sum_2()
-    
