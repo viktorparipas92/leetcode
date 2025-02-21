@@ -35,6 +35,7 @@ Constraints:
 1 <= candidates[i] <= 50
 1 <= target <= 30
 """
+from collections import Counter
 
 
 def combination_sum_2_brute_force(
@@ -97,10 +98,49 @@ def combination_sum_2_backtracking(
     return [list(combination) for combination in combinations]
 
 
+def combination_sum_2_backtracking_hash_map(
+    candidates: list[int], target: int
+) -> list[list[int]]:
+    """
+    Time complexity: O(n 2^n)
+    Space complexity: O(n)
+    """
+    def backtrack(
+        _candidates: list[int], target: int, current_combination: list[int], i: int
+    ):
+        if target == 0:
+            combinations.append(current_combination.copy())
+            return
+        elif target < 0 or i >= len(_candidates):
+            return
+
+        candidate = _candidates[i]
+        if candidate_counts[candidate] > 0:
+            current_combination.append(candidate)
+            candidate_counts[candidate] -= 1
+
+            backtrack(_candidates, target - candidate, current_combination, i)
+
+            candidate_counts[candidate] += 1
+            current_combination.pop()
+
+        backtrack(_candidates, target, current_combination, i + 1)
+
+    combinations: list = []
+    current_combination = []
+
+    candidate_counts = Counter(candidates)
+    unique_candidates = list(candidate_counts.keys())
+
+    backtrack(unique_candidates, target, current_combination, 0)
+    return combinations
+
+
 def test_combination_sum_2():
     solutions = [
         combination_sum_2_brute_force,
         combination_sum_2_backtracking,
+        combination_sum_2_backtracking_hash_map,
     ]
 
     test_cases = [
