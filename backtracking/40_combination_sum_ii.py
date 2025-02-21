@@ -136,11 +136,43 @@ def combination_sum_2_backtracking_hash_map(
     return combinations
 
 
+def combination_sum_2_backtracking_optimal(
+    candidates: list[int], target: int
+) -> list[list[int]]:
+    """
+    Time complexity: O(n 2^n)
+    Space complexity: O(n)
+    """
+    combinations: set[tuple] = set()
+    candidates.sort()
+
+    def generate_subsets(i: int, current_combination: list, total: int):
+        if total == target:
+            combinations.add(tuple(current_combination))
+            return
+
+        for j, candidate in enumerate(candidates[i:], start=i):
+            if j > i and candidate == candidates[j - 1]:
+                continue
+
+            if total + candidate > target:
+                break
+
+            current_combination.append(candidate)
+            generate_subsets(j + 1, current_combination, total + candidate)
+
+            current_combination.pop()
+
+    generate_subsets(0, current_combination=[], total=0)
+    return [list(combination) for combination in combinations]
+
+
 def test_combination_sum_2():
     solutions = [
         combination_sum_2_brute_force,
         combination_sum_2_backtracking,
         combination_sum_2_backtracking_hash_map,
+        combination_sum_2_backtracking_optimal,
     ]
 
     test_cases = [
@@ -154,7 +186,7 @@ def test_combination_sum_2():
             combinations = solution(candidates, target)
 
             # Assert
-            assert len(combinations) == len(expected_combinations)
+            assert sorted(combinations) == sorted(expected_combinations)
 
         print(f'All tests passed for {solution.__name__}!')
 
