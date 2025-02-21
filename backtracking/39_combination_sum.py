@@ -68,9 +68,37 @@ def combination_sum_backtracking(numbers: list[int], target: int) -> list[list[i
     return combinations
 
 
+def combination_sum_backtracking_optimized(
+    numbers: list[int], target: int
+) -> list[list[int]]:
+    """
+    Time complexity: O(2^(t/m))
+    Space complexity: O(t/m) where t is the target and m is the minimum value in numbers
+    """
+    combinations = []
+    numbers.sort()
+
+    def depth_first_search(i: int, current: list[int], total: int):
+        if total == target:
+            combinations.append(current.copy())
+            return
+
+        for j, number in enumerate(numbers[i:], start=i):
+            if total + number > target:
+                return
+
+            current.append(number)
+            depth_first_search(j, current, total + number)
+            current.pop()
+
+    depth_first_search(0, current=[], total=0)
+    return combinations
+
+
 def test_combination_sum():
     solutions = [
         combination_sum_backtracking,
+        combination_sum_backtracking_optimized,
     ]
 
     test_cases = [
