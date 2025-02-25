@@ -109,12 +109,34 @@ def permute_backtracking_bit_mask(numbers: list[int]) -> list[list[int]]:
     return permutations
 
 
+def permute_backtracking_optimal(numbers: list[int]) -> list[list[int]]:
+    """
+    Time complexity: O(n! * n)
+    Space complexity: O(n! * n)
+    Uses in-place swapping to avoid creating new lists.
+    """
+    def backtrack(start: int):
+        if start == len(numbers):
+            permutations.append(numbers[:])
+            return
+
+        for i in range(start, len(numbers)):
+            numbers[start], numbers[i] = numbers[i], numbers[start]
+            backtrack(start + 1)
+            numbers[start], numbers[i] = numbers[i], numbers[start]
+
+    permutations: list[list[int]] = []
+    backtrack(start=0)
+    return permutations
+
+
 def test_permute():
     solutions = [
         permute_recursive,
         permute_iterative,
         permute_backtracking,
         permute_backtracking_bit_mask,
+        permute_backtracking_optimal,
     ]
 
     test_cases = [
