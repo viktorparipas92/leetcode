@@ -85,11 +85,36 @@ def permute_backtracking(numbers: list[int]) -> list[list[int]]:
     return permutations
 
 
+def permute_backtracking_bit_mask(numbers: list[int]) -> list[list[int]]:
+    """
+    Time complexity: O(n! * n)
+    Space complexity: O(n! * n)
+    """
+    def backtrack(permutation: list[int], mask: int):
+        if len(permutation) == len(numbers):
+            permutations.append(permutation[:])
+            return
+
+        for i, number in enumerate(numbers):
+            if not (mask & (1 << i)):  # Check if the number is not picked
+                permutation.append(number)
+
+                mask_with_current_number = mask | (1 << i)
+                backtrack(permutation, mask_with_current_number)
+
+                permutation.pop()
+
+    permutations: list[list[int]] = []
+    backtrack(permutation=[], mask=0)
+    return permutations
+
+
 def test_permute():
     solutions = [
         permute_recursive,
         permute_iterative,
         permute_backtracking,
+        permute_backtracking_bit_mask,
     ]
 
     test_cases = [
