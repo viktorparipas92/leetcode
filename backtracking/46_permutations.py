@@ -58,10 +58,38 @@ def permute_iterative(numbers: list[int]) -> list[list[int]]:
     return permutations
 
 
+def permute_backtracking(numbers: list[int]) -> list[list[int]]:
+    """
+    Time complexity: O(n! * n)
+    Space complexity: O(n! * n)
+    """
+
+    def backtrack(permutation: list[int], picked: list[bool]):
+        if len(permutation) == len(numbers):
+            permutations.append(permutation[:])
+            return
+
+        for i, number in enumerate(numbers):
+            if not picked[i]:
+                permutation.append(number)
+                picked[i] = True
+
+                backtrack(permutation, picked)
+
+                permutation.pop()
+                picked[i] = False
+
+    permutations: list[list[int]] = []
+    initial_picked: list[bool] = [False] * len(numbers)
+    backtrack(permutation=[], picked=initial_picked)
+    return permutations
+
+
 def test_permute():
     solutions = [
         permute_recursive,
         permute_iterative,
+        permute_backtracking,
     ]
 
     test_cases = [
