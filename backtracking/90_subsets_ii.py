@@ -73,10 +73,59 @@ def subsets_with_duplicates_backtracking_pick_or_not(
     return subsets
 
 
+def subsets_with_duplicates_backtracking(numbers: list[int]) -> list[list[int]]:
+    """
+    Time complexity: O(n * 2^n)
+    Space complexity: O(n)
+    """
+    subsets: list[list[int]] = []
+
+    def generate_subsets(i: int, current_subset: list[int]):
+        subsets.append(current_subset[::])
+
+        for j, number in enumerate(numbers[i:], start=i):
+            if j > i and number == numbers[j - 1]:
+                continue
+
+            current_subset.append(number)
+            generate_subsets(j + 1, current_subset)
+
+            current_subset.pop()
+
+    numbers.sort()
+    generate_subsets(i=0, current_subset=[])
+    return subsets
+
+
+def subsets_with_duplicates_iteration(numbers: list[int]) -> list[list[int]]:
+    """
+    Time complexity: O(n * 2^n)
+    Space complexity: O(1)
+    """
+    numbers.sort()
+    subsets: list[list[int]] = [[]]
+    previous_index = 0
+    for i, number in enumerate(numbers):
+        if i >= 1 and number == numbers[i - 1]:
+            index = previous_index
+        else:
+            index = 0
+
+        previous_index = len(subsets)
+        for subset in subsets[index: previous_index]:
+            subset_copy = subset.copy()
+            subset_copy.append(number)
+            subsets.append(subset_copy)
+
+    return subsets
+
+
 def test_subsets_with_duplicates():
     solutions = [
         subsets_with_duplicates_brute_force,
         subsets_with_duplicates_backtracking_pick_or_not,
+        subsets_with_duplicates_backtracking,
+        subsets_with_duplicates_iteration,
     ]
 
     test_cases = [
