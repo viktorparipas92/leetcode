@@ -34,7 +34,7 @@ word in search consist of '.' or lowercase English letters.
 """
 
 
-class WordDictionary:
+class WordDictionaryBruteForce:
     """
     Time complexity: O(1) for add_word(), O(m*n) for search().
     Space complexity: O(m*n)
@@ -59,10 +59,51 @@ class WordDictionary:
 
         return False
 
+class TrieNode:
+    def __init__(self):
+        self.children: dict[str, TrieNode] = {}
+        self.is_word_found: bool = False
+
+
+class WordDictionaryTrie:
+    """
+    Time complexity: O(n) for add_word(), O(n) for search().
+    Space complexity: O(t + n)
+    """
+    def __init__(self):
+        self.root = TrieNode()
+
+    def add_word(self, word: str) -> None:
+        current_node = self.root
+        for char in word:
+            current_node = current_node.children.setdefault(char, TrieNode())
+
+        current_node.is_word_found = True
+
+    def search(self, word: str) -> bool:
+        def depth_first_search(j, root_node: TrieNode):
+            current_node = root_node
+
+            for i, char in enumerate(word[j:], start=j):
+                if char == '.':
+                    return any(
+                        depth_first_search(i + 1, child_node)
+                        for child_node in current_node.children.values()
+                    )
+                elif char not in current_node.children:
+                    return False
+                else:
+                    current_node = current_node.children[char]
+
+            return current_node.is_word_found
+
+        return depth_first_search(j=0, root_node=self.root)
+
 
 def test_word_dictionary():
     solutions = [
-        WordDictionary,
+        WordDictionaryBruteForce,
+        WordDictionaryTrie,
     ]
 
     for solution in solutions:
