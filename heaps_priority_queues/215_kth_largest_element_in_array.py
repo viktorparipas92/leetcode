@@ -23,6 +23,7 @@ Constraints:
 1 <= k <= nums.length <= 10000
 -1000 <= nums[i] <= 1000
 """
+import heapq
 
 
 def find_kth_largest_sorting(numbers: list[int], k: int) -> int:
@@ -33,9 +34,18 @@ def find_kth_largest_sorting(numbers: list[int], k: int) -> int:
     return sorted(numbers)[-k]
 
 
+def find_kth_largest_min_heap(numbers: list[int], k: int) -> int:
+    """
+    Time complexity: O(n * log(k))
+    Space complexity: O(k)
+    """
+    return heapq.nlargest(k, numbers)[-1]
+
+
 def test_find_kth_largest():
     solutions = [
         find_kth_largest_sorting,
+        find_kth_largest_min_heap,
     ]
 
     test_cases = [
