@@ -42,10 +42,43 @@ def find_kth_largest_min_heap(numbers: list[int], k: int) -> int:
     return heapq.nlargest(k, numbers)[-1]
 
 
+def find_kth_largest_quick_select(numbers: list[int], k: int) -> int:
+    """
+    Time complexity: O(n) in the average case, O(n^2) in the worst case
+    Space complexity: O(n)
+    """
+    k = len(numbers) - k
+
+    def quick_select(left_idx: int, right_idx: int) -> int:
+        # Picking the last element as pivot simplifies partitioning
+        pivot = numbers[right_idx]
+        partition_idx = left_idx  # Keeps track of where smaller elements should go
+        for i in range(left_idx, right_idx):
+            if numbers[i] <= pivot:
+                # Swap smaller elements to the left
+                numbers[partition_idx], numbers[i] = numbers[i], numbers[partition_idx]
+                partition_idx += 1  # Move boundary to the right
+
+        # Move pivot to its final place
+        numbers[partition_idx], numbers[right_idx] = (
+            numbers[right_idx], numbers[partition_idx]
+        )
+
+        if partition_idx > k:  # k-th largest element is on the left
+            return quick_select(left_idx, partition_idx - 1)
+        elif partition_idx < k:  # k-th largest element is on the right
+            return quick_select(partition_idx + 1, right_idx)
+        else:  # k-th largest element is found
+            return numbers[partition_idx]
+
+    return quick_select(left_idx=0, right_idx=len(numbers) - 1)
+
+
 def test_find_kth_largest():
     solutions = [
         find_kth_largest_sorting,
         find_kth_largest_min_heap,
+        find_kth_largest_quick_select,
     ]
 
     test_cases = [
