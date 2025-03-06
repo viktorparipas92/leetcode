@@ -71,10 +71,28 @@ def least_interval_greedy(tasks: list[str], n: int) -> int:
     return max(0, idle_time) + len(tasks)
 
 
+def least_interval_math(tasks: list[str], n: int) -> int:
+    """
+    Time complexity: O(m) where m is the number of tasks
+    Space complexity: O(1)
+    """
+    task_counts = Counter(tasks)
+    task_frequencies: list[int] = sorted(task_counts.values(), reverse=True)
+
+    max_task_count = max(task_frequencies)
+    most_frequent_task_count = 0
+    for task_count in task_frequencies:
+        most_frequent_task_count += 1 if task_count == max_task_count else 0
+
+    time = (max_task_count - 1) * (n + 1) + most_frequent_task_count
+    return max(len(tasks), time)
+
+
 def test_least_interval():
     solutions = [
         least_interval_max_heap,
         least_interval_greedy,
+        least_interval_math,
     ]
 
     test_cases = [
