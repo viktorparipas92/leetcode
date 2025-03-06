@@ -24,51 +24,38 @@ Constraints:
 1 <= tasks.length <= 1000
 0 <= n <= 100
 """
+import heapq
+from collections import Counter, deque
 
-from collections import Counter
 
-
-def least_interval_brute_force(tasks: list[str], n: int) -> int:
+def least_interval_max_heap(tasks: list[str], n: int) -> int:
     """
-    Time complexity: O(t * n)
-    Space complexity: O(t),
-    Where t is the time to process given tasks and n is the cooldown time.
+    Time complexity: O(m) where m is the number of tasks
+    Space complexity: O(1)
     """
     task_counts = Counter(tasks)
-    task_list = [
-        [count, task_id] for task_id, count in enumerate(task_counts.values())
-    ]
+    max_heap = [-count for count in task_counts.values()]
+    heapq.heapify(max_heap)
 
-    current_time: int = 0
-    task_schedule: list[int] = []
-    while task_list:
-        best_task_idx: int = -1
-        # Find task with highest remaining count and not scheduled in the last n cycles
-        for i, (remaining_count, task_id) in enumerate(task_list):
-            if all(
-                task_schedule[j] != task_id
-                for j in range(max(0, current_time - n), current_time)
-            ):
-                if best_task_idx == -1 or task_list[best_task_idx][0] < remaining_count:
-                    best_task_idx = i
+    time = 0
+    queue: deque[tuple[int, int]] = deque()  # (count, time)
+    while max_heap or queue:  # While there are tasks to process
+        time += 1
+        if not max_heap:
+            time = queue[0][1]  # Idle
+        else:
+            if count := 1 + heapq.heappop(max_heap):  # Process task
+                queue.append((count, time + n))  # Add to cooldown queue
 
-        current_time += 1
-        executed_task: int = -1
-        if best_task_idx != -1:
-            best_task: list[int, int] = task_list[best_task_idx]
-            executed_task = best_task[1]
-            best_task[0] -= 1
-            if best_task[0] == 0:
-                task_list.pop(best_task_idx)
+        if queue and queue[0][1] == time:  # Cooldown is over
+            heapq.heappush(max_heap, queue.popleft()[0])  # Add back to max heap
 
-        task_schedule.append(executed_task)
-
-    return current_time
+    return time
 
 
 def test_least_interval():
     solutions = [
-        least_interval_brute_force,
+        least_interval_max_heap,
     ]
 
     test_cases = [
