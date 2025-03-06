@@ -53,9 +53,28 @@ def least_interval_max_heap(tasks: list[str], n: int) -> int:
     return time
 
 
+def least_interval_greedy(tasks: list[str], n: int) -> int:
+    """
+    Time complexity: O(m) where m is the number of tasks
+    Space complexity: O(1)
+    """
+    task_counts = Counter(tasks)
+    task_frequencies: list[int] = sorted(task_counts.values(), reverse=True)
+
+    max_task_count = task_frequencies[0]
+    idle_time = (max_task_count - 1) * n
+
+    # Reduce idle time based on tasks that can fill in the gaps
+    for frequency in task_frequencies[1:]:
+        idle_time -= min(max_task_count - 1, frequency)
+
+    return max(0, idle_time) + len(tasks)
+
+
 def test_least_interval():
     solutions = [
         least_interval_max_heap,
+        least_interval_greedy,
     ]
 
     test_cases = [
