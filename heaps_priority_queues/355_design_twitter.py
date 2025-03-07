@@ -44,6 +44,7 @@ Constraints:
 1 <= userId, followerId, followeeId <= 100
 0 <= tweetId <= 1000
 """
+import heapq
 from collections import defaultdict
 
 
@@ -57,9 +58,9 @@ class Twitter:
     """
 
     def __init__(self):
-        self.time = 0
-        self.follow_map: dict[int, set] = defaultdict(set)
-        self.tweet_map: dict[int, list] = defaultdict(list)
+        self.time: int = 0
+        self.follow_map: dict[int, set[int]] = defaultdict(set)
+        self.tweet_map: dict[int, list[tuple[int, int]]] = defaultdict(list)
 
     def post_tweet(self, user_id: int, tweet_id: int) -> None:
         self.tweet_map[user_id].append((self.time, tweet_id))
@@ -87,9 +88,46 @@ class Twitter:
         self.follow_map[follower_id].discard(followee_id)
 
 
+class TwitterHeap(Twitter):
+    def post_tweet(self, user_id: int, tweet_id: int) -> None:
+        super().post_tweet(user_id, tweet_id)
+        self.time -= 2  # Decrement instead of increment because of using a min heap
+
+    def get_news_feed(self, user_id: int) -> list[int]:
+        """
+        Time complexity: O(n * log(n)), where
+        - n is the number of followees of the user
+        - m is the maximum number of tweets per user
+        - t is the total number of tweets from the user and their followees
+        """
+        news_feed: list[int] = []
+        min_heap: list[tuple[int, int, int, int]] = []
+
+        self.follow_map[user_id].add(user_id)
+        for followee_id in self.follow_map[user_id]:
+            if followee_id in self.tweet_map:
+                last_tweet_index = len(self.tweet_map[followee_id]) - 1
+                count, tweet_id = self.tweet_map[followee_id][-1]
+                heapq.heappush(
+                    min_heap, (count, tweet_id, followee_id, last_tweet_index - 1)
+                )
+
+        while min_heap and len(news_feed) < 10:
+            count, tweet_id, followee_id, tweet_index = heapq.heappop(min_heap)
+            news_feed.append(tweet_id)
+            if tweet_index >= 0:
+                count, tweet_id = self.tweet_map[followee_id][tweet_index]
+                heapq.heappush(
+                    min_heap, (count, tweet_id, followee_id, tweet_index - 1)
+                )
+
+        return news_feed
+
+
 def test_twitter():
     solutions = [
         Twitter,
+        TwitterHeap,
     ]
 
     for solution in solutions:
