@@ -37,7 +37,7 @@ def exist_backtracking_hash_set(board: list[list[str]], word: str) -> bool:
     num_rows, num_columns = len(board), len(board[0])
     path: set[tuple[int, int]] = set()
 
-    def depth_first_search(row_index: int, column_index: int, i: int):
+    def depth_first_search(row_index: int, column_index: int, i: int) -> bool:
         try:
             word_character = word[i]
         except IndexError:
@@ -52,14 +52,55 @@ def exist_backtracking_hash_set(board: list[list[str]], word: str) -> bool:
             return False
 
         path.add((row_index, column_index))
-        res = (
+        result = (
             depth_first_search(row_index + 1, column_index, i + 1)
             or depth_first_search(row_index - 1, column_index, i + 1)
             or depth_first_search(row_index, column_index + 1, i + 1)
             or depth_first_search(row_index, column_index - 1, i + 1)
         )
         path.remove((row_index, column_index))
-        return res
+        return result
+
+    for row_idx in range(num_rows):
+        for column_idx in range(num_columns):
+            if depth_first_search(row_idx, column_idx, i=0):
+                return True
+
+    return False
+
+
+def exist_backtracking_visited_array(board: list[list[str]], word: str) -> bool:
+    """
+    Time complexity: O(m*4^n)
+    where m is the number of cells in the board and n is the length of the word
+    Space complexity: O(n)
+    """
+    num_rows, num_columns = len(board), len(board[0])
+    visited: list[list[bool]] = [[False for _ in row] for row in board]
+
+    def depth_first_search(row_index: int, column_index: int, i: int) -> bool:
+        try:
+            word_character = word[i]
+        except IndexError:
+            return True
+
+        try:
+            board_character = board[row_index][column_index]
+        except IndexError:
+            return False
+
+        if word_character != board_character or visited[row_index][column_index]:
+            return False
+
+        visited[row_index][column_index] = True
+        is_word_found = (
+            depth_first_search(row_index + 1, column_index, i + 1)
+            or depth_first_search(row_index - 1, column_index, i + 1)
+            or depth_first_search(row_index, column_index + 1, i + 1)
+            or depth_first_search(row_index, column_index - 1, i + 1)
+        )
+        visited[row_index][column_index] = False
+        return is_word_found
 
     for row_idx in range(num_rows):
         for column_idx in range(num_columns):
@@ -72,6 +113,7 @@ def exist_backtracking_hash_set(board: list[list[str]], word: str) -> bool:
 def test_exist():
     solutions = [
         exist_backtracking_hash_set,
+        exist_backtracking_visited_array,
     ]
 
     character_grid = [
