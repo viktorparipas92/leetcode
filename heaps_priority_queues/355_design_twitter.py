@@ -14,7 +14,7 @@ Implement the following methods:
   user userId. You may assume that each tweetId is unique.
 - List<Integer> getNewsFeed(int userId) Fetches at most the 10 most recent tweet IDs
   in the user's news feed. Each item must be posted by users who the user is
-  following or by the user themself. Tweets IDs should be ordered from most recent to
+  following or by the user themselves. Tweets IDs should be ordered from most recent to
   least recent.
 - void follow(int followerId, int followeeId) The user with ID followerId follows the
   user with ID followeeId.
@@ -23,7 +23,9 @@ Implement the following methods:
 
 Example 1:
 Input:
-['Twitter', 'postTweet', [1, 10], 'postTweet', [2, 20], 'getNewsFeed', [1], 'getNewsFeed', [2], 'follow', [1, 2], 'getNewsFeed', [1], 'getNewsFeed', [2], 'unfollow', [1, 2], 'getNewsFeed', [1]]
+['Twitter', 'postTweet', [1, 10], 'postTweet', [2, 20], 'getNewsFeed', [1],
+'getNewsFeed', [2], 'follow', [1, 2], 'getNewsFeed', [1], 'getNewsFeed', [2],
+'unfollow', [1, 2], 'getNewsFeed', [1]]
 
 Output:
 [null, null, null, [10], [20], null, [20, 10], [20], null, [10]]
@@ -97,8 +99,6 @@ class TwitterHeap(Twitter):
         """
         Time complexity: O(n * log(n)), where
         - n is the number of followees of the user
-        - m is the maximum number of tweets per user
-        - t is the total number of tweets from the user and their followees
         """
         news_feed: list[int] = []
         min_heap: list[tuple[int, int, int, int]] = []
@@ -124,10 +124,69 @@ class TwitterHeap(Twitter):
         return news_feed
 
 
+class TwitterHeapOptimal(TwitterHeap):
+    MAX_TWEETS = 10
+
+    def post_tweet(self, user_id: int, tweet_id: int) -> None:
+        super().post_tweet(user_id, tweet_id)
+
+        if len(self.tweet_map[user_id]) > self.MAX_TWEETS:
+            self.tweet_map[user_id].pop(0)
+
+    def get_news_feed(self, user_id: int) -> list[int]:
+        """
+        Time complexity: O(n * log(n)), where
+        - n is the number of followees of the user
+        """
+        news_feed: list[int] = []
+        min_heap: list[tuple[int, int, int, int]] = []
+
+        followees = self.follow_map[user_id]
+        followees.add(user_id)
+        if len(followees) >= self.MAX_TWEETS:
+            max_heap: list[tuple[int, int, int, int]] = []
+            for followee_id in followees:
+                if followee_id in self.tweet_map:
+                    tweets = self.tweet_map[followee_id]
+                    last_tweet_index = len(tweets) - 1
+                    count, tweet_id = tweets[last_tweet_index]
+                    heapq.heappush(
+                        max_heap, (-count, tweet_id, followee_id, last_tweet_index - 1)
+                    )
+                    if len(max_heap) > self.MAX_TWEETS:
+                        heapq.heappop(max_heap)
+
+            while max_heap:
+                count, tweet_id, followee_id, tweet_index = heapq.heappop(max_heap)
+                heapq.heappush(min_heap, (-count, tweet_id, followee_id, tweet_index))
+        else:
+            for followee_id in followees:
+                if followee_id in self.tweet_map:
+                    tweets = self.tweet_map[followee_id]
+                    last_tweet_index = len(tweets) - 1
+                    count, tweet_id = tweets[last_tweet_index]
+                    heapq.heappush(
+                        min_heap, (count, tweet_id, followee_id, last_tweet_index - 1)
+                    )
+
+        while min_heap and len(news_feed) < self.MAX_TWEETS:
+            count, tweet_id, followee_id, tweet_index = heapq.heappop(min_heap)
+            news_feed.append(tweet_id)
+            if tweet_index >= 0:
+                tweets = self.tweet_map[followee_id]
+                count, tweet_id = tweets[tweet_index]
+                heapq.heappush(
+                    min_heap, (count, tweet_id, followee_id, tweet_index - 1)
+                )
+
+        return news_feed
+
+
 def test_twitter():
     solutions = [
         Twitter,
         TwitterHeap,
+        TwitterHeapOptimal,
     ]
 
     for solution in solutions:
