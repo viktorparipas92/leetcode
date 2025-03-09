@@ -46,6 +46,7 @@ def max_subarray_recursion(numbers: list[int]) -> int:
         try:
             number = numbers[i]
         except IndexError:
+            # Prevent empty subarray from being optimal
             return 0 if subarray_started else -1e6
 
         # If a subarray has already started, we cannot skip numbers anymore.
@@ -60,10 +61,39 @@ def max_subarray_recursion(numbers: list[int]) -> int:
     return depth_first_search(i=0, subarray_started=False)
 
 
+def max_subarray_dynamic_top_down(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    # Cache to store results of previously computed sub-problems
+    length = len(numbers)
+    max_sum_from: list[tuple[int | None, int | None]] = [
+        (None, None) for _ in range(length + 1)
+    ]
+
+    def depth_first_search(i: int, subarray_started: bool) -> int:
+        try:
+            number = numbers[i]
+        except IndexError:
+            # Prevent empty subarray from being optimal
+            return 0 if subarray_started else -1e6
+
+        if best_sum := max_sum_from[i][int(subarray_started)] is not None:
+            return best_sum
+
+        first_option = 0 if subarray_started else depth_first_search(i + 1, False)
+        best_sum = max(first_option, number + depth_first_search(i + 1, True))
+        return best_sum
+
+    return depth_first_search(i=0, subarray_started=False)
+
+
 def test_max_subarray():
     solutions = [
         max_subarray_brute_force,
         max_subarray_recursion,
+        max_subarray_dynamic_top_down,
     ]
 
     test_cases = [
