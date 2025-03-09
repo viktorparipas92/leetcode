@@ -125,12 +125,27 @@ def max_subarray_dynamic_bottom_up(numbers: list[int]) -> int:
     return max_sum_from[0].best_overall_sum
 
 
+def max_subarray_dynamic_bottom_up_optimized(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    max_sum_at_index = numbers.copy()
+    for i, number in enumerate(numbers[1:], start=1):
+        previous_sum = max_sum_at_index[i - 1]
+        if previous_sum > 0:
+            max_sum_at_index[i] += previous_sum
+
+    return max(max_sum_at_index)
+
+
 def test_max_subarray():
     solutions = [
         max_subarray_brute_force,
         max_subarray_recursion,
         max_subarray_dynamic_top_down,
         max_subarray_dynamic_bottom_up,
+        max_subarray_dynamic_bottom_up_optimized,
     ]
 
     test_cases = [
