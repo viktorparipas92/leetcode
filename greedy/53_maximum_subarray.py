@@ -37,9 +37,33 @@ def max_subarray_brute_force(numbers: list[int]) -> int:
     return maximum_sum
 
 
+def max_subarray_recursion(numbers: list[int]) -> int:
+    """
+    Time complexity: O(2^n)
+    Space complexity: O(n)
+    """
+    def depth_first_search(i: int, subarray_started: bool) -> int:
+        try:
+            number = numbers[i]
+        except IndexError:
+            return 0 if subarray_started else -1e6
+
+        # If a subarray has already started, we cannot skip numbers anymore.
+        # Otherwise, we explore the option of skipping number and starting later.
+        first_option = 0 if subarray_started else depth_first_search(i + 1, False)
+
+        # Choose the best between:
+        # 1. Skipping number
+        # 2. Taking number and extending the subarray.
+        return max(first_option, number + depth_first_search(i + 1, True))
+
+    return depth_first_search(i=0, subarray_started=False)
+
+
 def test_max_subarray():
     solutions = [
         max_subarray_brute_force,
+        max_subarray_recursion,
     ]
 
     test_cases = [
