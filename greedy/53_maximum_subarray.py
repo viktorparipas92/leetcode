@@ -20,6 +20,7 @@ Constraints:
 1 <= nums.length <= 1000
 -1000 <= nums[i] <= 1000
 """
+from collections import namedtuple
 
 
 def max_subarray_brute_force(numbers: list[int]) -> int:
@@ -63,13 +64,14 @@ def max_subarray_recursion(numbers: list[int]) -> int:
 
 def max_subarray_dynamic_top_down(numbers: list[int]) -> int:
     """
+    Uses recursion with memoization
     Time complexity: O(n)
     Space complexity: O(n)
     """
     # Cache to store results of previously computed sub-problems
-    length = len(numbers)
+    size = len(numbers)
     max_sum_from: list[tuple[int | None, int | None]] = [
-        (None, None) for _ in range(length + 1)
+        (None, None) for _ in range(size + 1)
     ]
 
     def depth_first_search(i: int, subarray_started: bool) -> int:
@@ -89,11 +91,46 @@ def max_subarray_dynamic_top_down(numbers: list[int]) -> int:
     return depth_first_search(i=0, subarray_started=False)
 
 
+SubarraySums = namedtuple('SubarraySums', ['best_overall_sum', 'best_contiguous_sum'])
+
+
+def max_subarray_dynamic_bottom_up(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    max_sum_from = [SubarraySums(0, 0) for _ in numbers]
+
+    # Base case: The last element is the best contiguous sum and overall sum on its own
+    max_sum_from[-1] = SubarraySums(numbers[-1], numbers[-1])
+
+    # Start from the second-to-last element
+    # because each element's value depends on the next element.
+    for j in range(len(numbers) - 2, -1, -1):
+        number = numbers[j]
+
+        # Either starting a new subarray or extending the previous one
+        best_contiguous_sum = max(
+            number, number + max_sum_from[j + 1].best_contiguous_sum
+        )
+
+        # Either skipping or extending the current subarray
+        best_overall_sum = max(
+            max_sum_from[j + 1].best_overall_sum, best_contiguous_sum
+        )
+
+        max_sum_from[j] = SubarraySums(best_overall_sum, best_contiguous_sum)
+
+    # The best overall sum is at index 0
+    return max_sum_from[0].best_overall_sum
+
+
 def test_max_subarray():
     solutions = [
         max_subarray_brute_force,
         max_subarray_recursion,
         max_subarray_dynamic_top_down,
+        max_subarray_dynamic_bottom_up,
     ]
 
     test_cases = [
