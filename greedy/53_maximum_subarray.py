@@ -139,6 +139,22 @@ def max_subarray_dynamic_bottom_up_optimized(numbers: list[int]) -> int:
     return max(max_sum_at_index)
 
 
+def max_subarray_kadane(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    max_sum, current_sum = numbers[0], 0
+    for number in numbers:
+        if current_sum < 0:  # Reset the current sum if it's negative
+            current_sum = 0
+
+        current_sum += number
+        max_sum = max(max_sum, current_sum)
+
+    return max_sum
+
+
 def test_max_subarray():
     solutions = [
         max_subarray_brute_force,
@@ -146,6 +162,7 @@ def test_max_subarray():
         max_subarray_dynamic_top_down,
         max_subarray_dynamic_bottom_up,
         max_subarray_dynamic_bottom_up_optimized,
+        max_subarray_kadane,
     ]
 
     test_cases = [
@@ -153,6 +170,7 @@ def test_max_subarray():
         ([-1], -1),
         ([1, 2, 3, 4, 5], 15),
         ([-2, 1, -3, 4, -1, 2, 1, -5, 4], 6),
+        ([-1, -2, -3], -1)
     ]
 
     for solution in solutions:
