@@ -39,9 +39,26 @@ def can_jump_recursive(numbers: list[int]) -> bool:
     return depth_first_search(i=0)
 
 
+def can_jump_greedy(numbers: list[int]) -> bool:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    goal = len(numbers) - 1
+    # Start from the second last number and check if we can reach the goal from there.
+    for i, number in enumerate(reversed(numbers[:-1])):
+        # The index of the number in the original list.
+        index = len(numbers) - 2 - i
+        if index + number >= goal:
+            goal = index
+
+    return goal == 0
+
+
 def test_can_jump_recursive():
     solutions = [
         can_jump_recursive,
+        can_jump_greedy,
     ]
 
     test_cases = [
