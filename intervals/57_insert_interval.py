@@ -30,25 +30,30 @@ Constraints:
 newInterval.length == intervals[i].length == 2
 0 <= start <= end <= 1000
 """
+from collections import namedtuple
+
+Interval = namedtuple('Interval', ['start', 'end'])
 
 
 def insert_linear_search(
-    intervals: list[tuple[int, int]], new_interval: list[int]
-) -> list[tuple[int, int]]:
+    intervals: list[Interval], new_interval: Interval
+) -> list[Interval]:
     """
     Time complexity: O(n)
-    Space complexity: O(n) for the output + O(1) extra
+    Space complexity: O(n) for the output + O(n) extra because of the new_interval
     """
-    merged_intervals = [iv for iv in intervals if iv[1] < new_interval[0]]
+    merged_intervals = [iv for iv in intervals if iv.end < new_interval.start]
     for iv in intervals[len(merged_intervals):]:
-        if new_interval[1] < iv[0]:
+        if new_interval.end < iv.start:
             break
 
-        new_interval[0] = min(new_interval[0], iv[0])
-        new_interval[1] = max(new_interval[1], iv[1])
+        new_interval = Interval(
+            start=min(new_interval.start, iv.start),
+            end=max(new_interval.end, iv.end),
+        )
 
-    merged_intervals.append(tuple(new_interval))
-    merged_intervals.extend(iv for iv in intervals if iv[0] > new_interval[1])
+    merged_intervals.append(new_interval)
+    merged_intervals.extend(iv for iv in intervals if new_interval.end < iv.start)
     return merged_intervals
 
 
@@ -58,8 +63,12 @@ def test_insert():
     ]
 
     test_cases = [
-        ([(1, 3), (4, 6)], [2, 5], [(1, 6)]),
-        ([(1, 2), (3, 5), (9, 10)], [6, 7], [(1, 2), (3, 5), (6, 7), (9, 10)]),
+        ([Interval(1, 3), Interval(4, 6)], Interval(2, 5), [Interval(1, 6)]),
+        (
+            [Interval(1, 2), Interval(3, 5), Interval(9, 10)],
+            Interval(6, 7),
+            [Interval(1, 2), Interval(3, 5), Interval(6, 7), Interval(9, 10)]
+        ),
     ]
 
     for solution in solutions:
