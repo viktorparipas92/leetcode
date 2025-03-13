@@ -92,10 +92,33 @@ def insert_binary_search(
     return merged_intervals
 
 
+def insert_greedy(intervals: list[Interval], new_interval: Interval) -> list[Interval]:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n) for the output + O(1) extra
+    """
+    merged_intervals: list[Interval] = []
+    for i, interval in enumerate(intervals):
+        if new_interval.end < interval.start:
+            merged_intervals.append(new_interval)
+            return merged_intervals + intervals[i:]
+        elif new_interval.start > interval.end:
+            merged_intervals.append(interval)
+        else:
+            new_interval = Interval(
+                start=min(new_interval.start, interval.start),
+                end=max(new_interval.end, interval.end),
+            )
+
+    merged_intervals.append(new_interval)
+    return merged_intervals
+
+
 def test_insert():
     solutions = [
         insert_linear_search,
         insert_binary_search,
+        insert_greedy,
     ]
 
     test_cases = [
