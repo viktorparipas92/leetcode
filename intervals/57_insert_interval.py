@@ -57,9 +57,45 @@ def insert_linear_search(
     return merged_intervals
 
 
+def insert_binary_search(
+    intervals: list[Interval], new_interval: Interval
+) -> list[Interval]:
+    """
+    Time complexity: O(n) because of the insertion
+    Space complexity: O(n) for the output + O(1) extra
+    """
+    if not intervals:
+        return [new_interval]
+
+    # Binary search to find the correct insertion point
+    left_idx, right_idx = 0, len(intervals) - 1
+    while left_idx <= right_idx:
+        middle_idx = (left_idx + right_idx) // 2
+        if intervals[middle_idx].start < new_interval.start:
+            left_idx = middle_idx + 1
+        else:
+            right_idx = middle_idx - 1
+
+    intervals.insert(left_idx, new_interval)
+
+    # Merge overlapping intervals
+    merged_intervals = []
+    for interval in intervals:
+        if not merged_intervals or merged_intervals[-1].end < interval.start:
+            merged_intervals.append(interval)
+        else:
+            merged_intervals[-1] = Interval(
+                start=merged_intervals[-1].start,
+                end=max(merged_intervals[-1].end, interval.end)
+            )
+
+    return merged_intervals
+
+
 def test_insert():
     solutions = [
         insert_linear_search,
+        insert_binary_search,
     ]
 
     test_cases = [
