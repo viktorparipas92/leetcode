@@ -40,19 +40,22 @@ Constraints:
 """
 
 
-def can_complete_circuit_greedy(gas: list[int], cost: list[int]) -> int:
+def can_complete_circuit_greedy(
+    available_gas_amounts: list[int], gas_amounts_needed: list[int]
+) -> int:
     """
     Time complexity: O(n)
     Space complexity: O(1)
     """
-    if sum(gas) < sum(cost):
+    if sum(available_gas_amounts) < sum(gas_amounts_needed):
         return -1
 
     total = 0
     start_index: int = 0
-    for i, (_gas, _cost) in enumerate(zip(gas, cost)):
-        total += (_gas - _cost)
-
+    for i, (available, cost) in enumerate(
+        zip(available_gas_amounts, gas_amounts_needed)
+    ):
+        total += (available - cost)
         if total < 0:
             total = 0
             start_index = i + 1
