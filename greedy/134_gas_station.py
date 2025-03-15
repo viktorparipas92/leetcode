@@ -72,6 +72,31 @@ def can_complete_circuit_brute_force(
     return -1
 
 
+def can_complete_circuit_two_pointers(
+    available_gas_amounts: list[int], gas_amounts_needed: list[int]
+) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    def _get_tank(idx: int) -> int:
+        return available_gas_amounts[idx] - gas_amounts_needed[idx]
+
+    num_stations = len(available_gas_amounts)
+    start_index = num_stations - 1
+    end_index = 0
+    tank = _get_tank(start_index)
+    while start_index > end_index:
+        if tank < 0:
+            start_index -= 1
+            tank += _get_tank(start_index)
+        else:
+            tank += _get_tank(end_index)
+            end_index += 1
+
+    return start_index if tank >= 0 else -1
+
+
 def can_complete_circuit_greedy(
     available_gas_amounts: list[int], gas_amounts_needed: list[int]
 ) -> int:
@@ -99,6 +124,7 @@ def test_can_complete_circuit():
     solutions = [
         can_complete_circuit_brute_force,
         can_complete_circuit_greedy,
+        can_complete_circuit_two_pointers,
     ]
 
     test_cases = [
