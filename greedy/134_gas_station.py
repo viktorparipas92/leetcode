@@ -40,6 +40,38 @@ Constraints:
 """
 
 
+def can_complete_circuit_brute_force(
+    available_gas_amounts: list[int], gas_amounts_needed: list[int]
+) -> int:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(1)
+    """
+    num_stations = len(available_gas_amounts)
+
+    for start_index, (available, cost) in enumerate(
+        zip(available_gas_amounts, gas_amounts_needed)
+    ):
+        tank = available - cost
+        if tank < 0:
+            continue
+
+        current_index = (start_index + 1) % num_stations
+        while current_index != start_index:
+            current_gas = available_gas_amounts[current_index]
+            gas_needed = gas_amounts_needed[current_index]
+            tank += (current_gas - gas_needed)
+            if tank < 0:
+                break
+
+            current_index = (current_index + 1) % num_stations
+
+        if current_index == start_index:
+            return start_index
+
+    return -1
+
+
 def can_complete_circuit_greedy(
     available_gas_amounts: list[int], gas_amounts_needed: list[int]
 ) -> int:
@@ -65,6 +97,7 @@ def can_complete_circuit_greedy(
 
 def test_can_complete_circuit():
     solutions = [
+        can_complete_circuit_brute_force,
         can_complete_circuit_greedy,
     ]
 
