@@ -74,10 +74,43 @@ def partition_backtracking_2(word: str) -> list[list[str]]:
     return result
 
 
+def partition_backtracking_dp(word: str) -> list[list[str]]:
+    """
+    Time complexity: O(n * 2^n)
+    Space complexity: O(n^2)
+    """
+    length = len(word)
+
+    def depth_first_search(i: int):
+        if i >= length:
+            result.append(partitions.copy())
+            return
+
+        for j in range(i, length):
+            if _is_palindrome[i][j]:
+                partitions.append(word[i: j + 1])
+                depth_first_search(j + 1)
+                partitions.pop()
+
+    _is_palindrome: list[list[bool]] = [[False] * length for _ in range(length)]
+    for _len in range(length):
+        for i in range(length - _len):
+            k = i + _len
+            _is_palindrome[i][k] = (
+                word[i] == word[k]
+                and ((i + 1 > k - 1) or _is_palindrome[i + 1][k - 1])
+            )
+
+    result, partitions = [], []
+    depth_first_search(i=0)
+    return result
+
+
 def test_partition():
     solutions = [
         partition_backtracking,
         partition_backtracking_2,
+        partition_backtracking_dp,
     ]
 
     test_cases = [
