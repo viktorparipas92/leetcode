@@ -21,6 +21,16 @@ s contains only lowercase English letters.
 """
 
 
+def is_palindrome(word: str, left_index: int, right_index: int):
+    while left_index < right_index:
+        if word[left_index] != word[right_index]:
+            return False
+
+        left_index, right_index = left_index + 1, right_index - 1
+
+    return True
+
+
 def partition_backtracking(word: str) -> list[list[str]]:
     """
     Time complexity: O(n * 2^n)
@@ -29,15 +39,6 @@ def partition_backtracking(word: str) -> list[list[str]]:
     result, partitions = [], []
 
     def depth_first_search(j: int, i: int):
-        def is_palindrome(word: str, left_index: int, right_index: int):
-            while left_index < right_index:
-                if word[left_index] != word[right_index]:
-                    return False
-
-                left_index, right_index = left_index + 1, right_index - 1
-
-            return True
-
         if i >= len(word):
             if i == j:
                 result.append(partitions.copy())
@@ -55,9 +56,28 @@ def partition_backtracking(word: str) -> list[list[str]]:
     return result
 
 
+def partition_backtracking_2(word: str) -> list[list[str]]:
+    result, partitions = [], []
+
+    def depth_first_search(i: int):
+        if i >= len(word):
+            result.append(partitions.copy())
+            return
+
+        for j in range(i, len(word)):
+            if is_palindrome(word, i, j):
+                partitions.append(word[i : j + 1])
+                depth_first_search(j + 1)
+                partitions.pop()
+
+    depth_first_search(i=0)
+    return result
+
+
 def test_partition():
     solutions = [
         partition_backtracking,
+        partition_backtracking_2,
     ]
 
     test_cases = [
