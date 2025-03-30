@@ -9,6 +9,9 @@ class ListNode:
     def __gt__(self, other):
         return self.val > other.val
 
+    def __eq__(self, other):
+        return other and self.val == other.val and self.next == other.next
+
 
 class LinkedList:
     def __init__(self, underlying_list: list):
