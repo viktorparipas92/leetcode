@@ -27,6 +27,9 @@ Constraints:
 1 <= k <= nums.length
 """
 
+import heapq
+from typing import NamedTuple
+
 
 def max_sliding_window_brute_force(numbers: list[int], k: int) -> list[int]:
     """
@@ -45,9 +48,36 @@ def max_sliding_window_brute_force(numbers: list[int], k: int) -> list[int]:
     return maxima
 
 
+class Number(NamedTuple):
+    index: int
+    value: int
+
+    def __lt__(self, other):
+        return self.value < other.value
+
+
+def max_sliding_window_heap(numbers: list[int], k: int) -> list[int]:
+    """
+    Time complexity: O(n * log(n))
+    Space complexity: O(n)
+    """
+    number_heap: list[Number] = []
+    maxima: list[int] = []
+    for i, number in enumerate(numbers):
+        heapq.heappush(number_heap, Number(i, -number))
+        if i >= k - 1:  # Start calculating the maximum from the kth element
+            while number_heap[0].index <= i - k:
+                heapq.heappop(number_heap)
+
+            maxima.append(-number_heap[0].value)
+
+    return maxima
+
+
 def test_max_sliding_window():
     solutions = [
         max_sliding_window_brute_force,
+        max_sliding_window_heap,
     ]
 
     test_cases = [
