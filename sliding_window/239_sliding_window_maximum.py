@@ -28,6 +28,7 @@ Constraints:
 """
 
 import heapq
+from collections import deque
 from typing import NamedTuple
 
 
@@ -74,10 +75,39 @@ def max_sliding_window_heap(numbers: list[int], k: int) -> list[int]:
     return maxima
 
 
+def max_sliding_window_deque(numbers: list[int], k: int) -> list[int]:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    maxima: list[int] = []
+    index_queue: deque[int] = deque()
+    left_index = right_index = 0
+
+    length = len(numbers)
+    while right_index < length:
+        while index_queue and numbers[index_queue[-1]] < numbers[right_index]:
+            index_queue.pop()
+
+        index_queue.append(right_index)
+
+        if left_index > index_queue[0]:
+            index_queue.popleft()
+
+        if (right_index + 1) >= k:
+            maxima.append(numbers[index_queue[0]])
+            left_index += 1
+
+        right_index += 1
+
+    return maxima
+
+
 def test_max_sliding_window():
     solutions = [
         max_sliding_window_brute_force,
         max_sliding_window_heap,
+        max_sliding_window_deque,
     ]
 
     test_cases = [
