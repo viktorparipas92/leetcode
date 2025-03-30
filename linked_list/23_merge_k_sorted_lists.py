@@ -24,12 +24,17 @@ Constraints:
 0 <= lists[i].length <= 100
 -1000 <= lists[i][j] <= 1000
 """
+import heapq
 from typing import Optional
 
 from linked_list.shared import ListNode, LinkedList
 
 
 def merge_k_lists_brute_force(lists: list[Optional[ListNode]]) -> Optional[ListNode]:
+    """
+    Time complexity: O(n * log(n))
+    Space complexity: O(n)
+    """
     nodes = []
     for list_node in lists:
         while list_node:
@@ -47,9 +52,37 @@ def merge_k_lists_brute_force(lists: list[Optional[ListNode]]) -> Optional[ListN
     return merged_node.next
 
 
+def merge_k_lists_heap(lists: list[Optional[ListNode]]) -> Optional[ListNode]:
+    """
+    Time complexity: O(n * log(k))
+    Space complexity: O(k)
+    """
+    if not lists:
+        return
+
+    merged_node = ListNode(0)
+    current_node = merged_node
+    node_heap = []
+
+    for list_node in lists:
+        if list_node is not None:
+            heapq.heappush(node_heap, list_node)
+
+    while node_heap:
+        popped_node = heapq.heappop(node_heap)
+        current_node.next = popped_node
+        current_node = current_node.next
+
+        if popped_node.next:
+            heapq.heappush(node_heap, popped_node.next)
+
+    return merged_node.next
+
+
 def test_merge_k_lists():
     solutions = [
         merge_k_lists_brute_force,
+        merge_k_lists_heap,
     ]
 
     test_cases = [
