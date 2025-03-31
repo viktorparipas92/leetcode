@@ -12,6 +12,9 @@ class ListNode:
     def __eq__(self, other):
         return other and self.val == other.val and self.next == other.next
 
+    def __le__(self, other):
+        return self.val <= other.val
+
 
 class LinkedList:
     def __init__(self, underlying_list: list):

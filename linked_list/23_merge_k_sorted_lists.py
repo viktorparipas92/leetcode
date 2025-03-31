@@ -79,10 +79,59 @@ def merge_k_lists_heap(lists: list[Optional[ListNode]]) -> Optional[ListNode]:
     return merged_node.next
 
 
+def merge_k_lists_divide_and_conquer_recursive(
+    lists: list[Optional[ListNode]]
+) -> Optional[ListNode]:
+    """
+    Time complexity: O(n * log(k))
+    Space complexity: O(log(k))
+    """
+    if not lists:
+        return
+
+    length = len(lists)
+    return divide(lists, left=0, right=length - 1)
+
+
+def divide(
+    lists: list[Optional[ListNode]], *, left: int, right: int
+) -> Optional[ListNode]:
+    if left > right:
+        return
+    elif left == right:
+        return lists[left]
+
+    middle = left + (right - left) // 2
+    left_node = divide(lists, left=left, right=middle)
+    right_node = divide(lists, left=middle + 1, right=right)
+    return conquer(left_node, right_node)
+
+
+def conquer(
+    node_1: Optional[ListNode], node_2: Optional[ListNode]
+) -> Optional[ListNode]:
+    dummy_node = ListNode(0)
+    current_node = dummy_node
+
+    while node_1 and node_2:
+        if node_1 <= node_2:
+            current_node.next = node_1
+            node_1 = node_1.next
+        else:
+            current_node.next = node_2
+            node_2 = node_2.next
+
+        current_node = current_node.next
+
+    current_node.next = node_1 or node_2
+    return dummy_node.next
+
+
 def test_merge_k_lists():
     solutions = [
         merge_k_lists_brute_force,
         merge_k_lists_heap,
+        merge_k_lists_divide_and_conquer_recursive,
     ]
 
     test_cases = [
