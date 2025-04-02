@@ -34,36 +34,52 @@ def max_path_sum_dfs(root: TreeNode) -> int | float:
     Time complexity: O(n^2)
     Space complexity: O(n)
     """
-    max_sum = -float('inf')
-
     def depth_first_search(root: Optional[TreeNode]):
         if root is None:
             return
 
         nonlocal max_sum
-        left = get_maximum(root.left)
-        right = get_maximum(root.right)
-        max_sum = max(max_sum, root.value + left + right)
+        left_max = get_maximum(root.left)
+        right_max = get_maximum(root.right)
+        max_sum = max(max_sum, root.value + left_max + right_max)
         depth_first_search(root.left)
         depth_first_search(root.right)
 
+    def get_maximum(root: Optional[TreeNode]) -> int:
+        if root is None:
+            return 0
+
+        left = get_maximum(root.left)
+        right = get_maximum(root.right)
+        path = root.value + max(left, right)
+        return max(0, path)
+
+    max_sum = -float('inf')
     depth_first_search(root)
     return max_sum
 
 
-def get_maximum(root: Optional[TreeNode]) -> int:
-    if root is None:
-        return 0
+def max_path_sum_dfs_optimized(root: TreeNode) -> int:
+    def depth_first_search(root: Optional[TreeNode]) -> int:
+        if root is None:
+            return 0
 
-    left = get_maximum(root.left)
-    right = get_maximum(root.right)
-    path = root.value + max(left, right)
-    return max(0, path)
+        nonlocal max_sum
+
+        left_max = max(depth_first_search(root.left), 0)
+        right_max = max(depth_first_search(root.right), 0)
+        max_sum = max(max_sum, root.value + left_max + right_max)
+        return root.value + max(left_max, right_max)
+
+    max_sum = root.value
+    depth_first_search(root)
+    return max_sum
 
 
 def test_max_path_sum():
     solutions = [
         max_path_sum_dfs,
+        max_path_sum_dfs_optimized,
     ]
 
     test_cases = [
