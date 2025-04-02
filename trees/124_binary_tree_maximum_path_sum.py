@@ -24,16 +24,46 @@ Constraints:
 1 <= The number of nodes in the tree <= 1000.
 -1000 <= Node.val <= 1000
 """
+from typing import Optional
+
 from trees.shared import TreeNode
 
 
-def max_path_sum(root: TreeNode) -> int:
-    pass
+def max_path_sum_dfs(root: TreeNode) -> int | float:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(n)
+    """
+    max_sum = -float('inf')
+
+    def depth_first_search(root: Optional[TreeNode]):
+        if root is None:
+            return
+
+        nonlocal max_sum
+        left = get_maximum(root.left)
+        right = get_maximum(root.right)
+        max_sum = max(max_sum, root.value + left + right)
+        depth_first_search(root.left)
+        depth_first_search(root.right)
+
+    depth_first_search(root)
+    return max_sum
+
+
+def get_maximum(root: Optional[TreeNode]) -> int:
+    if root is None:
+        return 0
+
+    left = get_maximum(root.left)
+    right = get_maximum(root.right)
+    path = root.value + max(left, right)
+    return max(0, path)
 
 
 def test_max_path_sum():
     solutions = [
-        max_path_sum,
+        max_path_sum_dfs,
     ]
 
     test_cases = [
