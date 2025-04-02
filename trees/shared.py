@@ -4,6 +4,17 @@ class TreeNode(object):
         self.left = left
         self.right = right
 
+    def __str__(self):
+        return f"Node {self.value} ({self.left}, {self.right})"
+
+    def __eq__(self, other):
+        return (
+            other
+            and self.value == other.value
+            and self.left == other.left
+            and self.right == other.right
+        )
+
     def inorder(self):
         if self.left:
             yield from self.left.inorder()
