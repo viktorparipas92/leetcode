@@ -73,10 +73,43 @@ def merge_sweep_line(intervals: list[Interval]) -> list[Interval]:
     return merged_intervals
 
 
+def merge_greedy(intervals: list[Interval]) -> list[Interval]:
+    """
+    Time complexity: O(n + m)
+    Space complexity: O(n)
+    """
+    max_start = max(interval.start for interval in intervals)
+    end_points = [0] * (max_start + 1)  # Array to store max end values
+    for itv in intervals:
+        end_points[itv.start] = max(itv.end + 1, end_points[itv.start])
+
+    merged_intervals = []
+    current_end = -1
+    current_start = -1
+
+    for i, end in enumerate(end_points):
+        if end != 0:
+            if current_start == -1:
+                current_start = i
+
+            current_end = max(end - 1, current_end)
+
+        if current_end == i:
+            merged_intervals.append(Interval(start=current_start, end=current_end))
+            current_end = -1
+            current_start = -1
+
+    if current_start != -1:
+        merged_intervals.append(Interval(start=current_start, end=current_end))
+
+    return merged_intervals
+
+
 def test_merge():
     solutions = [
         merge_sorting,
         merge_sweep_line,
+        merge_greedy,
     ]
 
     test_cases = [
