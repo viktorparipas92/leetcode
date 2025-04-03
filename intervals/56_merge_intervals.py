@@ -24,8 +24,7 @@ Constraints:
 intervals[i].length == 2
 0 <= start <= end <= 1000
 """
-from collections import namedtuple
-
+from collections import namedtuple, defaultdict
 
 Interval = namedtuple('Interval', ['start', 'end'])
 
@@ -48,9 +47,36 @@ def merge_sorting(intervals: list[Interval]) -> list[Interval]:
     return merged_intervals
 
 
+def merge_sweep_line(intervals: list[Interval]) -> list[Interval]:
+    """
+    Time complexity: O(n logn)
+    Space complexity: O(n)
+    """
+    event_counts = defaultdict(int)
+    for interval in intervals:
+        event_counts[interval.start] += 1
+        event_counts[interval.end] -= 1
+
+    merged_intervals: list[Interval] = []
+    start_point = None
+    active_interval_count = 0
+    for point in sorted(event_counts):
+        if active_interval_count == 0:
+            start_point = point
+
+        active_interval_count += event_counts[point]
+        if active_interval_count == 0:
+            interval = Interval(start=start_point, end=point)
+            merged_intervals.append(interval)
+            start_point = None
+
+    return merged_intervals
+
+
 def test_merge():
     solutions = [
         merge_sorting,
+        merge_sweep_line,
     ]
 
     test_cases = [
