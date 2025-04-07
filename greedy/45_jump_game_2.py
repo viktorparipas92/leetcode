@@ -69,10 +69,31 @@ def jump_dynamic_bottom_up(numbers: list[int]) -> int:
     return num_counts[0]
 
 
+def jump_greedy_bfs(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    min_num_jumps = 0
+    left_idx = right_idx = 0
+
+    while right_idx < len(numbers) - 1:
+        farthest = 0
+        for i in range(left_idx, right_idx + 1):
+            farthest = max(farthest, i + numbers[i])
+
+        left_idx = right_idx + 1
+        right_idx = farthest
+        min_num_jumps += 1
+
+    return min_num_jumps
+
+
 def test_jump():
     solutions = [
         jump_recursive,
         jump_dynamic_bottom_up,
+        jump_greedy_bfs,
     ]
 
     test_cases = [
