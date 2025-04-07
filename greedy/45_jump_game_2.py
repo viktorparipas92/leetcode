@@ -52,9 +52,27 @@ def jump_recursive(numbers: list[int]) -> int:
     return depth_first_search(0)
 
 
+def jump_dynamic_bottom_up(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(n)
+    """
+    length = len(numbers)
+    num_counts: list[int] = [1000000] * length
+    num_counts[-1] = 0
+
+    for i in range(length - 2, -1, -1):
+        end = min(length, i + numbers[i] + 1)
+        for j in range(i + 1, end):
+            num_counts[i] = min(num_counts[i], 1 + num_counts[j])
+
+    return num_counts[0]
+
+
 def test_jump():
     solutions = [
         jump_recursive,
+        jump_dynamic_bottom_up,
     ]
 
     test_cases = [
