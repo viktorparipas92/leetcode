@@ -28,6 +28,7 @@ Constraints:
 0 <= hand[i] <= 1000
 1 <= groupSize <= hand.length
 """
+import heapq
 from collections import Counter
 
 
@@ -52,9 +53,37 @@ def is_n_straight_hand_sorting(hand: list[int], group_size: int) -> bool:
     return True
 
 
+def is_n_straight_hand_heap(hand: list[int], group_size: int) -> bool:
+    """
+    Time complexity: O(nlogn)
+    Space complexity: O(n)
+    """
+    if len(hand) % group_size:
+        return False
+
+    counts = Counter(hand)
+    cards = list(counts.keys())
+    heapq.heapify(cards)
+    while cards:
+        first_card = cards[0]
+        for i in range(first_card, first_card + group_size):
+            if i not in counts:
+                return False
+
+            counts[i] -= 1
+            if counts[i] == 0:
+                if i != cards[0]:
+                    return False
+
+                heapq.heappop(cards)
+
+    return True
+
+
 def test_is_n_straight_hand():
     solutions = [
         is_n_straight_hand_sorting,
+        is_n_straight_hand_heap,
     ]
 
     test_cases = [
