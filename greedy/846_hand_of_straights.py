@@ -66,13 +66,13 @@ def is_n_straight_hand_heap(hand: list[int], group_size: int) -> bool:
     heapq.heapify(cards)
     while cards:
         first_card = cards[0]
-        for i in range(first_card, first_card + group_size):
-            if i not in counts:
+        for card in range(first_card, first_card + group_size):
+            if card not in counts:
                 return False
 
-            counts[i] -= 1
-            if counts[i] == 0:
-                if i != cards[0]:
+            counts[card] -= 1
+            if counts[card] == 0:
+                if card != cards[0]:
                     return False
 
                 heapq.heappop(cards)
