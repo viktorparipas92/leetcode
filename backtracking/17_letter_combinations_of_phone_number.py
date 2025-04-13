@@ -55,9 +55,30 @@ def letter_combinations_backtracking(digits: str) -> list[str]:
     return combinations
 
 
+def letter_combinations_iterative(digits: str) -> list[str]:
+    """
+    Time complexity: O(n * 4^n)
+    Space complexity: O(n) extra space
+    """
+    if not digits:
+        return []
+
+    combinations: list[str] = ['']
+    for digit in digits:
+        temp: list[str] = []
+        for combination in combinations:
+            for char in DIGIT_TO_CHAR_MAPPING[digit]:
+                temp.append(combination + char)
+
+        combinations = temp
+
+    return combinations
+
+
 def test_letter_combinations():
     solutions = [
         letter_combinations_backtracking,
+        letter_combinations_iterative,
     ]
 
     test_cases = [
