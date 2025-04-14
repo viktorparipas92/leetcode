@@ -34,8 +34,41 @@ grid[i][j] is '0' or '1'.
 """
 
 
+DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+WATER = '0'
+LAND = '1'
+
+
 def num_islands_dfs(grid: list[list[str]]) -> int:
-    pass
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    where m is the number of rows and n is the number of columns in the grid.
+    """
+    def depth_first_search(row_idx: int, column_idx: int):
+        if row_idx < 0 or column_idx < 0:
+            return
+
+        try:
+            is_water = grid[row_idx][column_idx] == WATER
+        except IndexError:
+            return
+
+        if is_water:
+            return
+
+        grid[row_idx][column_idx] = WATER
+        for x, y in DIRECTIONS:
+            depth_first_search(row_idx + x, column_idx + y)
+
+    num_islands = 0
+    for row_idx, row in enumerate(grid):
+        for column_idx, cell in enumerate(row):
+            if cell == LAND:
+                depth_first_search(row_idx, column_idx)
+                num_islands += 1
+
+    return num_islands
 
 
 def test_num_islands():
