@@ -72,6 +72,11 @@ def num_islands_dfs(grid: list[list[str]]) -> int:
 
 
 def num_islands_bfs(grid: list[list[str]]) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    where m is the number of rows and n is the number of columns in the grid.
+    """
     directions = [[1, 0], [-1, 0], [0, 1], [0, -1]]
     ROWS, COLS = len(grid), len(grid[0])
     islands = 0
