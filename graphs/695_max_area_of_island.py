@@ -10,7 +10,7 @@ def max_area_of_island(grid: list[list[int]]) -> int:
     visited: set[tuple[int, int]] = set()
 
     def depth_first_search(row_idx: int, column_idx: int) -> int:
-        if row_idx < 0 or col_idx < 0 or (row_idx, column_idx) in visited:
+        if row_idx < 0 or column_idx < 0 or (row_idx, column_idx) in visited:
             return 0
 
         try:
@@ -49,8 +49,12 @@ def test_max_area_of_island():
         [0, 1, 1, 0, 1],
         [0, 1, 0, 0, 1],
     ]
+    grid_2 = [
+        [1, 1, 1, 1, 1],
+    ]
     test_cases = [
         (grid_1, 6),
+        (grid_2, 5),
     ]
 
     for solution in solutions:
