@@ -79,10 +79,31 @@ def erase_overlap_intervals_dp_top_down(intervals: list[Interval]) -> int:
     return n - depth_first_search(i=0)
 
 
+def erase_overlap_intervals_greedy_sort_by_start(intervals: list[Interval]) -> int:
+    """
+    Time complexity: O(n log n)
+    Space complexity: O(1) or O(n) depending on the sorting algorithm
+    """
+    intervals.sort(key=lambda interval: interval.start)
+
+    num_intervals_to_erase = 0
+    previous_end = intervals[0].end
+
+    for start, end in intervals[1:]:
+        if start >= previous_end:
+            previous_end = end
+        else:
+            num_intervals_to_erase += 1
+            previous_end = min(end, previous_end)
+
+    return num_intervals_to_erase
+
+
 def test_erase_overlap_intervals():
     solutions = [
         erase_overlap_intervals_recursion,
         erase_overlap_intervals_dp_top_down,
+        erase_overlap_intervals_greedy_sort_by_start,
     ]
 
     test_cases = [
