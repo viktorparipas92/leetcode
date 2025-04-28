@@ -24,9 +24,9 @@ Constraints:
 intervals[i].length == 2
 0 <= start <= end <= 1000
 """
-from collections import namedtuple, defaultdict
+from collections import defaultdict
 
-Interval = namedtuple('Interval', ['start', 'end'])
+from intervals.shared import Interval
 
 
 def merge_sorting(intervals: list[Interval]) -> list[Interval]:

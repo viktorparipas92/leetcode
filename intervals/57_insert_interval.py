@@ -30,9 +30,7 @@ Constraints:
 newInterval.length == intervals[i].length == 2
 0 <= start <= end <= 1000
 """
-from collections import namedtuple
-
-Interval = namedtuple('Interval', ['start', 'end'])
+from intervals.shared import Interval
 
 
 def insert_linear_search(
