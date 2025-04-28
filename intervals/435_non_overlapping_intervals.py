@@ -53,9 +53,36 @@ def erase_overlap_intervals_recursion(intervals: list[Interval]) -> int:
     return len(intervals) - depth_first_search(start_index=0, previous_index=-1)
 
 
+def erase_overlap_intervals_dp_top_down(intervals: list[Interval]) -> int:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(n)
+    """
+    intervals.sort(key=lambda interval: interval.end)
+    n = len(intervals)
+    memory: dict[int, int] = {}
+
+    def depth_first_search(i: int) -> int:
+        if i in memory:
+            return memory[i]
+
+        num_intervals_to_erase = 1
+        for j in range(i + 1, n):
+            if intervals[i].end <= intervals[j].start:
+                num_intervals_to_erase = max(
+                    num_intervals_to_erase, 1 + depth_first_search(j)
+                )
+
+        memory[i] = num_intervals_to_erase
+        return num_intervals_to_erase
+
+    return n - depth_first_search(i=0)
+
+
 def test_erase_overlap_intervals():
     solutions = [
         erase_overlap_intervals_recursion,
+        erase_overlap_intervals_dp_top_down,
     ]
 
     test_cases = [
