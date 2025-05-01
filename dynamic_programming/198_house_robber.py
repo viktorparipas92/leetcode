@@ -88,11 +88,26 @@ def rob_dynamic_bottom_up(houses: list[int]) -> int:
     return haul[-1]
 
 
+def rob_dynamic_bottom_up_optimized(houses: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    haul_1 = haul_2 = 0
+    for house in houses:
+        temp = max(house + haul_1, haul_2)
+        haul_1 = haul_2
+        haul_2 = temp
+
+    return haul_2
+
+
 def test_rob():
     solutions = [
         rob_recursive,
         rob_dynamic_top_down,
         rob_dynamic_bottom_up,
+        rob_dynamic_bottom_up_optimized,
     ]
 
     test_cases = [
