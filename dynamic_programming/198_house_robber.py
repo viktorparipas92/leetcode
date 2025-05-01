@@ -40,15 +40,38 @@ def rob_recursive(houses: list[int]) -> int:
 
         return max(
             depth_first_search(i + 1),
-            houses[i] + depth_first_search(i + 2)
+            houses[i] + depth_first_search(i + 2),
         )
 
+    return depth_first_search(i=0)
+
+
+def rob_dynamic_top_down(houses: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    def depth_first_search(i: int) -> int:
+        if i >= len(houses):
+            return 0
+
+        if haul[i] != -1:
+            return haul[i]
+
+        haul[i] = max(
+            depth_first_search(i + 1),
+            houses[i] + depth_first_search(i + 2),
+        )
+        return haul[i]
+
+    haul: list[int] = [-1] * len(houses)
     return depth_first_search(i=0)
 
 
 def test_rob():
     solutions = [
         rob_recursive,
+        rob_dynamic_top_down,
     ]
 
     test_cases = [
