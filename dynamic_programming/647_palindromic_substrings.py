@@ -67,10 +67,38 @@ def count_substrings_dynamic(word: str) -> int:
     return substring_count
 
 
+def count_substrings_two_pointers_optimized(word: str) -> int:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(1)
+    """
+    def count_palindromes(left_idx: int, right_idx: int) -> int:
+        count = 0
+        while (
+            left_idx >= 0
+            and right_idx < length
+            and word[left_idx] == word[right_idx]
+        ):
+            count += 1
+            left_idx -= 1
+            right_idx += 1
+
+        return count
+
+    substring_count: int = 0
+    length: int = len(word)
+    for idx in range(length):
+        substring_count += count_palindromes(left_idx=idx, right_idx=idx)
+        substring_count += count_palindromes(left_idx=idx, right_idx=idx + 1)
+
+    return substring_count
+
+
 def test_count_substrings():
     solutions = [
         count_substrings_brute_force,
         count_substrings_dynamic,
+        count_substrings_two_pointers_optimized,
     ]
     test_cases = [
         ('abc', 3),
