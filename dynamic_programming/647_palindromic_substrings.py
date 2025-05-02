@@ -29,8 +29,9 @@ def count_substrings_brute_force(word: str) -> int:
     Space complexity: O(1)
     """
     substring_count: int = 0
-    for first_idx in range(len(word)):
-        for second_idx in range(first_idx, len(word)):
+    length = len(word)
+    for first_idx in range(length):
+        for second_idx in range(first_idx, length):
             left_idx, right_idx = first_idx, second_idx
             while left_idx < right_idx and word[left_idx] == word[right_idx]:
                 left_idx += 1
@@ -41,9 +42,35 @@ def count_substrings_brute_force(word: str) -> int:
     return substring_count
 
 
+def count_substrings_dynamic(word: str) -> int:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(n^2)
+    """
+    substring_count: int = 0
+    length = len(word)
+    is_palindrome: list[list[bool]] = [[False] * length for _ in range(length)]
+
+    for _, first_char in enumerate(reversed(word)):
+        first_idx = length - 1 - _
+        for second_idx, second_char in enumerate(word[first_idx:], start=first_idx):
+            if (
+                first_char == second_char and
+                (
+                    second_idx - first_idx <= 2
+                    or is_palindrome[first_idx + 1][second_idx - 1]
+                )
+            ):
+                is_palindrome[first_idx][second_idx] = True
+                substring_count += 1
+
+    return substring_count
+
+
 def test_count_substrings():
     solutions = [
         count_substrings_brute_force,
+        count_substrings_dynamic,
     ]
     test_cases = [
         ('abc', 3),
@@ -63,4 +90,3 @@ def test_count_substrings():
 
 if __name__ == '__main__':
     test_count_substrings()
-
