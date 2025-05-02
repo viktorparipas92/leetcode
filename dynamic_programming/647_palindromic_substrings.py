@@ -94,11 +94,48 @@ def count_substrings_two_pointers_optimized(word: str) -> int:
     return substring_count
 
 
+def count_substrings_manacher(word: str) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    def manacher() -> list[int]:
+        padded_word: str = f'#{"#".join(word)}#'
+        padded_length: int = len(padded_word)
+        radii: list[int] = [0] * padded_length
+        left = right = 0
+        for i in range(padded_length):
+            radius = min(right - i, radii[left + (right - i)]) if i < right else 0
+            radius_plus = radius + 1
+            while (
+                padded_length - radius_plus > i >= radius_plus
+                and padded_word[i + radius_plus] == padded_word[i - radius_plus]
+            ):
+                radius += 1
+                radius_plus += 1
+
+            if i + radius > right:
+                left = i - radius
+                right = i + radius
+
+            radii[i] = radius
+
+        return radii
+
+    palindrome_radii: list[int] = manacher()
+    substring_count: int = 0
+    for palindrome_radius in palindrome_radii:
+        substring_count += (palindrome_radius + 1) // 2
+
+    return substring_count
+
+
 def test_count_substrings():
     solutions = [
         count_substrings_brute_force,
         count_substrings_dynamic,
         count_substrings_two_pointers_optimized,
+        count_substrings_manacher,
     ]
     test_cases = [
         ('abc', 3),
