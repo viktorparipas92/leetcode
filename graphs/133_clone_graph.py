@@ -43,6 +43,7 @@ Constraints:
 1 <= Node.val <= 100
 There are no duplicate edges and no self-loops in the graph.
 """
+from collections import deque
 from typing import Optional
 
 from graphs.shared import Node
@@ -65,13 +66,37 @@ def clone_graph_dfs(node: Optional[Node]) -> Optional[Node]:
 
         return node_copy
 
-    node_mapping: dict = {}
+    node_mapping: dict[Node, Node] = {}
     return depth_first_search(node) if node else None
+
+
+def clone_graph_bfs(node: Optional[Node]) -> Optional[Node]:
+    """
+    Time complexity: O(v + e)
+    Space complexity: O(v)
+    where v is the number of vertices and e is the number of edges in the graph.
+    """
+    if not node:
+        return None
+
+    node_mapping = {node: Node(node.value)}
+    queue = deque([node])
+    while queue:
+        current_node = queue.popleft()
+        for neighbour in current_node.neighbours:
+            if neighbour not in node_mapping:
+                node_mapping[neighbour] = Node(neighbour.value)
+                queue.append(neighbour)
+
+            node_mapping[current_node].neighbours.append(node_mapping[neighbour])
+
+    return node_mapping[node]
 
 
 def test_clone_graph():
     solutions = [
         clone_graph_dfs,
+        clone_graph_bfs,
     ]
 
     node_11 = Node(1)
