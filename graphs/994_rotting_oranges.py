@@ -55,7 +55,7 @@ def oranges_rotting_bfs(grid: list[list[int]]) -> int:
             for dr, dc in DIRECTIONS:
                 r, c = r_rotten + dr, c_rotten + dc
                 try:
-                    if grid[r][c] == FRESH:
+                    if grid[r][c] == FRESH and r >= 0 and c >= 0:
                         grid[r][c] = ROTTEN
                         queue.append((r, c))
                         fresh_count -= 1
@@ -75,6 +75,7 @@ def test_oranges_rotting():
     test_cases = [
         ([[1, 1, 0], [0, 1, 1], [0, 1, 2]], 4),
         ([[1, 0, 1], [0, 2, 0], [1, 0, 1]], -1),
+        ([[2, 1, 1], [1, 1, 0], [0, 1, 1]], 4),
     ]
 
     for solution in solutions:
