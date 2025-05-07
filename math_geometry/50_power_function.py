@@ -46,9 +46,52 @@ def my_pow_brute_force(x: float, n: int) -> float:
     return result if n >= 0 else 1 / result
 
 
+def my_pow_recursive_binary_exponentiation(x: float, n: int) -> float:
+    """
+    Time complexity: O(log n)
+    Space complexity: O(1)
+    """
+
+    def helper(x: float, n: int) -> float:
+        if x == 0:
+            return 0
+        elif n == 0:
+            return 1
+
+        _result = helper(x * x, n // 2)
+        return x * _result if n % 2 else _result
+
+    result = helper(x, abs(n))
+    return result if n >= 0 else 1 / result
+
+
+def my_pow_iterative_binary_exponentiation(x: float, n: int) -> float:
+    """
+    Time complexity: O(log n)
+    Space complexity: O(1)
+    """
+    if x == 0:
+        return 0
+    elif n == 0:
+        return 1
+
+    result = 1
+    power = abs(n)
+    while power:
+        if power & 1:  # Check if the last bit is 1
+            result *= x
+
+        x *= x
+        power >>= 1  # Right shift to divide by 2
+
+    return result if n >= 0 else 1 / result
+
+
 def test_my_pow():
     solutions = [
         my_pow_brute_force,
+        my_pow_recursive_binary_exponentiation,
+        my_pow_iterative_binary_exponentiation,
     ]
 
     test_cases = [
