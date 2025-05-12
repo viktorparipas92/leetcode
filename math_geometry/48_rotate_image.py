@@ -90,7 +90,7 @@ def test_rotate():
             # Assert
             assert original_matrix == expected_rotated_matrix
 
-        print(f'Tests passed for {solution.__name__}!')
+        print(f'Tests passed  for {solution.__name__}!')
 
 
 if __name__ == '__main__':
