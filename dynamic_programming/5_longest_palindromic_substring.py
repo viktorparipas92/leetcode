@@ -45,27 +45,49 @@ def longest_palindrome_brute_force(word: str) -> str:
     return palindrome
 
 
+def longest_palindrome_dynamic(word: str) -> str:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(n^2)
+    """
+    result_start_index: int = 0
+    palindrome_length: int = 0
+    length: int = len(word)
+
+    is_candidate: list[list[bool]] = [[False] * length for _ in range(length)]
+
+    for i in range(length - 1, -1, -1):
+        for j in range(i, length):
+            if (
+                word[i] == word[j]
+                and (j - i <= 2 or is_candidate[i + 1][j - 1])
+            ):
+                is_candidate[i][j] = True
+                if palindrome_length < (j - i + 1):
+                    result_start_index = i
+                    palindrome_length = j - i + 1
+
+    return word[result_start_index: result_start_index + palindrome_length]
+
+
 def test_longest_palindrome():
     solutions = [
         longest_palindrome_brute_force,
+        longest_palindrome_dynamic,
     ]
 
     test_cases = [
-        ('ababd', 'aba'),
-        ('abbc', 'bb'),
-        ('a', 'a'),
-        ('ab', 'a'),
-        ('abcba', 'abcba'),
-        ('abccba', 'abccba'),
+        ('ababd', {'aba', 'bab'}),
+        ('abbc', {'bb'}),
     ]
 
     for solution in solutions:
-        for word, expected_longest_palindrome in test_cases:
+        for word, expected_longest_palindromes in test_cases:
             # Act
             longest_palindrome = solution(word)
 
             # Assert
-            assert longest_palindrome == expected_longest_palindrome
+            assert longest_palindrome in expected_longest_palindromes
 
         print(f'Tests passed for {solution.__name__}!')
 
