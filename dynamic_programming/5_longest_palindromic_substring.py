@@ -70,10 +70,53 @@ def longest_palindrome_dynamic(word: str) -> str:
     return word[result_start_index: result_start_index + palindrome_length]
 
 
+def longest_palindrome_two_pointers(word: str) -> str:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(1)
+    """
+    result_start_index: int = 0
+    palindrome_length: int = 0
+
+    length = len(word)
+    for i in range(length):
+        left_idx = right_idx = i
+        # Odd-length palindrome
+        while (
+            left_idx >= 0
+            and right_idx < len(word)
+            and word[left_idx] == word[right_idx]
+        ):
+            if (right_idx - left_idx + 1) > palindrome_length:
+                result_start_index = left_idx
+                palindrome_length = right_idx - left_idx + 1
+
+            left_idx -= 1
+            right_idx += 1
+
+        # Even-length palindrome
+        left_idx = i
+        right_idx = i + 1
+        while (
+            left_idx >= 0
+            and right_idx < len(word)
+            and word[left_idx] == word[right_idx]
+        ):
+            if (right_idx - left_idx + 1) > palindrome_length:
+                result_start_index = left_idx
+                palindrome_length = right_idx - left_idx + 1
+
+            left_idx -= 1
+            right_idx += 1
+
+    return word[result_start_index: result_start_index + palindrome_length]
+
+
 def test_longest_palindrome():
     solutions = [
         longest_palindrome_brute_force,
         longest_palindrome_dynamic,
+        longest_palindrome_two_pointers,
     ]
 
     test_cases = [
