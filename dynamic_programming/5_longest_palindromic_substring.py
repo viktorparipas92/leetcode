@@ -75,6 +75,20 @@ def longest_palindrome_two_pointers(word: str) -> str:
     Time complexity: O(n^2)
     Space complexity: O(1)
     """
+    def subroutine(left_idx: int, right_idx: int) -> None:
+        nonlocal result_start_index, palindrome_length
+        while (
+            left_idx >= 0
+            and right_idx < len(word)
+            and word[left_idx] == word[right_idx]
+        ):
+            if (right_idx - left_idx + 1) > palindrome_length:
+                result_start_index = left_idx
+                palindrome_length = right_idx - left_idx + 1
+
+            left_idx -= 1
+            right_idx += 1
+
     result_start_index: int = 0
     palindrome_length: int = 0
 
@@ -82,32 +96,12 @@ def longest_palindrome_two_pointers(word: str) -> str:
     for i in range(length):
         left_idx = right_idx = i
         # Odd-length palindrome
-        while (
-            left_idx >= 0
-            and right_idx < len(word)
-            and word[left_idx] == word[right_idx]
-        ):
-            if (right_idx - left_idx + 1) > palindrome_length:
-                result_start_index = left_idx
-                palindrome_length = right_idx - left_idx + 1
-
-            left_idx -= 1
-            right_idx += 1
+        subroutine(left_idx, right_idx)
 
         # Even-length palindrome
         left_idx = i
         right_idx = i + 1
-        while (
-            left_idx >= 0
-            and right_idx < len(word)
-            and word[left_idx] == word[right_idx]
-        ):
-            if (right_idx - left_idx + 1) > palindrome_length:
-                result_start_index = left_idx
-                palindrome_length = right_idx - left_idx + 1
-
-            left_idx -= 1
-            right_idx += 1
+        subroutine(left_idx, right_idx)
 
     return word[result_start_index: result_start_index + palindrome_length]
 
