@@ -85,7 +85,7 @@ def test_get_sum():
             # Assert
             assert sum_result == expected_sum
 
-        print(f'Tests passed for {solution.__name__}!')
+        print(f'Tests passed for {solution.__name__}! ')
 
 if __name__ == '__main__':
     test_get_sum()
