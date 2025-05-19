@@ -38,7 +38,7 @@ Constraints:
 def set_zeroes_iteration(matrix: list[list[int]]) -> None:
     """
     Time complexity: O(m * n)
-    Space complexity: O(n)
+    Space complexity: O(m + n)
     where m is the number of rows and n is the number of columns in the matrix.
     """
     height, width = len(matrix), len(matrix[0])
@@ -83,6 +83,7 @@ def test_set_zeroes():
 
     test_cases = [
         (matrix_1, output_1),
+        (matrix_2, output_2),
     ]
 
     for solution in solutions:
