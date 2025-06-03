@@ -35,3 +35,43 @@ Constraints:
 1 <= heights.length, heights[r].length <= 100
 0 <= heights[r][c] <= 1000
 """
+
+DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+
+def pacific_atlantic_brute_force(heights: list) -> list:
+    """
+    Time complexity: O(m * n * 4^(m * n))
+    Space complexity: O(m * n)
+    """
+    num_rows, num_columns = len(heights), len(heights[0])
+    is_pacific = is_atlantic = False
+
+    def depth_first_search(row_index, column_index, previous_value):
+        nonlocal is_pacific, is_atlantic
+        if row_index < 0 or column_index < 0:
+            is_pacific = True
+            return
+        elif row_index >= num_rows or column_index >= num_columns:
+            is_atlantic = True
+            return
+        elif heights[row_index][column_index] > previous_value:
+            return
+
+        tmp = heights[row_index][column_index]
+        heights[row_index][column_index] = float('inf')
+        for dx, dy in DIRECTIONS:
+            depth_first_search(row_index + dx, column_index + dy, tmp)
+            if is_pacific and is_atlantic:
+                break
+        heights[row_index][column_index] = tmp
+
+    res = []
+    for r in range(num_rows):
+        for c in range(num_columns):
+            is_pacific = False
+            is_atlantic = False
+            depth_first_search(r, c, float('inf'))
+            if is_pacific and is_atlantic:
+                res.append([r, c])
+    return res
