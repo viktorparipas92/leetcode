@@ -47,7 +47,7 @@ def pacific_atlantic_brute_force(heights: list) -> list:
     num_rows, num_columns = len(heights), len(heights[0])
     is_pacific = is_atlantic = False
 
-    def depth_first_search(row_index, column_index, previous_value):
+    def depth_first_search(row_index: int, column_index: int, previous_value: int):
         nonlocal is_pacific, is_atlantic
         if row_index < 0 or column_index < 0:
             is_pacific = True
@@ -64,14 +64,48 @@ def pacific_atlantic_brute_force(heights: list) -> list:
             depth_first_search(row_index + dx, column_index + dy, tmp)
             if is_pacific and is_atlantic:
                 break
+
         heights[row_index][column_index] = tmp
 
-    res = []
-    for r in range(num_rows):
-        for c in range(num_columns):
-            is_pacific = False
-            is_atlantic = False
-            depth_first_search(r, c, float('inf'))
+    result = []
+    for row_index in range(num_rows):
+        for column_index in range(num_columns):
+            is_pacific = is_atlantic = False
+            depth_first_search(row_index, column_index, float('inf'))
             if is_pacific and is_atlantic:
-                res.append([r, c])
-    return res
+                result.append((row_index, column_index))
+
+    return result
+
+
+def test_pacific_atlantic():
+    solutions = [
+        pacific_atlantic_brute_force,
+    ]
+
+    heights_1 = [
+        [4, 2, 7, 3, 4],
+        [7, 4, 6, 4, 7],
+        [6, 3, 5, 3, 6],
+    ]
+    output_1 = [
+        (0, 2), (0, 4), (1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (2, 0),
+    ]
+    test_cases = [
+        (heights_1, output_1),
+        ([[1], [1]], [(0, 0), (0, 1)]),
+    ]
+
+    for solution in solutions:
+        for heights, expected_output in test_cases:
+            # Act
+            output = solution(heights)
+
+            # Assert
+            assert output == expected_output
+
+        print(f'Tests passed for {solution.__name__}')
+
+
+if __name__ == '__main__':
+    test_pacific_atlantic()
