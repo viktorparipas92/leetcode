@@ -66,10 +66,35 @@ def min_meeting_rooms_sweep_line(intervals: list[Interval]) -> int:
     return max_meeting_count
 
 
+def min_meeting_rooms_two_pointers(intervals: list[Interval]) -> int:
+    """
+    Time complexity: O(n * log(n))
+    Space complexity: O(n)
+    """
+    start_times: list[int] = sorted([i.start for i in intervals])
+    end_times: list[int] = sorted([i.end for i in intervals])
+
+    max_rooms_needed: int = 0
+    current_room_count: int = 0
+    start_count = end_count = 0
+    while start_count < len(intervals):
+        if start_times[start_count] < end_times[end_count]:
+            start_count += 1
+            current_room_count += 1
+        else:
+            end_count += 1
+            current_room_count -= 1
+
+        max_rooms_needed = max(max_rooms_needed, current_room_count)
+
+    return max_rooms_needed
+
+
 def test_min_meeting_rooms():
     solutions = [
         min_meeting_rooms_min_heap,
         min_meeting_rooms_sweep_line,
+        min_meeting_rooms_two_pointers,
     ]
 
     test_cases = [
