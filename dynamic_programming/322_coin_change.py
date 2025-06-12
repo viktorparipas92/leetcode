@@ -80,10 +80,33 @@ def coin_change_dynamic_top_down(coins: list[int], amount: int) -> int:
     return -1 if min_num_coins >= 1e9 else min_num_coins
 
 
+def coin_change_dynamic_bottom_up(coins: list[int], amount: int) -> int:
+    """
+    Time complexity: O(n * t)
+    Space complexity: O(t)
+    """
+    # Use amount + 1 to represent infinity
+    num_coins: list[int] = [amount + 1] * (amount + 1)
+    num_coins[0] = 0
+    for _amount in range(1, amount + 1):
+        for coin in coins:
+            if _amount >= coin:
+                num_coins[_amount] = min(
+                    num_coins[_amount],
+                    1 + num_coins[_amount - coin],
+                )
+
+    if num_coins[amount] == amount + 1:
+        return -1
+
+    return num_coins[amount]
+
+
 def test_coin_change():
     solutions = [
         coin_change_recursion,
         coin_change_dynamic_top_down,
+        coin_change_dynamic_bottom_up,
     ]
 
     test_cases = [
