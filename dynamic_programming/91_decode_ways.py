@@ -47,14 +47,12 @@ def num_decodings_recursion(message: str) -> int:
         if i == len(message):
             return 1
 
-        char = message[i]
-        if char == '0':
+        if message[i] == '0':
             return 0
 
         num_ways_to_decode = depth_first_search(i + 1)
-        if i < len(message) - 1:
-            if char == '1' or (char == '2' and message[i + 1] < '7'):
-                num_ways_to_decode += depth_first_search(i + 2)
+        if can_be_double_digit(message, i):
+            num_ways_to_decode += depth_first_search(i + 2)
 
         return num_ways_to_decode
 
@@ -70,15 +68,11 @@ def num_decodings_dynamic_top_down(message: str) -> int:
         if i in num_ways_to_decode_lookup:
             return num_ways_to_decode_lookup[i]
 
-        char = message[i]
-        if char == '0':
+        if message[i] == '0':
             return 0
 
         num_ways_to_decode = depth_first_search(i + 1)
-        if (
-            i + 1 < len(message)
-            and (char == '1' or char == '2' and message[i + 1] < '7')
-        ):
+        if can_be_double_digit(message, i):
             num_ways_to_decode += depth_first_search(i + 2)
 
         num_ways_to_decode_lookup[i] = num_ways_to_decode
@@ -89,21 +83,26 @@ def num_decodings_dynamic_top_down(message: str) -> int:
 
 
 def num_decodings_dynamic_bottom_up(message: str) -> int:
-    num_ways_to_decode_lookup = {len(message): 1}
+    num_ways_to_decode_lookup: dict[int, int] = {len(message): 1}
     for i in range(len(message) - 1, -1, -1):
         if message[i] == '0':
             num_ways_to_decode_lookup[i] = 0
         else:
             num_ways_to_decode_lookup[i] = num_ways_to_decode_lookup[i + 1]
 
-        char = message[i]
-        if (
-            i + 1 < len(message)
-            and (char == '1' or char == '2' and message[i + 1] < '7')
-        ):
+        if can_be_double_digit(message, i):
             num_ways_to_decode_lookup[i] += num_ways_to_decode_lookup[i + 2]
 
     return num_ways_to_decode_lookup[0]
+
+
+def can_be_double_digit(message: str, i: int) -> bool:
+    char1 = message[i]
+    try:
+        char2 = message[i + 1]
+        return char1 == '1' or (char1 == '2' and char2 < '7')
+    except IndexError:
+        return False
 
 
 def test_num_decodings():
