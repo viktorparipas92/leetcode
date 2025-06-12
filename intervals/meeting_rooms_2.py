@@ -25,7 +25,7 @@ Constraints:
 0 <= intervals[i].start < intervals[i].end <= 1,000,000
 """
 import heapq
-from collections import defaultdict
+from collections import defaultdict, namedtuple
 
 from intervals.shared import Interval
 
@@ -90,11 +90,41 @@ def min_meeting_rooms_two_pointers(intervals: list[Interval]) -> int:
     return max_rooms_needed
 
 
+Event = namedtuple('Event', ['time', 'type'])
+
+def min_meeting_rooms_greedy(intervals: list[Interval]) -> int:
+    """
+    Time complexity: O(n * log(n))
+    Space complexity: O(n)
+    """
+    meeting_events: list[Event] = []
+    for interval in intervals:
+        events = create_events_from_interval(interval)
+        meeting_events.extend(events)
+
+    meeting_events.sort(key=lambda x: (x[0], x[1]))
+
+    max_rooms_needed: int = 0
+    current_room_count: int = 0
+    for event in meeting_events:
+        current_room_count += event.type
+        max_rooms_needed = max(max_rooms_needed, current_room_count)
+
+    return max_rooms_needed
+
+
+def create_events_from_interval(interval: Interval) -> tuple[Event, Event]:
+    start_event = Event(interval.start, type=1)
+    end_event = Event(interval.end, type=-1)
+    return start_event, end_event
+
+
 def test_min_meeting_rooms():
     solutions = [
         min_meeting_rooms_min_heap,
         min_meeting_rooms_sweep_line,
         min_meeting_rooms_two_pointers,
+        min_meeting_rooms_greedy,
     ]
 
     test_cases = [
