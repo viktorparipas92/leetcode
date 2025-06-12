@@ -59,3 +59,29 @@ def num_decodings_recursion(message: str) -> int:
         return num_decodings
 
     return depth_first_search(0)
+
+
+def test_num_decodings():
+    solutions = [
+        num_decodings_recursion,
+    ]
+
+    test_cases = [
+        ('12', 2),
+        ('01', 0),
+        ('226', 3),
+    ]
+
+    for solution in solutions:
+        for message, expected_count in test_cases:
+            # Act
+            count = solution(message)
+
+            # Assert
+            assert count == expected_count
+
+        print(f'Tests passed for {solution.__name__}!')
+
+
+if __name__ == '__main__':
+    test_num_decodings()
