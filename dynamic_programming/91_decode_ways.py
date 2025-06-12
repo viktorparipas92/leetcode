@@ -61,9 +61,37 @@ def num_decodings_recursion(message: str) -> int:
     return depth_first_search(0)
 
 
+def num_decodings_dynamic_top_down(message: str) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    def depth_first_search(i: int) -> int:
+        if i in num_ways_to_decode_lookup:
+            return num_ways_to_decode_lookup[i]
+
+        char = message[i]
+        if char == '0':
+            return 0
+
+        num_ways_to_decode = depth_first_search(i + 1)
+        if (
+            i + 1 < len(message)
+            and (char == '1' or char == '2' and message[i + 1] < '7')
+        ):
+            num_ways_to_decode += depth_first_search(i + 2)
+
+        num_ways_to_decode_lookup[i] = num_ways_to_decode
+        return num_ways_to_decode
+
+    num_ways_to_decode_lookup: dict[int, int] = {len(message): 1}
+    return depth_first_search(0)
+
+
 def test_num_decodings():
     solutions = [
         num_decodings_recursion,
+        num_decodings_dynamic_top_down,
     ]
 
     test_cases = [
