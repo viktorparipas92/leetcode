@@ -51,12 +51,12 @@ def num_decodings_recursion(message: str) -> int:
         if char == '0':
             return 0
 
-        num_decodings = depth_first_search(i + 1)
+        num_ways_to_decode = depth_first_search(i + 1)
         if i < len(message) - 1:
             if char == '1' or (char == '2' and message[i + 1] < '7'):
-                num_decodings += depth_first_search(i + 2)
+                num_ways_to_decode += depth_first_search(i + 2)
 
-        return num_decodings
+        return num_ways_to_decode
 
     return depth_first_search(0)
 
