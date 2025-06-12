@@ -25,6 +25,7 @@ Constraints:
 0 <= intervals[i].start < intervals[i].end <= 1,000,000
 """
 import heapq
+from collections import defaultdict
 
 from intervals.shared import Interval
 
@@ -46,9 +47,29 @@ def min_meeting_rooms_min_heap(intervals: list[Interval]) -> int:
     return len(end_times)
 
 
+def min_meeting_rooms_sweep_line(intervals: list[Interval]) -> int:
+    """
+    Time complexity: O(n * log(n))
+    Space complexity: O(n)
+    """
+    meeting_time_changes: dict[int, int] = defaultdict(int)
+    for interval in intervals:
+        meeting_time_changes[interval.start] += 1
+        meeting_time_changes[interval.end] -= 1
+
+    current_meeting_count: int = 0
+    max_meeting_count: int = 0
+    for time_point in sorted(meeting_time_changes):
+        current_meeting_count += meeting_time_changes[time_point]
+        max_meeting_count = max(max_meeting_count, current_meeting_count)
+
+    return max_meeting_count
+
+
 def test_min_meeting_rooms():
     solutions = [
         min_meeting_rooms_min_heap,
+        min_meeting_rooms_sweep_line,
     ]
 
     test_cases = [
