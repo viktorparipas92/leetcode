@@ -83,6 +83,10 @@ def num_decodings_dynamic_top_down(message: str) -> int:
 
 
 def num_decodings_dynamic_bottom_up(message: str) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
     num_ways_to_decode_lookup: dict[int, int] = {len(message): 1}
     for i in range(len(message) - 1, -1, -1):
         if message[i] == '0':
@@ -94,6 +98,27 @@ def num_decodings_dynamic_bottom_up(message: str) -> int:
             num_ways_to_decode_lookup[i] += num_ways_to_decode_lookup[i + 2]
 
     return num_ways_to_decode_lookup[0]
+
+
+def num_decodings_dynamic_bottom_up_optimized(message: str) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    next_ways = 1
+    next_next_ways = 0
+    for i in range(len(message) - 1, -1, -1):
+        if message[i] == '0':
+            current_ways = 0
+        else:
+            current_ways = next_ways
+
+        if can_be_double_digit(message, i):
+            current_ways += next_next_ways
+
+        current_ways, next_ways, next_next_ways = 0, current_ways, next_ways
+
+    return next_ways
 
 
 def can_be_double_digit(message: str, i: int) -> bool:
@@ -110,6 +135,7 @@ def test_num_decodings():
         num_decodings_recursion,
         num_decodings_dynamic_top_down,
         num_decodings_dynamic_bottom_up,
+        num_decodings_dynamic_bottom_up_optimized,
     ]
 
     test_cases = [
