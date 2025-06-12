@@ -56,9 +56,34 @@ def coin_change_recursion(coins: list[int], amount: int) -> int:
     return -1 if min_num_coins >= 1e9 else min_num_coins
 
 
+def coin_change_dynamic_top_down(coins: list[int], amount: int) -> int:
+    """
+    Time complexity: O(n * t)
+    Space complexity: O(t)
+    """
+    def depth_first_search(_amount: int) -> int:
+        if _amount == 0:
+            return 0
+        elif _amount in min_num_coins_by_amount:
+            return min_num_coins_by_amount[_amount]
+
+        num_coins = 1e9
+        for coin in coins:
+            if _amount >= coin:
+                num_coins = min(num_coins, 1 + depth_first_search(_amount - coin))
+
+        min_num_coins_by_amount[_amount] = num_coins
+        return num_coins
+
+    min_num_coins_by_amount: dict[int, int] = {}
+    min_num_coins = depth_first_search(amount)
+    return -1 if min_num_coins >= 1e9 else min_num_coins
+
+
 def test_coin_change():
     solutions = [
         coin_change_recursion,
+        coin_change_dynamic_top_down,
     ]
 
     test_cases = [
