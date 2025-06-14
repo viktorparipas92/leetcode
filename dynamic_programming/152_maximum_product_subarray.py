@@ -39,9 +39,34 @@ def max_product_brute_force(numbers: list[int]) -> int:
     return product
 
 
+def max_product_kadane(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    product = numbers[0]
+    current_minimum = current_maximum = 1
+
+    for number in numbers:
+        tmp = current_maximum * number
+
+        current_maximum = max(
+            number * current_maximum,
+            number * current_minimum,
+            number,
+        )
+
+        current_minimum = min(tmp, number * current_minimum, number)
+
+        product = max(product, current_maximum)
+
+    return product
+
+
 def test_max_product():
     solutions = [
         max_product_brute_force,
+        max_product_kadane,
     ]
 
     test_cases = [
