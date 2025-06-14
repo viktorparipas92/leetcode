@@ -63,10 +63,28 @@ def max_product_kadane(numbers: list[int]) -> int:
     return product
 
 
+def max_product_prefix_suffix(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    length = len(numbers)
+    product = numbers[0]
+    prefix = suffix = 0
+
+    for i in range(length):
+        prefix = numbers[i] * (prefix or 1)
+        suffix = numbers[-i] * (suffix or 1)
+        product = max(product, max(prefix, suffix))
+
+    return product
+
+
 def test_max_product():
     solutions = [
         max_product_brute_force,
         max_product_kadane,
+        max_product_prefix_suffix,
     ]
 
     test_cases = [
