@@ -113,8 +113,8 @@ def pacific_atlantic_dfs(heights: list) -> list:
 
 def test_pacific_atlantic():
     solutions = [
-        # pacific_atlantic_brute_force,
-        pacific_atlantic_dfs,
+        pacific_atlantic_brute_force,
+        # pacific_atlantic_dfs,
     ]
 
     heights_1 = [
@@ -127,7 +127,7 @@ def test_pacific_atlantic():
     ]
     test_cases = [
         (heights_1, output_1),
-        ([[1], [1]], [(0, 0), (0, 1)]),
+        ([[1], [1]], [(0, 0), (1, 0)]),
     ]
 
     for solution in solutions:
