@@ -79,42 +79,51 @@ def pacific_atlantic_brute_force(heights: list) -> list:
 
 
 def pacific_atlantic_dfs(heights: list) -> list:
-    ROWS, COLS = len(heights), len(heights[0])
-    pac, atl = set(), set()
+    num_rows, nuw_columns = len(heights), len(heights[0])
+    pacific: set = set()
+    atlantic: set = set()
 
-    def dfs(r, c, visit, prevHeight):
-        if ((r, c) in visit or
-                r < 0 or c < 0 or
-                r == ROWS or c == COLS or
-                heights[r][c] < prevHeight
+    def depth_first_search(
+        row_index: int, column_index: int, visited: set[tuple], previous_height: int
+    ):
+        if (
+            (row_index, column_index) in visited
+            or row_index < 0
+            or column_index < 0
+            or row_index == num_rows
+            or column_index == nuw_columns
+            or heights[row_index][column_index] < previous_height
         ):
             return
-        visit.add((r, c))
-        dfs(r + 1, c, visit, heights[r][c])
-        dfs(r - 1, c, visit, heights[r][c])
-        dfs(r, c + 1, visit, heights[r][c])
-        dfs(r, c - 1, visit, heights[r][c])
 
-    for c in range(COLS):
-        dfs(0, c, pac, heights[0][c])
-        dfs(ROWS - 1, c, atl, heights[ROWS - 1][c])
+        visited.add((row_index, column_index))
 
-    for r in range(ROWS):
-        dfs(r, 0, pac, heights[r][0])
-        dfs(r, COLS - 1, atl, heights[r][COLS - 1])
+        depth_first_search(row_index + 1, column_index, visited, heights[row_index][column_index])
+        depth_first_search(row_index - 1, column_index, visited, heights[row_index][column_index])
+        depth_first_search(row_index, column_index + 1, visited, heights[row_index][column_index])
+        depth_first_search(row_index, column_index - 1, visited, heights[row_index][column_index])
 
-    res = []
-    for r in range(ROWS):
-        for c in range(COLS):
-            if (r, c) in pac and (r, c) in atl:
-                res.append([r, c])
-    return res
+    for c in range(nuw_columns):
+        depth_first_search(0, c, pacific, heights[0][c])
+        depth_first_search(num_rows - 1, c, atlantic, heights[num_rows - 1][c])
+
+    for r in range(num_rows):
+        depth_first_search(r, 0, pacific, heights[r][0])
+        depth_first_search(r, nuw_columns - 1, atlantic, heights[r][nuw_columns - 1])
+
+    result = []
+    for r in range(num_rows):
+        for c in range(nuw_columns):
+            if (r, c) in pacific and (r, c) in atlantic:
+                result.append((r, c))
+
+    return result
 
 
 def test_pacific_atlantic():
     solutions = [
         pacific_atlantic_brute_force,
-        # pacific_atlantic_dfs,
+        pacific_atlantic_dfs,
     ]
 
     heights_1 = [
