@@ -28,28 +28,32 @@ Constraints:
 """
 
 
+OPENING = '('
+CLOSING = ')'
+
+
 def check_valid_string_recursion(string: str) -> bool:
     """
-    Time complexity: O(n)
-    Space complexity: O(1)
+    Time complexity: O(3^n)
+    Space complexity: O(n)
     """
 
-    def depth_first_search(i, open):
-        if open < 0:
+    def depth_first_search(i: int, open_count: int) -> bool:
+        if open_count < 0:
             return False
 
         if i == len(string):
-            return open == 0
+            return open_count == 0
 
-        if string[i] == '(':
-            return depth_first_search(i + 1, open + 1)
-        elif string[i] == ')':
-            return depth_first_search(i + 1, open - 1)
+        if string[i] == OPENING:
+            return depth_first_search(i + 1, open_count + 1)
+        elif string[i] == CLOSING:
+             return depth_first_search(i + 1, open_count - 1)
         else:
             return (
-                depth_first_search(i + 1, open)
-                or depth_first_search(i + 1, open + 1)
-                or depth_first_search(i + 1, open - 1)
+                depth_first_search(i + 1, open_count)
+                or depth_first_search(i + 1, open_count + 1)
+                or depth_first_search(i + 1, open_count - 1)
             )
 
     return depth_first_search(0, 0)
