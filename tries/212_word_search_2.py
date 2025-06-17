@@ -96,9 +96,75 @@ def find_words_backtracking(board: list[list[str]], words: list[str]) -> list[st
     return found_words
 
 
+class TrieNode:
+    def __init__(self):
+        self.children: dict[str, TrieNode] = {}
+        self.is_word: bool = False
+
+    def add_word(self, word: str) -> None:
+        current_node = self
+        for char in word:
+            if char not in current_node.children:
+                current_node.children[char] = TrieNode()
+
+            current_node = current_node.children[char]
+
+        current_node.is_word = True
+
+
+def find_words_trie_hash_set(board: list[list[str]], words: list[str]) -> list[str]:
+    """
+    Time complexity: O(m * n * 4 * 3^(k-1) + s)
+    Space complexity: O(s)
+    """
+    def depth_first_search(
+        row_index: int, column_index: int, node: TrieNode, word: str
+    ):
+        if (
+            row_index < 0
+            or column_index < 0
+            or (row_index, column_index) in visited_cells
+        ):
+            return
+
+        try:
+            cell: str = board[row_index][column_index]  # Character in the board
+            if cell not in node.children:
+                return
+        except IndexError:
+            return
+
+        visited_cells.add((row_index, column_index))
+        node = node.children[cell]
+        word += cell
+        if node.is_word:
+            found_words.add(word)
+
+        depth_first_search(row_index + 1, column_index, node, word)
+        depth_first_search(row_index - 1, column_index, node, word)
+        depth_first_search(row_index, column_index + 1, node, word)
+        depth_first_search(row_index, column_index - 1, node, word)
+        visited_cells.remove((row_index, column_index))
+
+    root_node = TrieNode()
+    for word in words:
+        root_node.add_word(word)
+
+    height, width = len(board), len(board[0])
+    found_words: set[str] = set()
+    visited_cells: set[tuple[int, int]] = set()
+
+    for row_idx in range(height):
+        for column_idx in range(width):
+            depth_first_search(row_idx, column_idx, root_node, word='')
+
+    return list(found_words)
+
+
 def test_find_words():
     solutions = [
         find_words_backtracking,
+        find_words_trie_hash_set,
     ]
 
     board_1 = [
