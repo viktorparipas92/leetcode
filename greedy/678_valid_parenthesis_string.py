@@ -88,10 +88,37 @@ def check_valid_string_stack(string: str) -> bool:
     return not opening_indices
 
 
+def check_valid_string_greedy(string: str) -> bool:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    min_open_parentheses = max_open_parentheses = 0
+
+    for char in string:
+        if char == OPENING:
+            min_open_parentheses += 1
+            max_open_parentheses += 1
+        elif char == CLOSING:
+            min_open_parentheses -= 1
+            max_open_parentheses -= 1
+        else:
+            min_open_parentheses -= 1
+            max_open_parentheses += 1
+
+        if max_open_parentheses < 0:
+            return False
+
+        min_open_parentheses = max(min_open_parentheses, 0)
+
+    return min_open_parentheses == 0
+
+
 def test_check_valid_string():
     solutions = [
         check_valid_string_recursion,
         check_valid_string_stack,
+        check_valid_string_greedy,
     ]
 
     test_cases = [
