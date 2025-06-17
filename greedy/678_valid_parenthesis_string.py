@@ -30,6 +30,7 @@ Constraints:
 
 OPENING = '('
 CLOSING = ')'
+STAR = '*'
 
 
 def check_valid_string_recursion(string: str) -> bool:
@@ -59,9 +60,38 @@ def check_valid_string_recursion(string: str) -> bool:
     return depth_first_search(0, 0)
 
 
+def check_valid_string_stack(string: str) -> bool:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    opening_indices: list[int] = []
+    star_indices: list[int] = []
+    for i, char in enumerate(string):
+        if char == OPENING:
+            opening_indices.append(i)
+        elif char == STAR:
+            star_indices.append(i)
+        else:
+            if not opening_indices and not star_indices:
+                return False
+
+            if opening_indices:
+                opening_indices.pop()
+            else:
+                star_indices.pop()
+
+    while opening_indices and star_indices:
+        if opening_indices.pop() > star_indices.pop():
+            return False
+
+    return not opening_indices
+
+
 def test_check_valid_string():
     solutions = [
         check_valid_string_recursion,
+        check_valid_string_stack,
     ]
 
     test_cases = [
