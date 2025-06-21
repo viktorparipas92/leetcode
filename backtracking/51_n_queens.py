@@ -24,7 +24,6 @@ Output: [["Q"]]
 Constraints:
 1 <= n <= 8
 """
-
 EMPTY = ''
 QUEEN = 'Q'
 
@@ -78,16 +77,31 @@ def is_safe(row_idx: int, column_idx: int, board: list[list[str]]) -> bool:
     return True
 
 
-def test_solve_n_queens()
+def test_solve_n_queens():
     solutions = [
         solve_n_queens,
     ]
 
+    boards = [
+        ['.Q..', '...Q', 'Q...', '..Q.'],
+        ['..Q.', 'Q...', '...Q', '.Q..'],
+    ]
+
     test_cases = [
-        (4, [
-            [['.Q..', '...Q', 'Q...', '..Q.']],
-            [['..Q.', 'Q...', '...Q', '.Q..']],
-            ]
-         )
+        (4, boards),
         (1, [['Q']]),
     ]
+
+    for solution in solutions:
+        for n, expected_result in test_cases:
+            # Act
+            result = solution(n)
+
+            # Assert
+            assert result == expected_result
+
+        print(f'Tests passed for {solution.__name__}!')
+
+
+if __name__ == '__main__':
+    test_solve_n_queens()
