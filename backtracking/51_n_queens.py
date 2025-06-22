@@ -24,15 +24,18 @@ Output: [["Q"]]
 Constraints:
 1 <= n <= 8
 """
-EMPTY = ''
+EMPTY = '.'
 QUEEN = 'Q'
 
 
-def solve_n_queens(n: int) -> list[list[str]]:
+def solve_n_queens_backtracking(n: int) -> list[list[str]]:
     """
     Time complexity: O(n!)
     Space complexity: O(n^2)
     """
+    layouts = []
+    board = [[EMPTY] * n for i in range(n)]
+
     def backtrack(r):
         if r == n:
             board_copy = [''.join(row) for row in board]
@@ -44,11 +47,12 @@ def solve_n_queens(n: int) -> list[list[str]]:
                 board[r][c] = QUEEN
                 backtrack(r + 1)
                 board[r][c] = EMPTY
-
-    layouts = []
-    board = [[EMPTY] * n for i in range(n)]
     backtrack(r=0)
     return layouts
+
+
+def solve_n_queens_backtracking_hash_set(n: int) -> list[list[str]]:
+    pass
 
 
 def is_safe(row_idx: int, column_idx: int, board: list[list[str]]) -> bool:
@@ -74,12 +78,13 @@ def is_safe(row_idx: int, column_idx: int, board: list[list[str]]) -> bool:
 
         _row_idx -= 1
         _column_idx += 1
+
     return True
 
 
 def test_solve_n_queens():
     solutions = [
-        solve_n_queens,
+        solve_n_queens_backtracking,
     ]
 
     boards = [
