@@ -52,7 +52,45 @@ def solve_n_queens_backtracking(n: int) -> list[list[str]]:
 
 
 def solve_n_queens_backtracking_hash_set(n: int) -> list[list[str]]:
-    pass
+    """
+    Time complexity: O(n!)
+    Space complexity: O(n^2)
+    """
+    column_indices: set[int] = set()
+    positive_diagonal: set[int] = set()
+    negative_diagonal: set[int] = set()
+
+    layouts: list[list[str]] = []
+    board: list[list[str]] = [[EMPTY] * n for i in range(n)]
+
+    def backtrack(row_idx: int) -> None:
+        if row_idx == n:
+            copy = [''.join(row) for row in board]
+            layouts.append(copy)
+            return
+
+        for column_idx in range(n):
+            if (
+                column_idx in column_indices or
+                (row_idx + column_idx) in positive_diagonal
+                or (row_idx - column_idx) in negative_diagonal
+            ):
+                continue
+
+            column_indices.add(column_idx)
+            positive_diagonal.add(row_idx + column_idx)
+            negative_diagonal.add(row_idx - column_idx)
+            board[row_idx][column_idx] = QUEEN
+
+            backtrack(row_idx + 1)
+
+            column_indices.remove(column_idx)
+            positive_diagonal.remove(row_idx + column_idx)
+            negative_diagonal.remove(row_idx - column_idx)
+            board[row_idx][column_idx] = EMPTY
+
+    backtrack(row_idx=0)
+    return layouts
 
 
 def is_safe(row_idx: int, column_idx: int, board: list[list[str]]) -> bool:
@@ -85,6 +123,7 @@ def is_safe(row_idx: int, column_idx: int, board: list[list[str]]) -> bool:
 def test_solve_n_queens():
     solutions = [
         solve_n_queens_backtracking,
+        solve_n_queens_backtracking_hash_set,
     ]
 
     boards = [
