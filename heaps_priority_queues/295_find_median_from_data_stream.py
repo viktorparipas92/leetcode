@@ -33,6 +33,7 @@ Constraints:
 -100,000 <= num <= 100,000
 findMedian will only be called after adding at least one integer to the data structure.
 """
+import heapq
 
 
 class MedianFinderSorting:
@@ -55,9 +56,46 @@ class MedianFinderSorting:
             return (self.data[length // 2] + self.data[length // 2 - 1]) / 2
 
 
+class MedianFinderHeap:
+    def __init__(self):
+        self.small_numbers: list[int] = []
+        self.large_numbers: list[int] = []
+
+    def add_number(self, number: int) -> None:
+        """Time complexity: O(log n)"""
+        if self.large_numbers and number > self.large_numbers[0]:
+            heapq.heappush(self.large_numbers, number)
+        else:
+            heapq.heappush(self.small_numbers, -1 * number)
+
+        if len(self.small_numbers) > len(self.large_numbers) + 1:
+            value = -1 * heapq.heappop(self.small_numbers)
+            heapq.heappush(self.large_numbers, value)
+
+        if len(self.large_numbers) > len(self.small_numbers) + 1:
+            value = heapq.heappop(self.large_numbers)
+            heapq.heappush(self.small_numbers, -1 * value)
+
+    def find_median(self) -> float:
+        """Time complexity: O(m)"""
+        small_median = -1 * self.small_numbers[0] if self.small_numbers else None
+        large_median = self.large_numbers[0] if self.large_numbers else None
+
+        small_length = len(self.small_numbers)
+        large_length = len(self.large_numbers)
+
+        if small_length > large_length:
+            return small_median
+        elif large_length > small_length:
+            return large_median
+        else:
+            return (small_median + large_median) / 2
+
+
 def test_median_finder():
     solutions = [
         MedianFinderSorting(),
+        MedianFinderHeap(),
     ]
 
     for solution in solutions:
