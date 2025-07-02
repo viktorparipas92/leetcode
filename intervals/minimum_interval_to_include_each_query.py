@@ -33,6 +33,10 @@ Constraints:
 1 <= left_i <= right_i <= 10000
 1 <= queries[j] <= 10000
 """
+import heapq
+from collections import namedtuple
+from enum import Enum, IntEnum
+
 from intervals.shared import Interval
 
 
@@ -58,9 +62,59 @@ def min_interval_brute_force(
     return output
 
 
+Event = namedtuple(
+    'Event', ['start', 'type', 'index', 'size']
+)
+
+
+class EventType(IntEnum):
+    START = 0
+    QUERY = 1
+    END = 2
+
+
+def min_interval_sweep_line(intervals: list[Interval], queries: list[int]) -> list[int]:
+    """
+    Time complexity: O((n +m) * log(n + m))
+    Space complexity: O(n + m)
+    where n is the number of intervals and m is the number of queries.
+    """
+    events: list[tuple] = []
+    for idx, (start, end) in enumerate(intervals):
+        length = end - start + 1
+        events.append(Event(start, EventType.START, idx, length))
+        events.append(Event(end, EventType.END, idx, length))
+
+    for idx, query in enumerate(queries):
+        events.append(Event(query, EventType.QUERY, idx, size=None))
+
+    events.sort(key=lambda ev: (ev.start, ev.type))
+
+    # Min heap storing [size, index]
+    sizes: list[tuple[int, int]] = []
+    output: list[int] = [-1] * len(queries)
+    are_intervals_inactive: list[bool] = [False] * len(intervals)
+
+    for time, _type, idx, interval_size in events:
+        match _type:
+            case EventType.START:
+                heapq.heappush(sizes, (interval_size, idx))
+            case EventType.END:
+                are_intervals_inactive[idx] = True
+            case EventType.QUERY:
+                while sizes and are_intervals_inactive[sizes[0][1]]:
+                    heapq.heappop(sizes)
+
+                if sizes:
+                    output[idx] = sizes[0][0]
+
+    return output
+
+
 def test_min_interval():
     solutions = [
         min_interval_brute_force,
+        min_interval_sweep_line,
     ]
 
     intervals_1 = [
