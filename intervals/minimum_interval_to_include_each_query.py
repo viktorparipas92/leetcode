@@ -111,10 +111,35 @@ def min_interval_sweep_line(intervals: list[Interval], queries: list[int]) -> li
     return output
 
 
+def min_interval_min_heap(intervals: list[Interval], queries: list[int]) -> list[int]:
+    """
+    Time complexity: O(n * log(n) + m * log(m))
+    Space complexity: O(n + m)
+    where n is the number of intervals and m is the number of queries.
+    """
+    intervals.sort()
+    min_heap: list[tuple[int, int]] = []
+    output: dict[int, int] = {}
+    i = 0
+    for query in sorted(queries):
+        for start, end in intervals:
+            if start <= query:
+                heapq.heappush(min_heap, (end - start + 1, end))
+                i += 1
+
+        while min_heap and min_heap[0][1] < query:
+            heapq.heappop(min_heap)
+
+        output[query] = min_heap[0][0] if min_heap else -1
+
+    return [output[q] for q in queries]
+
+
 def test_min_interval():
     solutions = [
         min_interval_brute_force,
         min_interval_sweep_line,
+        min_interval_min_heap,
     ]
 
     intervals_1 = [
