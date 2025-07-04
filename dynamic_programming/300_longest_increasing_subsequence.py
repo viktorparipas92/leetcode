@@ -24,6 +24,7 @@ Constraints:
 1 <= nums.length <= 1000
 -1000 <= nums[i] <= 1000
 """
+from bisect import bisect_left
 
 
 def length_of_lis_recursion(numbers: list[int]) -> int:
@@ -81,11 +82,35 @@ def length_of_lis_dynamic_bottom_up(numbers: list[int]) -> int:
     return max(max_lengths)
 
 
+def length_of_lis_dynamic_binary_search(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n log n)
+    Space complexity: O(n)
+    """
+    subsequence_tracker: list[int] = [numbers[0]]
+
+    max_length: int = 1
+    for _, number in enumerate(numbers[1:], start=1):
+        if subsequence_tracker[-1] < number:
+            subsequence_tracker.append(number)
+            max_length += 1
+            continue
+
+        # Find the position in where `number` can replace an element
+        # to maintain the sorted order of the subsequence.
+        replacement_index = bisect_left(subsequence_tracker, number)
+
+        subsequence_tracker[replacement_index] = number
+
+    return max_length
+
+
 def test_length_of_lis():
     solutions = [
         length_of_lis_recursion,
         length_of_lis_dynamic_top_down,
         length_of_lis_dynamic_bottom_up,
+        length_of_lis_dynamic_binary_search,
     ]
 
     test_cases = [
