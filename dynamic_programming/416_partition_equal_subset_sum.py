@@ -69,10 +69,28 @@ def can_partition_dynamic_optimal(numbers: list[int]) -> bool:
     return can_partition_tracker[target]
 
 
+def can_partition_dynamic_bitmask(numbers: list[int]) -> bool:
+    """
+    Time complexity: O(n * t)
+    Space complexity: O(t)
+    """
+    total = sum(numbers)
+    if total % 2:
+        return False
+
+    dp: int = 1 << 0
+    for number in numbers:
+        dp |= dp << number
+
+    target = total // 2
+    return (dp & (1 << target)) != 0
+
+
 def test_can_partition():
     solutions = [
         can_partition_recursion,
         can_partition_dynamic_optimal,
+        can_partition_dynamic_bitmask,
     ]
 
     test_cases = [
