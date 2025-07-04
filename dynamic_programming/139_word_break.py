@@ -57,9 +57,31 @@ def word_break_recursion(target: str, words: set[str]) -> bool:
     return depth_first_search(i=0)
 
 
+def word_break_recursion_hash_set(target: str, words: set[str]) -> bool:
+    """
+    Time complexity: O(n * 2^n + m)
+    Space complexity: O(n + t * m)
+    where
+    - n is the length of the target string,
+    - m is the number of words in the dictionary,
+    - t is the maximum length of a word in the dictionary.
+    """
+    def depth_first_search(i: int) -> bool:
+        if i == len(target):
+            return True
+
+        return any(
+            target[i: j + 1] in words and depth_first_search(j + 1)
+            for j in range(i, len(target))
+        )
+
+    return depth_first_search(i=0)
+
+
 def test_word_break():
     solutions = [
         word_break_recursion,
+        word_break_recursion_hash_set,
     ]
 
     test_cases = [
