@@ -46,9 +46,33 @@ def can_partition_recursion(numbers: list[int]) -> bool:
     return depth_first_search(i=0, target=total // 2)
 
 
+def can_partition_dynamic_optimal(numbers: list[int]) -> bool:
+    """
+    Time complexity: O(n * t)
+    Space complexity: O(t)
+    where n is the number of elements in numbers and t is the sum of the elements // 2.
+    """
+    total: int = sum(numbers)
+    if total % 2:
+        return False
+
+    target = total // 2
+    can_partition_tracker: list[bool] = [False] * (target + 1)
+    can_partition_tracker[0] = True
+    for number in numbers:
+        for j in range(target, number - 1, -1):
+            can_partition_tracker[j] = (
+                can_partition_tracker[j]
+                or can_partition_tracker[j - number]
+            )
+
+    return can_partition_tracker[target]
+
+
 def test_can_partition():
     solutions = [
         can_partition_recursion,
+        can_partition_dynamic_optimal,
     ]
 
     test_cases = [
