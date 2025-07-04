@@ -105,11 +105,34 @@ def word_break_dynamic_top_down(target: str, words: set[str]) -> bool:
     return depth_first_search(i=0)
 
 
+def word_break_dynamic_bottom_up(target: str, words: set[str]) -> bool:
+    """
+    Time complexity: O(n * m * t)
+    Space complexity: O(n)
+    """
+    length = len(target)
+    can_be_segmented: list[bool] = [False] * (length + 1)
+    can_be_segmented[length] = True
+
+    for i in range(length - 1, -1, -1):
+        for word in words:
+            if (
+                (i + len(word)) <= len(target)
+                and target[i: i + len(word)] == word
+            ):
+                can_be_segmented[i] = can_be_segmented[i + len(word)]
+
+            if can_be_segmented[i]:
+                break
+
+    return can_be_segmented[0]
+
 def test_word_break():
     solutions = [
         word_break_recursion,
         word_break_recursion_hash_set,
         word_break_dynamic_top_down,
+        word_break_dynamic_bottom_up,
     ]
 
     test_cases = [
