@@ -66,10 +66,26 @@ def length_of_lis_dynamic_top_down(numbers: list[int]) -> int:
     return max(depth_first_search(i) for i in range(length))
 
 
+def length_of_lis_dynamic_bottom_up(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(n)
+    """
+    length = len(numbers)
+    max_lengths: list[int] = [1] * length
+    for i in range(length - 1, -1, -1):
+        for j in range(i + 1, length):
+            if numbers[i] < numbers[j]:
+                max_lengths[i] = max(max_lengths[i], 1 + max_lengths[j])
+
+    return max(max_lengths)
+
+
 def test_length_of_lis():
     solutions = [
         length_of_lis_recursion,
         length_of_lis_dynamic_top_down,
+        length_of_lis_dynamic_bottom_up,
     ]
 
     test_cases = [
