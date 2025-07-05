@@ -62,9 +62,42 @@ def rob_recursion(numbers: list[int]) -> int:
     )
 
 
+def rob_dynamic_top_down(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    def depth_first_search(i: int, flag: bool) -> int:
+        if i >= size or (flag and i == size - 1):
+            return 0
+
+        if memo[i][flag] != -1:
+            return memo[i][flag]
+
+        memo[i][flag] = max(
+            depth_first_search(i + 1, flag),
+            numbers[i] + depth_first_search(i + 2, flag or (i == 0))
+        )
+        return memo[i][flag]
+
+    size = len(numbers)
+    if size == 1:
+        return numbers[0]
+
+    # Initialize memoization table
+    # Two dimensions: one for index and one for the flag (robbed first house or not)
+    memo: list[list[int]] = [[-1, -1] for _ in range(size)]
+
+    return max(
+        depth_first_search(i=0, flag=True),
+        depth_first_search(i=1, flag=False),
+    )
+
+
 def test_rob():
     solutions = [
         rob_recursion,
+        rob_dynamic_top_down,
     ]
 
     test_cases = [
