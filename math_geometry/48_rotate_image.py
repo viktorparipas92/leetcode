@@ -53,9 +53,32 @@ def rotate_brute_force(matrix: list[list[int]]) -> None:
             matrix[i][j] = rotated_cell
 
 
+def rotate_by_four_cells(matrix: list[list[int]]) -> None:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(1)
+    """
+    left_idx = 0
+    right_idx = len(matrix) - 1
+    while left_idx < right_idx:
+        for i in range(right_idx - left_idx):
+            top_idx = left_idx
+            bottom_idx = right_idx
+
+            top_left = matrix[top_idx][left_idx + i]
+            matrix[top_idx][left_idx + i] = matrix[bottom_idx - i][left_idx]
+            matrix[bottom_idx - i][left_idx] = matrix[bottom_idx][right_idx - i]
+            matrix[bottom_idx][right_idx - i] = matrix[top_idx + i][right_idx]
+            matrix[top_idx + i][right_idx] = top_left
+
+        right_idx -= 1
+        left_idx += 1
+
+
 def test_rotate():
     solutions = [
         rotate_brute_force,
+        rotate_by_four_cells,
     ]
 
     original_matrix = [
@@ -84,11 +107,14 @@ def test_rotate():
 
     for solution in solutions:
         for original_matrix, expected_rotated_matrix in test_cases:
+            # Arrange
+            copy_matrix = [row[:] for row in original_matrix]
+
             # Act
-            solution(original_matrix)
+            solution(copy_matrix)
 
             # Assert
-            assert original_matrix == expected_rotated_matrix
+            assert copy_matrix == expected_rotated_matrix
 
         print(f'Tests passed  for {solution.__name__}!')
 
