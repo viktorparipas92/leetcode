@@ -94,10 +94,39 @@ def rob_dynamic_top_down(numbers: list[int]) -> int:
     )
 
 
+def rob_dynamic_bottom_up(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(n)
+    """
+    def helper(nums: list[int]) -> int:
+        if not nums:
+            return 0
+
+        remaining_size = len(nums)
+        if remaining_size == 1:
+            return nums[0]
+
+        max_robbed: list[int] = [0] * remaining_size
+        max_robbed[0] = nums[0]
+        max_robbed[1] = max(nums[0], nums[1])
+        for i in range(2, remaining_size):
+            max_robbed[i] = max(max_robbed[i - 1], nums[i] + max_robbed[i - 2])
+
+        return max_robbed[-1]
+
+    size = len(numbers)
+    if size == 1:
+        return numbers[0]
+
+    return max(helper(numbers[1:]), helper(numbers[:-1]))
+
+
 def test_rob():
     solutions = [
         rob_recursion,
         rob_dynamic_top_down,
+        rob_dynamic_bottom_up,
     ]
 
     test_cases = [
