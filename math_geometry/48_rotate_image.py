@@ -42,7 +42,7 @@ def rotate_brute_force(matrix: list[list[int]]) -> None:
     Space complexity: O(n^2)
     """
     size = len(matrix)
-    rotated: list[list, int] = [[0] * size for _ in range(size)]
+    rotated: list[list[int]] = [[0] * size for _ in range(size)]
 
     for i, row in enumerate(matrix):
         for j, cell in enumerate(row):
