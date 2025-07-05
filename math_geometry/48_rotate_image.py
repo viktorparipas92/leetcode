@@ -75,10 +75,26 @@ def rotate_by_four_cells(matrix: list[list[int]]) -> None:
         left_idx += 1
 
 
+def rotate_reverse_and_transpose(matrix: list[list[int]]) -> None:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(1)
+    """
+    def transpose() -> None:
+        size = len(matrix)
+        for i in range(size):
+            for j in range(i + 1, size):
+                matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+
+    matrix.reverse()
+    transpose()
+
+
 def test_rotate():
     solutions = [
         rotate_brute_force,
         rotate_by_four_cells,
+        rotate_reverse_and_transpose,
     ]
 
     original_matrix = [
