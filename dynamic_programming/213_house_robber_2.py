@@ -122,11 +122,34 @@ def rob_dynamic_bottom_up(numbers: list[int]) -> int:
     return max(helper(numbers[1:]), helper(numbers[:-1]))
 
 
+def rob_dynamic_bottom_up_optimized(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n)
+    Space complexity: O(1)
+    """
+    def helper(nums):
+        """
+        Helper function to calculate the maximum amount of money that can be robbed
+        from a linear list of houses.
+        """
+        rob1: int = 0
+        rob2: int = 0
+        for number in nums:
+            new_rob = max(rob1 + number, rob2)
+            rob1 = rob2
+            rob2 = new_rob
+
+        return rob2
+
+    return max(numbers[0], helper(numbers[1:]), helper(numbers[:-1]))
+
+
 def test_rob():
     solutions = [
         rob_recursion,
         rob_dynamic_top_down,
         rob_dynamic_bottom_up,
+        rob_dynamic_bottom_up_optimized,
     ]
 
     test_cases = [
