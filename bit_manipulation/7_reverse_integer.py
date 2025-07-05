@@ -24,6 +24,11 @@ Output: 0
 Constraints:
 -2^31 <= x <= 2^31 - 1
 """
+import math
+
+MIN_VALUE = -(1 << 31)  # -2^31
+MAX_VALUE = (1 << 31) - 1  # 2^31 - 1
+
 
 def reverse_brute_force(x: int) -> int:
     """
@@ -35,7 +40,7 @@ def reverse_brute_force(x: int) -> int:
     if x < 0:
         reverse *= -1
 
-    if reverse < -(1 << 31) or reverse > (1 << 31) - 1:
+    if reverse < MIN_VALUE or reverse > MAX_VALUE:
         return 0
 
     return reverse
@@ -58,16 +63,39 @@ def reverse_recursion(x: int) -> int:
     absolute = abs(x)
     reversed_number = recurse(n=absolute, reverse=0)
     reversed_number *= sign
-    if reversed_number < -(1 << 31) or reversed_number > (1 << 31) - 1:
+    if reversed_number < MIN_VALUE or reversed_number > MAX_VALUE:
         return 0
 
     return reversed_number
+
+
+def reverse_iterative(x: int) -> int:
+    """
+    Time complexity: O(1)
+    Space complexity: O(1)
+    """
+    reverse: int = 0
+    while x:
+        digit = int(math.fmod(x, 10))  # Get the last digit
+        x = int(x / 10)
+        if (
+            reverse > MAX_VALUE // 10
+            or (reverse == MAX_VALUE // 10 and digit > MAX_VALUE % 10)
+            or reverse < MIN_VALUE // 10
+            or (reverse == MIN_VALUE // 10 and digit < MIN_VALUE % 10)
+        ):
+            return 0
+
+        reverse = (reverse * 10) + digit
+
+    return reverse
 
 
 def test_reverse_integer():
     solutions = [
         reverse_brute_force,
         reverse_recursion,
+        reverse_iterative,
     ]
 
     test_cases = [
