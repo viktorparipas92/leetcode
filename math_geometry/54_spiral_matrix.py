@@ -83,10 +83,40 @@ def spiral_order_iteration(matrix: list[list[int]]) -> list[int]:
     return output
 
 
+DIRECTIONS = [(0, 1), (1, 0), (0, -1), (-1, 0)]
+
+
+def spiral_order_iteration_optimal(matrix: list[list[int]]) -> list[int]:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n) for the output list, O(1) extra space
+    """
+    output = []
+    height = len(matrix)
+    width = len(matrix[0])
+    steps_remaining: list[int]  = [width, height - 1]
+
+    row_idx, col_idx, direction_idx = 0, -1, 0
+    # While there are steps remaining in the current direction
+    while steps_remaining[direction_idx & 1]:
+        # Get the current direction
+        for i in range(steps_remaining[direction_idx & 1]):
+            row_idx += DIRECTIONS[direction_idx][0]
+            col_idx += DIRECTIONS[direction_idx][1]
+            output.append(matrix[row_idx][col_idx])
+
+        steps_remaining[direction_idx & 1] -= 1
+        direction_idx += 1
+        direction_idx %= 4
+
+    return output
+
+
 def test_spiral_matrix():
     solutions = [
         spiral_order_recursion,
         spiral_order_iteration,
+        spiral_order_iteration_optimal,
     ]
 
     test_cases = [
