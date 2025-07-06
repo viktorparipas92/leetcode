@@ -30,29 +30,63 @@ def spiral_order_recursion(matrix: list[list[int]]) -> list[int]:
     Space complexity: O(min(m, n)) for recursion stack, O(m * n) for the output list
     """
     # append all the elements in the given direction
-    def dfs(row, col, r, c, dr, dc):
+    def depth_first_search(row, col, r, c, dr, dc):
         if row == 0 or col == 0:
             return
 
         for i in range(col):
             r += dr
             c += dc
-            res.append(matrix[r][c])
+            output.append(matrix[r][c])
 
         # sub-problem
-        dfs(col, row - 1, r, c, dc, -dr)
+        depth_first_search(col, row - 1, r, c, dc, -dr)
 
     height, width = len(matrix), len(matrix[0])
-    res = []
+    output: list[int] = []
 
     # start by going to the right
-    dfs(height, width, 0, -1, 0, 1)
-    return res
+    depth_first_search(height, width, r=0, c=-1, dr=0, dc=1)
+    return output
+
+
+def spiral_order_iteration(matrix: list[list[int]]) -> list[int]:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n) for the output list, O(1) extra space
+    """
+    output: list[int] = []
+    left, right = 0, len(matrix[0])
+    top, bottom = 0, len(matrix)
+
+    while left < right and top < bottom:
+        for i in range(left, right):
+            output.append(matrix[top][i])
+
+        top += 1
+        for i in range(top, bottom):
+            output.append(matrix[i][right - 1])
+
+        right -= 1
+        if not (left < right and top < bottom):
+            break
+
+        for i in range(right - 1, left - 1, -1):
+            output.append(matrix[bottom - 1][i])
+
+        bottom -= 1
+        for i in range(bottom - 1, top - 1, -1):
+            output.append(matrix[i][left])
+
+        left += 1
+
+    return output
 
 
 def test_spiral_matrix():
     solutions = [
         spiral_order_recursion,
+        spiral_order_iteration,
     ]
 
     test_cases = [
@@ -72,7 +106,7 @@ def test_spiral_matrix():
             # Assert
             assert output == expected_output
 
-        print(f'Tests passed!')
+        print(f'Tests passed for {solution.__name__}!')
 
 
 if __name__ == '__main__':
