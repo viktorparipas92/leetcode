@@ -28,6 +28,7 @@ Constraints:
 0 <= prerequisites.length <= 1000
 All prerequisite pairs are unique.
 """
+from collections import deque
 
 
 def find_order_cycle_detection_dfs(num_courses: int, prerequisites: list[tuple[int, int]]) -> list[int]:
@@ -71,23 +72,64 @@ def find_order_cycle_detection_dfs(num_courses: int, prerequisites: list[tuple[i
     )
 
 
+def find_order_topological_sort_kahn(num_courses: int, prerequisites: list[tuple[int, int]]) -> list[int]:
+    """
+    Time complexity: O(V + E)
+    Space complexity: O(V + E)
+    where
+    - V is the number of courses (vertices),
+    - E is the number of prerequisite pairs (edges).
+    """
+    num_following_courses: list[int] = [0] * num_courses
+    # Adjacency list to store prerequisites for each course
+    prerequisites_by_course: list[list[int]] = [[] for i in range(num_courses)]
+
+    for course, prerequisite in prerequisites:
+        num_following_courses[prerequisite] += 1
+        prerequisites_by_course[course].append(prerequisite)
+
+    courses_not_required: deque = deque(
+        [p for p in range(num_courses) if num_following_courses[p] == 0]
+    )
+
+    num_courses_processed: int = 0
+    schedule = []
+    while courses_not_required:
+        cnr = courses_not_required.popleft()
+        schedule.append(cnr)
+
+        num_courses_processed += 1
+
+        for _prerequisite in prerequisites_by_course[cnr]:
+            num_following_courses[_prerequisite] -= 1
+            if num_following_courses[_prerequisite] == 0:
+                courses_not_required.append(_prerequisite)
+
+    if num_courses_processed != num_courses:
+        return []
+
+    return schedule[::-1]
+
+
 def test_find_order():
     solutions = [
         find_order_cycle_detection_dfs,
+        find_order_topological_sort_kahn,
     ]
 
+    possible_solutions = [[0, 1, 2], [0, 2, 1], [2, 0, 1]]
     test_cases = [
-        ((3, [(1, 0)]), [0, 1, 2]),
-        ((3, [(0, 1), (1, 2), (2, 0)]), []),
+        ((3, [(1, 0)]), possible_solutions),
+        ((3, [(0, 1), (1, 2), (2, 0)]), [[]]),
     ]
 
     for solution in solutions:
-        for (num_courses, prerequisites), expected_schedule in test_cases:
+        for (num_courses, prerequisites), expected_schedules in test_cases:
             # Act
             schedule = solution(num_courses, prerequisites)
 
             # Assert
-            assert schedule == expected_schedule
+            assert schedule in expected_schedules
 
         print(f'{solution.__name__} passed all tests!')
 
