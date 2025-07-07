@@ -21,9 +21,10 @@ Constraints:
 1 <= n <= 100
 0 <= edges.length <= n * (n - 1) / 2
 """
+from collections import deque
 
 
-def count_components(n: int, edges: list[list[int]]) -> int:
+def count_components_dfs(n: int, edges: list[list[int]]) -> int:
     """
     Time complexity: O(V + E)
     Space complexity: O(V + E)
@@ -52,9 +53,42 @@ def count_components(n: int, edges: list[list[int]]) -> int:
     return component_count
 
 
+def count_components_bfs(n: int, edges: list[list[int]]) -> int:
+    """
+    Time complexity: O(V + E)
+    Space complexity: O(V + E)
+    """
+    def breadth_first_search(node: int):
+        queue = deque([node])
+        visited_nodes[node] = True
+        while queue:
+            current_node = queue.popleft()
+            for neighbor in adjacency_list[current_node]:
+                if not visited_nodes[neighbor]:
+                    visited_nodes[neighbor] = True
+                    queue.append(neighbor)
+
+    adjacency_list: list[list[int]] = [[] for _ in range(n)]
+
+    num_nodes: int = n
+    visited_nodes: list[bool] = [False] * num_nodes
+    for node_1, node_2 in edges:
+        adjacency_list[node_1].append(node_2)
+        adjacency_list[node_2].append(node_1)
+
+    component_count: int = 0
+    for node in range(num_nodes):
+        if not visited_nodes[node]:
+            breadth_first_search(node)
+            component_count += 1
+
+    return component_count
+
+
 def test_count_components():
     solutions = [
-        count_components,
+        count_components_dfs,
+        count_components_bfs,
     ]
 
     test_cases = [
