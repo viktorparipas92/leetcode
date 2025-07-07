@@ -111,10 +111,38 @@ def find_order_topological_sort_kahn(num_courses: int, prerequisites: list[tuple
     return schedule[::-1]
 
 
+def find_order_topological_sort_dfs(num_courses: int, prerequisites: list[tuple[int, int]]) -> list[int]:
+    """
+    Time complexity: O(V + E)
+    Space complexity: O(V + E)
+    """
+    def depth_first_search(_course):
+        schedule.append(_course)
+        num_following_courses[_course] -= 1
+        for _prerequisite in prerequisites_by_course[_course]:
+            num_following_courses[_prerequisite] -= 1
+            if num_following_courses[_prerequisite] == 0:
+                depth_first_search(_prerequisite)
+
+    prerequisites_by_course: list[list[int]] = [[] for i in range(num_courses)]
+    num_following_courses: list[int] = [0] * num_courses
+    for next_course, prerequisite in prerequisites:
+        num_following_courses[next_course] += 1
+        prerequisites_by_course[prerequisite].append(next_course)
+
+    schedule = []
+    for course in range(num_courses):
+        if num_following_courses[course] == 0:
+            depth_first_search(course)
+
+    return schedule if len(schedule) == num_courses else []
+
+
 def test_find_order():
     solutions = [
         find_order_cycle_detection_dfs,
         find_order_topological_sort_kahn,
+        find_order_topological_sort_dfs,
     ]
 
     possible_solutions = [[0, 1, 2], [0, 2, 1], [2, 0, 1]]
