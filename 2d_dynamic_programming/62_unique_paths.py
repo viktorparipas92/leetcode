@@ -84,6 +84,35 @@ def unique_paths_dynamic_bottom_up(m: int, n: int) -> int:
     return num_unique_paths_map[0][0]
 
 
+def unique_paths_dynamic_bottom_up_optimized(m: int, n: int) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(n)
+    """
+    row: list[int] = [1] * n
+    for i in range(m - 1):
+        new_row: list[int] = [1] * n
+        for j in range(n - 2, -1, -1):
+            new_row[j] = new_row[j + 1] + row[j]
+
+        row = new_row
+
+    return row[0]
+
+
+def unique_paths_dynamic_bottom_up_optimal(m: int, n: int) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(n)
+    """
+    row: list[int] = [1] * n
+    for i in range(m - 2, -1, -1):
+        for j in range(n - 2, -1, -1):
+            row[j] += row[j + 1]
+
+    return row[0]
+
+
 def unique_paths_math(m: int, n: int) -> int:
     """
     Time complexity: O(min(m, n))
@@ -109,6 +138,8 @@ def test_unique_paths():
         unique_paths_recursion,
         unique_paths_dynamic_top_down,
         unique_paths_dynamic_bottom_up,
+        unique_paths_dynamic_bottom_up_optimized,
+        unique_paths_dynamic_bottom_up_optimal,
         unique_paths_math,
     ]
 
