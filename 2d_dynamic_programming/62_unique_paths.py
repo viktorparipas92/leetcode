@@ -66,10 +66,29 @@ def unique_paths_dynamic_top_down(m: int, n: int) -> int:
     return depth_first_search(i=0, j=0)
 
 
+def unique_paths_dynamic_bottom_up(m: int, n: int) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    """
+    num_unique_paths_map: list[list[int]] = [[0] * (n + 1) for _ in range(m + 1)]
+    num_unique_paths_map[m - 1][n - 1] = 1
+
+    for i in range(m - 1, -1, -1):
+        for j in range(n - 1, -1, -1):
+            num_unique_paths_map[i][j] += (
+                num_unique_paths_map[i + 1][j]
+                + num_unique_paths_map[i][j + 1]
+            )
+
+    return num_unique_paths_map[0][0]
+
+
 def test_unique_paths():
     solutions = [
         unique_paths_recursion,
         unique_paths_dynamic_top_down,
+        unique_paths_dynamic_bottom_up,
     ]
 
     test_cases = [
