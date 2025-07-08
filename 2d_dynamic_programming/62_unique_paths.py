@@ -84,11 +84,32 @@ def unique_paths_dynamic_bottom_up(m: int, n: int) -> int:
     return num_unique_paths_map[0][0]
 
 
+def unique_paths_math(m: int, n: int) -> int:
+    """
+    Time complexity: O(min(m, n))
+    Space complexity: O(1)
+    """
+    if m == 1 or n == 1:
+        return 1
+    elif m < n:
+        m, n = n, m
+
+    num_unique_paths: int = 1
+    count: int = 1
+    for i in range(m, m + n - 1):
+        num_unique_paths = num_unique_paths * i // count
+
+        count += 1
+
+    return num_unique_paths
+
+
 def test_unique_paths():
     solutions = [
         unique_paths_recursion,
         unique_paths_dynamic_top_down,
         unique_paths_dynamic_bottom_up,
+        unique_paths_math,
     ]
 
     test_cases = [
@@ -104,7 +125,7 @@ def test_unique_paths():
             # Assert
             assert num_unique_paths == expected_num_unique_paths
 
-        print(f'Tests passed for{solution.__name__}!')
+        print(f'Tests passed for {solution.__name__}!')
 
 
 if __name__ == '__main__':
