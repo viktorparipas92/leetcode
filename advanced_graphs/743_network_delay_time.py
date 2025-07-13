@@ -87,10 +87,29 @@ def network_delay_time_floyd_warshall(
     return delay_time if delay_time < inf else -1
 
 
+def network_delay_time_bellman_ford(
+    times: list[list[int]], n: int, k: int
+) -> float:
+    """
+    Time complexity: O(V * E)
+    Space complexity: O(V)
+    where V is the number of vertices (nodes) and E is the number of edges.
+    """
+    min_time_to_each_node: list[float] = [float('inf')] * n
+    min_time_to_each_node[k - 1] = 0
+    for _ in range(n - 1):
+        for source, target, duration in times:
+            if min_time_to_each_node[source - 1] + duration < min_time_to_each_node[target - 1]:
+                min_time_to_each_node[target - 1] = min_time_to_each_node[source - 1] + duration
+    max_dist: float = max(min_time_to_each_node)
+    return max_dist if max_dist < float('inf') else -1
+
+
 def test_network_delay_time():
     solutions = [
         network_delay_time_depth_first_search,
         network_delay_time_floyd_warshall,
+        network_delay_time_bellman_ford,
     ]
 
     test_cases = [
