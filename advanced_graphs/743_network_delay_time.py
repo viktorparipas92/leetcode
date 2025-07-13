@@ -58,9 +58,39 @@ def network_delay_time_depth_first_search(
     return delay_time if delay_time < float('inf') else -1
 
 
+def network_delay_time_floyd_warshall(
+    times: list[list[int]], n: int, k: int
+) -> float:
+    """
+    Time complexity: O(V^3)
+    Space complexity: O(V^2)
+    where V is the number of vertices (nodes).
+    """
+    inf = float('inf')
+    node_min_times: list[list[float]] = [[inf] * n for _ in range(n)]
+
+    for source, target, duration in times:
+        node_min_times[source - 1][target - 1] = duration
+
+    for i in range(n):
+        node_min_times[i][i] = 0
+
+    for mid in range(n):
+        for i in range(n):
+            for j in range(n):
+                node_min_times[i][j] = min(
+                    node_min_times[i][j],
+                    node_min_times[i][mid] + node_min_times[mid][j],
+                )
+
+    delay_time: float = max(node_min_times[k - 1])
+    return delay_time if delay_time < inf else -1
+
+
 def test_network_delay_time():
     solutions = [
         network_delay_time_depth_first_search,
+        network_delay_time_floyd_warshall,
     ]
 
     test_cases = [
