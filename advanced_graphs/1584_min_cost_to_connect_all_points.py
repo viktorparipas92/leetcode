@@ -22,6 +22,7 @@ Constraints:
 1 <= points.length <= 1000
 -1000 <= xi, yi <= 1000
 """
+import heapq
 
 
 class DisjointSetUnion:
@@ -69,9 +70,78 @@ def min_cost_connect_points_kruskal(
     return total_cost
 
 
+def min_cost_connect_points_prim(points: list[tuple[int, int]]) -> int:
+    """
+    Time complexity: O(n^2 * log n)
+    Space complexity: O(n^2)
+    """
+    size = len(points)
+    adjacencies: dict[int, list[tuple[int, int]]] = {i: [] for i in range(size)}
+    for i, point in enumerate(points):
+        x1, y1 = point
+        for j in range(i + 1, size):
+            x2, y2 = points[j]
+            distance = abs(x1 - x2) + abs(y1 - y2)
+            adjacencies[i].append((distance, j))
+            adjacencies[j].append((distance, i))
+
+    total_cost = 0
+    visited_nodes: set = set()
+    min_heap: list[tuple[int, int]] = [(0, 0)]  # (cost, point index)
+    while len(visited_nodes) < size:
+        cost, node_index = heapq.heappop(min_heap)
+        if node_index in visited_nodes:
+            continue
+
+        total_cost += cost
+        visited_nodes.add(node_index)
+        for neighbour_cost, neighbour_index in adjacencies[node_index]:
+            if neighbour_index not in visited_nodes:
+                heapq.heappush(
+                    min_heap, (neighbour_cost, neighbour_index)
+                )
+
+    return total_cost
+
+
+def min_cost_connect_points_prim_optimised(points: list[tuple[int, int]]) -> int:
+    """
+    Time complexity: O(n^2)
+    Space complexity: O(n)
+    """
+    size = len(points)
+    node: int = 0
+    distances: float[int] = [float('inf')] * size
+    are_visited: list[bool] = [False] * size
+    num_edges = 0
+    total_cost = 0
+    while num_edges < size - 1:
+        are_visited[node] = True
+        next_node = -1
+        for i, point in enumerate(points):
+            if are_visited[i]:
+                continue
+
+            current_distance = (
+                abs(point[0] - points[node][0])
+                + abs(point[1] - points[node][1])
+            )
+            distances[i] = min(distances[i], current_distance)
+            if next_node == -1 or distances[i] < distances[next_node]:
+                next_node = i
+
+        total_cost += distances[next_node]
+        node = next_node
+        num_edges += 1
+
+    return total_cost
+
+
 def test_min_cost_connect_points():
     solutions = [
         min_cost_connect_points_kruskal,
+        min_cost_connect_points_prim,
+        min_cost_connect_points_prim_optimised,
     ]
 
     test_cases = [
