@@ -26,7 +26,8 @@ Constraints:
 1 <= k <= n <= 100
 1 <= times.length <= 1000
 """
-from collections import defaultdict
+import heapq
+from collections import defaultdict, deque
 
 
 def network_delay_time_depth_first_search(
@@ -105,11 +106,75 @@ def network_delay_time_bellman_ford(
     return max_dist if max_dist < float('inf') else -1
 
 
+def network_delay_time_shortest_path_faster(
+    times: list[list[int]], n: int, k: int
+) -> float:
+    """
+    Time complexity: O(V + E) in the avarege case
+    Space complexity: O(V + E)
+    """
+    adjacency_list = defaultdict(list)
+    for source, target, duration in times:
+        adjacency_list[source].append((target, duration))
+
+    node_min_time_map: dict[int, float] = {node: float('inf') for node in range(1, n + 1)}
+    queue: deque[tuple[int, int]] = deque([(k, 0)])
+    node_min_time_map[k] = 0
+
+    while queue:
+        node, time = queue.popleft()
+        if node_min_time_map[node] < time:
+            continue
+
+        for neighbour, duration in adjacency_list[node]:
+            if time + duration < node_min_time_map[neighbour]:
+                new_time = time + duration
+                node_min_time_map[neighbour] = new_time
+                queue.append((neighbour, new_time))
+
+    result = max(node_min_time_map.values())
+    return result if result < float('inf') else -1
+
+
+def network_delay_time_dijkstra(
+    times: list[list[int]], n: int, k: int
+) -> float:
+    """
+    Time complexity: O(E * log V)
+    Space complexity: O(V + E)
+    """
+    adjacency_list = defaultdict(list)
+    for source, target, duration in times:
+        adjacency_list[source].append((target, duration))
+
+    nodes_by_min_time: list[tuple[int, int]] = [(0, k)]
+    visited_nodes: set[int] = set()
+    max_signal_time: int = 0
+    while nodes_by_min_time:
+        current_time, current_node = heapq.heappop(nodes_by_min_time)
+        if current_node in visited_nodes:
+            continue
+
+        visited_nodes.add(current_node)
+        max_signal_time = current_time
+
+        for neighbour_node, travel_time in adjacency_list[current_node]:
+            if neighbour_node not in visited_nodes:
+                heapq.heappush(
+                    nodes_by_min_time, (current_time + travel_time, neighbour_node)
+                )
+
+    return max_signal_time if len(visited_nodes) == n else -1
+
+
+
 def test_network_delay_time():
     solutions = [
         network_delay_time_depth_first_search,
         network_delay_time_floyd_warshall,
         network_delay_time_bellman_ford,
+        network_delay_time_shortest_path_faster,
+        network_delay_time_dijkstra,
     ]
 
     test_cases = [
