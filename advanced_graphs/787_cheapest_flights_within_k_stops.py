@@ -81,9 +81,35 @@ def find_lowest_price_dijkstra(
     return cost
 
 
+def find_lowest_price_bellman_ford(
+    num_airports: int,
+    flights: list[tuple[int, int, int]],
+    source: int,
+    destination: int,
+    max_stops: int
+):
+    prices = [INFINITY] * num_airports
+    prices[source] = 0
+
+    for i in range(max_stops + 1):
+        temporary_prices = prices.copy()
+
+        for _src, _dst, _price in flights:
+            if prices[_src] == INFINITY:
+                continue
+
+            if prices[_src] + _price < temporary_prices[_dst]:
+                temporary_prices[_dst] = prices[_src] + _price
+
+        prices = temporary_prices
+
+    return -1 if prices[destination] == INFINITY else prices[destination]
+
+
 def test_find_lowest_price():
     solutions = [
         find_lowest_price_dijkstra,
+        find_lowest_price_bellman_ford,
     ]
 
     test_cases = [
