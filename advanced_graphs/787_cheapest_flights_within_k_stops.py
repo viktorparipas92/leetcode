@@ -38,6 +38,7 @@ fromi != toi
 0 <= src, dst, k < n
 """
 import heapq
+from collections import deque
 
 INFINITY = float('inf')
 
@@ -110,10 +111,44 @@ def find_lowest_price_bellman_ford(
     return -1 if prices[destination] == INFINITY else prices[destination]
 
 
+def find_lowest_price_shortest_path_faster(
+    num_airports: int,
+    flights: list[tuple[int, int, int]],
+    source: int,
+    destination: int,
+    max_stops: int
+):
+    """
+    Time complexity: O(n * k)
+    Space complexity: O(n + m)
+    where n = num_airports and k = max_stops and m = num_flights
+    """
+    prices: list[float] = [INFINITY] * num_airports
+    prices[source] = 0
+    adjacency_list: list[list[tuple[int, int]]] = [[] for _ in range(num_airports)]
+    for _src, _dst, _price in flights:
+        adjacency_list[_src].append((_dst, _price))
+
+    queue = deque([(0, source, 0)])
+    while queue:
+        cost, node, num_stops = queue.popleft()
+        if num_stops > max_stops:
+            continue
+
+        for neighbour, cost_to_neighbour in adjacency_list[node]:
+            next_cost = cost + cost_to_neighbour
+            if next_cost < prices[neighbour]:
+                prices[neighbour] = next_cost
+                queue.append((next_cost, neighbour, num_stops + 1))
+
+    return prices[destination] if prices[destination] != INFINITY else -1
+
+
 def test_find_lowest_price():
     solutions = [
         find_lowest_price_dijkstra,
         find_lowest_price_bellman_ford,
+        find_lowest_price_shortest_path_faster,
     ]
 
     test_cases = [
