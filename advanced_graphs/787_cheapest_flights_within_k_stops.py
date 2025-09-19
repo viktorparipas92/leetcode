@@ -50,8 +50,8 @@ def find_lowest_price_dijkstra(
     max_stops: int
 ):
     """
-    Time complexity: O(n * k)
-    Space complexity: O(n + m)
+    Time complexity: O((n + m) * k)
+    Space complexity: O(n * k)
     where n = num_airports and k = max_stops and m = num_flights
     """
     adjacency_list: list[list[tuple[int, int]]] = [
@@ -88,6 +88,10 @@ def find_lowest_price_bellman_ford(
     destination: int,
     max_stops: int
 ):
+    """
+    Time complexity: O(n + m * k)
+    Space complexity: O(n)
+    """
     prices = [INFINITY] * num_airports
     prices[source] = 0
 
