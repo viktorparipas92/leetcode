@@ -38,7 +38,7 @@ def longest_common_subsequence_recursion(text1: str, text2: str) -> int:
     where m and n are the lengths of text1 and text2 respectively.
     """
 
-    def depth_first_search(i: int, j: int):
+    def depth_first_search(i: int, j: int) -> int:
         if i == len(text1) or j == len(text2):
             return 0
         elif text1[i] == text2[j]:
@@ -49,9 +49,38 @@ def longest_common_subsequence_recursion(text1: str, text2: str) -> int:
     return depth_first_search(i=0, j=0)
 
 
+def longest_common_subsequence_dynamic_top_down(text1: str, text2: str) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    where m and n are the lengths of text1 and text2 respectively.
+    """
+    memory: dict[tuple[int, int], int] = {}
+
+    def depth_first_search(i: int, j: int):
+        if i == len(text1) or j == len(text2):
+            return 0
+
+        if (i, j) in memory:
+            return memory[(i, j)]
+
+        if text1[i] == text2[j]:
+            memory[(i, j)] = 1 + depth_first_search(i + 1, j + 1)
+        else:
+            memory[(i, j)] = max(
+                depth_first_search(i + 1, j),
+                depth_first_search(i, j + 1),
+            )
+
+        return memory[(i, j)]
+
+    return depth_first_search(i=0, j=0)
+
+
 def test_longest_common_subsequence():
     solutions = [
         longest_common_subsequence_recursion,
+        longest_common_subsequence_dynamic_top_down,
     ]
 
     test_cases = [
