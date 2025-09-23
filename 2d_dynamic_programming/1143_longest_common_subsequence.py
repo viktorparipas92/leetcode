@@ -98,11 +98,39 @@ def longest_common_subsequence_dynamic_bottom_up(text1: str, text2: str) -> int:
     return lcs_table[0][0]
 
 
+def longest_common_subsequence_dynamic_bottom_up_optimized(
+    text1: str, text2: str
+) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(min(m, n))
+    where m and n are the lengths of text1 and text2 respectively.
+    """
+    if len(text1) < len(text2):
+        text1, text2 = text2, text1  # Ensure text1 is the longer string
+
+    previous = [0] * (len(text2) + 1)
+    current = [0] * (len(text2) + 1)
+
+    for i in range(len(text1) - 1, -1, -1):
+        for j in range(len(text2) - 1, -1, -1):
+            if text1[i] == text2[j]:
+                current[j] = 1 + previous[j + 1]
+            else:
+                current[j] = max(current[j + 1], previous[j])
+
+        previous, current = current, previous
+
+    return previous[0]
+
+
+
 def test_longest_common_subsequence():
     solutions = [
         longest_common_subsequence_recursion,
         longest_common_subsequence_dynamic_top_down,
         longest_common_subsequence_dynamic_bottom_up,
+        longest_common_subsequence_dynamic_bottom_up_optimized,
     ]
 
     test_cases = [
