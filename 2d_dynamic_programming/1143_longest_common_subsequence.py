@@ -29,3 +29,47 @@ Constraints:
 1 <= text1.length, text2.length <= 1000
 text1 and text2 consist of only lowercase English characters.
 """
+
+
+def longest_common_subsequence_recursion(text1: str, text2: str) -> int:
+    """
+    Time complexity: O(2^(m+n))
+    Space complexity: O(m+n)
+    where m and n are the lengths of text1 and text2 respectively.
+    """
+
+    def depth_first_search(i: int, j: int):
+        if i == len(text1) or j == len(text2):
+            return 0
+        elif text1[i] == text2[j]:
+            return 1 + depth_first_search(i + 1, j + 1)
+
+        return max(depth_first_search(i + 1, j), depth_first_search(i, j + 1))
+
+    return depth_first_search(i=0, j=0)
+
+
+def test_longest_common_subsequence():
+    solutions = [
+        longest_common_subsequence_recursion,
+    ]
+
+    test_cases = [
+        ('cat', 'crabt', 3),
+        ('abcd', 'abcd', 4),
+        ('abcd', 'efgh', 0),
+    ]
+
+    for solution in solutions:
+        for text1, text2, expected_lcs_length in test_cases:
+            # Act
+            lcs_length = solution(text1, text2)
+
+            # Assert
+            assert lcs_length == expected_lcs_length
+
+        print(f'All test cases passed for {solution.__name__}.')
+
+
+if __name__ == '__main__':
+    test_longest_common_subsequence()
