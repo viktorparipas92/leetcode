@@ -124,6 +124,32 @@ def longest_common_subsequence_dynamic_bottom_up_optimized(
     return previous[0]
 
 
+def longest_common_subsequence_dynamic_bottom_up_optimal(
+    text1: str, text2: str
+) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(min(m, n))
+    where m and n are the lengths of text1 and text2 respectively.
+    """
+    if len(text1) < len(text2):
+        text1, text2 = text2, text1  # Ensure text1 is the longer string
+
+    lcs_list: list[int] = [0] * (len(text2) + 1)
+    for i in range(len(text1) - 1, -1, -1):
+        previous: int = 0
+        for j in range(len(text2) - 1, -1, -1):
+            temp: int = lcs_list[j]
+            if text1[i] == text2[j]:
+                lcs_list[j] = 1 + previous
+            else:
+                lcs_list[j] = max(lcs_list[j], lcs_list[j + 1])
+
+            previous = temp
+
+    return lcs_list[0]
+
+
 
 def test_longest_common_subsequence():
     solutions = [
@@ -131,6 +157,7 @@ def test_longest_common_subsequence():
         longest_common_subsequence_dynamic_top_down,
         longest_common_subsequence_dynamic_bottom_up,
         longest_common_subsequence_dynamic_bottom_up_optimized,
+        longest_common_subsequence_dynamic_bottom_up_optimal,
     ]
 
     test_cases = [
