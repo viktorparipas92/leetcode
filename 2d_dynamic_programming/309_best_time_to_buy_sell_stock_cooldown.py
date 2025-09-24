@@ -48,9 +48,36 @@ def max_profit_recursion(prices: list[int]) -> int:
     return depth_first_search(i=0, is_buying=True)
 
 
+def max_profit_dynamic_top_down(prices: list[int]) -> int:
+    """
+    Time Complexity: O(n)
+    Space Complexity: O(n)
+    """
+    max_profit_map: dict[tuple[int, bool], int] = {}
+
+    def depth_first_search(i: int, is_buying: bool) -> int:
+        if i >= len(prices):
+            return 0
+        elif (i, is_buying) in max_profit_map:
+            return max_profit_map[(i, is_buying)]
+
+        cooldown = depth_first_search(i + 1, is_buying)
+        if is_buying:
+            buy = depth_first_search(i + 1, not is_buying) - prices[i]
+            max_profit_map[(i, is_buying)] = max(buy, cooldown)
+        else:
+            sell = depth_first_search(i + 2, not is_buying) + prices[i]
+            max_profit_map[(i, is_buying)] = max(sell, cooldown)
+
+        return max_profit_map[(i, is_buying)]
+
+    return depth_first_search(i=0, is_buying=True)
+
+
 def test_max_profit():
     solutions = [
         max_profit_recursion,
+        max_profit_dynamic_top_down,
     ]
 
     test_cases = [
