@@ -74,10 +74,30 @@ def max_profit_dynamic_top_down(prices: list[int]) -> int:
     return depth_first_search(i=0, is_buying=True)
 
 
+def max_profit_dynamic_bottom_up_optimized(prices: list[int]) -> int:
+    """
+    Time Complexity: O(n)
+    Space Complexity: O(1)
+    """
+    n = len(prices)
+    dp1_buy: int = 0
+    dp1_sell: int = 0
+    dp2_buy: int = 0
+    for i in range(n - 1, -1, -1):
+        dp_buy: int = max(dp1_sell - prices[i], dp1_buy)
+        dp_sell: int = max(dp2_buy + prices[i], dp1_sell)
+        dp2_buy = dp1_buy
+        dp1_buy = dp_buy
+        dp1_sell = dp_sell
+
+    return dp1_buy
+
+
 def test_max_profit():
     solutions = [
         max_profit_recursion,
         max_profit_dynamic_top_down,
+        max_profit_dynamic_bottom_up_optimized,
     ]
 
     test_cases = [
