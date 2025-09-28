@@ -57,9 +57,38 @@ def change_recursion(amount: int, coins: list[int]) -> int:
     return depth_first_search(i=0, _amount=amount)
 
 
+def change_dynamic_top_down(amount: int, coins: list[int]) -> int:
+    """
+    Time complexity: O(n * a)
+    Space complexity: O(n * a)
+    where n is the number of coins and a is the amount.
+    """
+    coins.sort()
+    memory: list[list[int]] = [[-1] * (amount + 1) for _ in range(len(coins) + 1)]
+
+    def depth_first_search(i: int, _amount: int) -> int:
+        if _amount == 0:
+            return 1
+        elif i >= len(coins):
+            return 0
+        elif memory[i][_amount] != -1:
+            return memory[i][_amount]
+
+        num_combinations: int = 0
+        if _amount >= coins[i]:
+            num_combinations = depth_first_search(i + 1, _amount)
+            num_combinations += depth_first_search(i, _amount - coins[i])
+
+        memory[i][_amount] = num_combinations
+        return num_combinations
+
+    return depth_first_search(0, amount)
+
+
 def test_change():
     solutions = [
         change_recursion,
+        change_dynamic_top_down,
     ]
 
     test_cases = [
