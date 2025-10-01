@@ -27,6 +27,7 @@ Constraints:
 0 <= nums[i] <= 1000
 -1000 <= target <= 1000
 """
+from collections import defaultdict
 
 
 def find_target_sum_ways_recursion(numbers: list[int], target: int) -> int:
@@ -67,10 +68,29 @@ def find_target_sum_ways_dynamic_top_down(numbers: list[int], target: int) -> in
     return backtrack(i=0, total=0)
 
 
+def find_target_sum_ways_dynamic_bottom_up(numbers: list[int], target: int) -> int:
+    """
+    Time complexity: O(n * m)
+    Space complexity: O(n * m)
+    where n is the length of numbers and m is the sum of all numbers in numbers.
+    """
+    length = len(numbers)
+    num_ways_map: list[dict[int, int]] = [defaultdict(int) for _ in range(length + 1)]
+    num_ways_map[0][0] = 1  # index 0, total 0 -> 1 way
+
+    for i in range(length):
+        for total, count in num_ways_map[i].items():
+            num_ways_map[i + 1][total + numbers[i]] += count
+            num_ways_map[i + 1][total - numbers[i]] += count
+
+    return num_ways_map[length][target]
+
+
 def test_find_target_sum_ways():
     solutions = [
         find_target_sum_ways_recursion,
         find_target_sum_ways_dynamic_top_down,
+        find_target_sum_ways_dynamic_bottom_up,
     ]
 
     test_cases = [
