@@ -35,9 +35,9 @@ def find_target_sum_ways_recursion(numbers: list[int], target: int) -> int:
     Space complexity: O(n)
     where n is the length of numbers.
     """
-    def backtrack(i, total):
+    def backtrack(i: int, total: int) -> int:
         if i == len(numbers):
-            return  total == target
+            return total == target
 
         number = numbers[i]
         return backtrack(i + 1, total + number) + backtrack(i + 1, total - number)
@@ -45,9 +45,32 @@ def find_target_sum_ways_recursion(numbers: list[int], target: int) -> int:
     return backtrack(i=0, total=0)
 
 
+def find_target_sum_ways_dynamic_top_down(numbers: list[int], target: int) -> int:
+    """
+    Time complexity: O(n * m)
+    Space complexity: O(n * m)
+    where n is the length of numbers and m is the sum of all numbers in numbers.
+    """
+    def backtrack(i: int, total: int) -> int:
+        if i == len(numbers):
+            return int(total == target)
+        elif (i, total) in num_ways_map:
+            return num_ways_map[(i, total)]
+
+        number = numbers[i]
+        num_ways_map[(i, total)] = (
+            backtrack(i + 1, total + number) + backtrack(i + 1, total - number)
+        )
+        return num_ways_map[(i, total)]
+
+    num_ways_map: dict[tuple[int, int], int] = {}  # (index, total) -> # of ways
+    return backtrack(i=0, total=0)
+
+
 def test_find_target_sum_ways():
     solutions = [
         find_target_sum_ways_recursion,
+        find_target_sum_ways_dynamic_top_down,
     ]
 
     test_cases = [
