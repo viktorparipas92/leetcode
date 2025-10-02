@@ -89,10 +89,44 @@ def min_distance_dynamic_top_down(word1: str, word2: str) -> int:
     return depth_first_search(i=0, j=0)
 
 
+INFINITY = float('inf')
+
+def min_distance_dynamic_bottom_up(word1: str, word2: str) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    where m and n are the lengths of word1 and word2 respectively.
+    """
+    length_1, length_2 = len(word1), len(word2)
+    min_distance_map: list[list[int | float]] = [
+        [INFINITY] * (length_2 + 1) for _ in range(length_1 + 1)
+    ]
+
+    for j in range(length_2 + 1):
+        min_distance_map[length_1][j] = length_2 - j
+
+    for i in range(length_1 + 1):
+        min_distance_map[i][length_2] = length_1 - i
+
+    for i in range(length_1 - 1, -1, -1):  # from length_1 - 1 down to 0
+        for j in range(length_2 - 1, -1, -1):  # from length_2 - 1 down to 0
+            if word1[i] == word2[j]:
+                min_distance_map[i][j] = min_distance_map[i + 1][j + 1]
+            else:
+                min_distance_map[i][j] = 1 + min(
+                    min_distance_map[i + 1][j],
+                    min_distance_map[i][j + 1],
+                    min_distance_map[i + 1][j + 1],
+                )
+
+    return min_distance_map[0][0]
+
+
 def test_min_distance():
     solutions = [
         min_distance_recursion,
         min_distance_dynamic_top_down,
+        min_distance_dynamic_bottom_up,
     ]
 
     test_cases = [
