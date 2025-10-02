@@ -33,6 +33,7 @@ Constraints:
 0 <= s1.length, s2.length <= 100
 0 <= s3.length <= 200
 """
+from collections import defaultdict
 
 
 def is_interleave_recursion(part_1: str, part_2: str, target: str) -> bool:
@@ -58,9 +59,38 @@ def is_interleave_recursion(part_1: str, part_2: str, target: str) -> bool:
     return depth_first_search(i=0, j=0, k=0)
 
 
+def is_interleave_dynamic_top_down(part_1: str, part_2: str, target: str) -> bool:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    """
+    def depth_first_search(i: int, j: int, k: int) -> bool:
+        if k == len(target):
+            return (i == len(part_1)) and (j == len(part_2))
+        elif (i, j) in is_interleaving_map:
+            return is_interleaving_map[(i, j)]
+
+        is_interleaving = False
+        if i < len(part_1) and part_1[i] == target[k]:
+            is_interleaving = depth_first_search(i + 1, j, k + 1)
+
+        if not is_interleaving and j < len(part_2) and part_2[j] == target[k]:
+            is_interleaving = depth_first_search(i, j + 1, k + 1)
+
+        is_interleaving_map[(i, j)] = is_interleaving
+        return is_interleaving
+
+    if len(part_1) + len(part_2) != len(target):
+        return False
+
+    is_interleaving_map: dict[tuple[int, int], bool] = {}
+    return depth_first_search(i=0, j=0, k=0)
+
+
 def test_is_interleave():
     solutions = [
         is_interleave_recursion,
+        is_interleave_dynamic_top_down,
     ]
 
     test_cases = [
