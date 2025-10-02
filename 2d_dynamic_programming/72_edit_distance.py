@@ -122,11 +122,41 @@ def min_distance_dynamic_bottom_up(word1: str, word2: str) -> int:
     return min_distance_map[0][0]
 
 
+def min_distance_dynamic_bottom_up_optimal(word1: str, word2: str) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(min(m, n))
+    where m and n are the lengths of word1 and word2 respectively.
+    """
+    if len(word1) < len(word2):
+        word1, word2 = word2, word1
+
+    length_1, length_2 = len(word1), len(word2)
+    min_distances: list[int] = [length_2 - i for i in range(length_2 + 1)]
+
+    for i in range(length_1 - 1, -1, -1):
+        next_min_distance: int = min_distances[length_2]
+        min_distances[length_2] = length_1 - i
+        for j in range(length_2 - 1, -1, -1):
+            temp_distance: int = min_distances[j]
+            if word1[i] == word2[j]:
+                min_distances[j] = next_min_distance
+            else:
+                min_distances[j] = 1 + min(
+                    min_distances[j], min_distances[j + 1], next_min_distance
+                )
+
+            next_min_distance = temp_distance
+
+    return min_distances[0]
+
+
 def test_min_distance():
     solutions = [
         min_distance_recursion,
         min_distance_dynamic_top_down,
         min_distance_dynamic_bottom_up,
+        min_distance_dynamic_bottom_up_optimal,
     ]
 
     test_cases = [
