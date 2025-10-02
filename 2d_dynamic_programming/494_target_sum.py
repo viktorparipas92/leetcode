@@ -86,11 +86,33 @@ def find_target_sum_ways_dynamic_bottom_up(numbers: list[int], target: int) -> i
     return num_ways_map[length][target]
 
 
+def find_target_sum_ways_dynamic_bottom_up_optimized(
+    numbers: list[int], target: int
+)-> int:
+    """
+    Time complexity: O(n * m)
+    Space complexity: O(m)
+    """
+    num_ways_map: dict[int, int] = defaultdict(int)  # total -> # of ways
+    num_ways_map[0] = 1
+
+    for number in numbers:
+        next_num_ways_map: dict[int, int] = defaultdict(int)
+        for total, count in num_ways_map.items():
+            next_num_ways_map[total + number] += count
+            next_num_ways_map[total - number] += count
+
+        num_ways_map = next_num_ways_map
+
+    return num_ways_map[target]
+
+
 def test_find_target_sum_ways():
     solutions = [
         find_target_sum_ways_recursion,
         find_target_sum_ways_dynamic_top_down,
         find_target_sum_ways_dynamic_bottom_up,
+        find_target_sum_ways_dynamic_bottom_up_optimized,
     ]
 
     test_cases = [
