@@ -57,9 +57,42 @@ def min_distance_recursion(word1: str, word2: str) -> int:
     return depth_first_search(0, 0)
 
 
+def min_distance_dynamic_top_down(word1: str, word2: str) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    where m and n are the lengths of word1 and word2 respectively.
+    """
+    def depth_first_search(i: int, j: int) -> int:
+        if i == length_1:
+            return length_2 - j
+        elif j == length_2:
+            return length_1 - i
+        elif (i, j) in memory:
+            return memory[(i, j)]
+
+        if word1[i] == word2[j]:
+            memory[(i, j)] = depth_first_search(i + 1, j + 1)
+        else:
+            distance: int = min(
+                depth_first_search(i + 1, j),
+                depth_first_search(i, j + 1),
+                depth_first_search(i + 1, j + 1),
+            )
+            memory[(i, j)] = distance + 1
+
+        return memory[(i, j)]
+
+    length_1, length_2 = len(word1), len(word2)
+    memory: dict[tuple[int, int], int] = {}
+
+    return depth_first_search(i=0, j=0)
+
+
 def test_min_distance():
     solutions = [
         min_distance_recursion,
+        min_distance_dynamic_top_down,
     ]
 
     test_cases = [
