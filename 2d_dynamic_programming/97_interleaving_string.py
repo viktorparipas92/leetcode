@@ -117,11 +117,50 @@ def is_interleave_dynamic_bottom_up(part_1: str, part_2: str, target: str) -> bo
     return is_interleaving_map[0][0]
 
 
+def is_interleave_dynamic_bottom_up_optimized(
+    part_1: str, part_2: str, target: str
+) -> bool:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(n)
+    """
+    length_1, length_2 = len(part_1), len(part_2)
+    if length_1 + length_2 != len(target):
+        return False
+
+    if length_2 < length_1:
+        part_1, part_2 = part_2, part_1
+        length_1, length_2 = length_2, length_1
+
+    is_interleaving_map: list[bool] = [False for _ in range(length_2 + 1)]
+    is_interleaving_map[length_2] = True
+    for i in range(length_1, -1, -1):
+        next_is_interleaving_map = [False for _ in range(length_2 + 1)]
+        if i == length_1:
+            next_is_interleaving_map[length_2] = True
+
+        for j in range(length_2, -1, -1):
+            if i < length_1 and part_1[i] == target[i + j] and is_interleaving_map[j]:
+                next_is_interleaving_map[j] = True
+
+            if (
+                j < length_2
+                and part_2[j] == target[i + j]
+                and next_is_interleaving_map[j + 1]
+            ):
+                next_is_interleaving_map[j] = True
+
+        is_interleaving_map = next_is_interleaving_map
+
+    return is_interleaving_map[0]
+
+
 def test_is_interleave():
     solutions = [
         is_interleave_recursion,
         is_interleave_dynamic_top_down,
         is_interleave_dynamic_bottom_up,
+        is_interleave_dynamic_bottom_up_optimized,
     ]
 
     test_cases = [
