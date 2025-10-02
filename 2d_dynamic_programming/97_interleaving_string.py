@@ -34,6 +34,7 @@ Constraints:
 0 <= s3.length <= 200
 """
 from collections import defaultdict
+from contextlib import suppress
 
 
 def is_interleave_recursion(part_1: str, part_2: str, target: str) -> bool:
@@ -87,10 +88,40 @@ def is_interleave_dynamic_top_down(part_1: str, part_2: str, target: str) -> boo
     return depth_first_search(i=0, j=0, k=0)
 
 
+def is_interleave_dynamic_bottom_up(part_1: str, part_2: str, target: str) -> bool:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    """
+    length_1 = len(part_1)
+    length_2 = len(part_2)
+    if length_1 + length_2 != len(target):
+        return False
+
+    is_interleaving_map: list[list[bool]] = [
+        [False] * (length_2 + 1) for _ in range(length_1 + 1)
+    ]
+    is_interleaving_map[length_1][length_2] = True
+
+    for i in range(length_1, -1, -1):
+        for j in range(length_2, -1, -1):
+            with suppress(IndexError):
+                char_1 = part_1[i]
+                if char_1 == target[i + j] and is_interleaving_map[i + 1][j]:
+                    is_interleaving_map[i][j] = True
+
+                char_2 = part_2[j]
+                if j < length_2 and char_2 == target[i + j] and is_interleaving_map[i][j + 1]:
+                    is_interleaving_map[i][j] = True
+
+    return is_interleaving_map[0][0]
+
+
 def test_is_interleave():
     solutions = [
         is_interleave_recursion,
         is_interleave_dynamic_top_down,
+        is_interleave_dynamic_bottom_up,
     ]
 
     test_cases = [
