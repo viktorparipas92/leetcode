@@ -8,7 +8,7 @@ represent the source airport and the destination airport.
 Each from_i and to_i consists of three uppercase English letters.
 Reconstruct the itinerary in order and return it.
 
-All of the tickets belong to someone who originally departed from "JFK".
+All the tickets belong to someone who originally departed from "JFK".
 Your objective is to reconstruct the flight path that this person took,
 assuming each ticket was used exactly once.
 
@@ -34,7 +34,7 @@ from_i != to_i
 
 START_AIRPORT = 'JFK'
 
-def find_itinerary_dfs(tickets: list[list[str]]) -> list[str]:
+def find_itinerary_dfs(tickets: list[tuple[str, str]]) -> list[str]:
     """
     Time complexity: O(E * V)
     Space complexity: O(E + V)
