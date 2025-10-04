@@ -83,7 +83,7 @@ def find_itinerary_hierholzer(tickets: list[tuple[str, str]]) -> list[str]:
         itinerary.append(_source)
 
     adjacency_list: dict[str, list] = defaultdict(list)
-    for source, destination in sorted(tickets)[::-1]:
+    for source, destination in sorted(tickets, reverse=True):
         adjacency_list[source].append(destination)
 
     itinerary: list[str] = []
@@ -92,10 +92,32 @@ def find_itinerary_hierholzer(tickets: list[tuple[str, str]]) -> list[str]:
     return itinerary[::-1]
 
 
+def find_itinerary_hierholzer_iteration(tickets: list[tuple[str, str]]) -> list[str]:
+    """
+    Time complexity: O(E log E)
+    Space complexity: O(E)
+    """
+    adjacency_list: dict[str, list] = defaultdict(list)
+    for source, destination in sorted(tickets, reverse=True):
+        adjacency_list[source].append(destination)
+
+    airport_stack: list[str] = [START_AIRPORT]
+    itinerary: list[str]     = []
+    while airport_stack:
+        current_airport: str = airport_stack[-1]
+        if not adjacency_list[current_airport]:
+            itinerary.append(airport_stack.pop())
+        else:
+            airport_stack.append(adjacency_list[current_airport].pop())
+
+    return itinerary[::-1]
+
+
 def test_find_itinerary():
     solutions = [
         find_itinerary_dfs,
         find_itinerary_hierholzer,
+        find_itinerary_hierholzer_iteration,
     ]
 
     test_cases = [
