@@ -70,9 +70,51 @@ def longest_increasing_path_recursion(matrix: list[list[int]]) -> int:
     return max_increasing_path_length
 
 
+def longest_increasing_path_dp_top_down(matrix: list[list[int]]) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    where m is the number of rows and n is the number of columns in the matrix.
+    """
+    def depth_first_search(
+        row_idx: int, col_idx: int, previous_value: int | float
+    ) -> int:
+        if (
+            row_idx < 0 or row_idx == num_rows
+            or col_idx < 0 or col_idx == num_columns
+        ):
+            return 0
+
+        cell = matrix[row_idx][col_idx]
+        if cell <= previous_value:
+            return 0
+
+        if (row_idx, col_idx) in max_increasing_path_length_map:
+            return max_increasing_path_length_map[(row_idx, col_idx)]
+
+        max_increasing_path_length: int = max(
+            1,
+            1 + depth_first_search(row_idx + 1, col_idx, cell),
+            1 + depth_first_search(row_idx - 1, col_idx, cell),
+            1 + depth_first_search(row_idx, col_idx + 1, cell),
+            1 + depth_first_search(row_idx, col_idx - 1, cell),
+        )
+        max_increasing_path_length_map[(row_idx, col_idx)] = max_increasing_path_length
+        return max_increasing_path_length
+
+    num_rows, num_columns = len(matrix), len(matrix[0])
+    max_increasing_path_length_map: dict[tuple[int, int], int] = {}  # (r, c) -> LIP
+    for row_index in range(num_rows):
+        for column_index in range(num_columns):
+            depth_first_search(row_index, column_index, previous_value=-1)
+
+    return max(max_increasing_path_length_map.values())
+
+
 def test_longest_increasing_path_recursion():
     solutions = [
         longest_increasing_path_recursion,
+        longest_increasing_path_dp_top_down,
     ]
 
     test_cases = [
