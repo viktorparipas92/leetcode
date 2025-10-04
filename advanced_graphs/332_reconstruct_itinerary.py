@@ -30,7 +30,7 @@ Constraints:
 1 <= tickets.length <= 300
 from_i != to_i
 """
-
+from collections import defaultdict
 
 START_AIRPORT = 'JFK'
 
@@ -70,9 +70,32 @@ def find_itinerary_dfs(tickets: list[tuple[str, str]]) -> list[str]:
     return itinerary
 
 
+def find_itinerary_hierholzer(tickets: list[tuple[str, str]]) -> list[str]:
+    """
+    Time complexity: O(E log E)
+    Space complexity: O(E)
+    """
+    def depth_first_search(_source):
+        while adjacency_list[_source]:
+            _destination = adjacency_list[_source].pop()
+            depth_first_search(_destination)
+
+        itinerary.append(_source)
+
+    adjacency_list: dict[str, list] = defaultdict(list)
+    for source, destination in sorted(tickets)[::-1]:
+        adjacency_list[source].append(destination)
+
+    itinerary: list[str] = []
+
+    depth_first_search(START_AIRPORT)
+    return itinerary[::-1]
+
+
 def test_find_itinerary():
     solutions = [
         find_itinerary_dfs,
+        find_itinerary_hierholzer,
     ]
 
     test_cases = [
