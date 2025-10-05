@@ -68,13 +68,58 @@ def swim_in_water_brute_force(grid: list[list[int]]) -> int:
         return min_time
 
     size: int = len(grid)
-    visited_nodes: list[list[int]] = [[False] * size for _ in range(size)]
+    visited_nodes: list[list[bool]] = [[False] * size for _ in range(size)]
     return depth_first_search(node=(0, 0), time=0)
+
+
+def swim_in_water_dfs(grid: list[list[int]]) -> int:
+    """
+    Time complexity: O(n^4)
+    Space complexity: O(n^2)
+    """
+    def depth_first_search(node: tuple[int, int], time: int) -> int:
+        i, j = node
+        if (
+            min(i, j) < 0
+            or max(i, j) >= size
+            or visited_nodes[i][j]
+            or grid[i][j] > time
+        ):
+            return False
+
+        if i == j == (size - 1):
+            return True
+
+        visited_nodes[i][j] = True
+        return (
+            depth_first_search((i + 1, j), time)
+            or depth_first_search((i - 1, j), time)
+            or depth_first_search((i, j + 1), time)
+            or depth_first_search((i, j - 1), time)
+        )
+
+    size: int = len(grid)
+    visited_nodes: list[list[bool]] = [[False] * size for _ in range(size)]
+    min_height = max_height = grid[0][0]
+    for row_idx in range(size):
+        max_height = max(max_height, max(grid[row_idx]))
+        min_height = min(min_height, min(grid[row_idx]))
+
+    for _time in range(min_height, max_height):
+        if depth_first_search(node=(0, 0), time=_time):
+            return _time
+
+        for row_idx in range(size):
+            for col_idx in range(size):
+                visited_nodes[row_idx][col_idx] = False
+
+    return max_height
 
 
 def test_swim_in_water():
     solutions = [
         swim_in_water_brute_force,
+        swim_in_water_dfs,
     ]
 
     test_cases = [
@@ -98,7 +143,7 @@ def test_swim_in_water():
             # Assert
             assert min_time == expected_min_time
 
-        print(f'Tests passed  for {solution.__name__}!')
+        print(f'Tests passed for {solution.__name__}!')
 
 
 if __name__ == '__main__':
