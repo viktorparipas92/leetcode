@@ -116,10 +116,59 @@ def swim_in_water_dfs(grid: list[list[int]]) -> int:
     return max_height
 
 
+def swim_in_water_binary_and_dfs(grid: list[list[int]]) -> int:
+    """
+    Time complexity: O(n^2 * log(n))
+    Space complexity: O(n^2)
+    """
+    def depth_first_search(node: tuple[int, int], time: int) -> bool:
+        i, j = node
+        if (
+            min(i, j) <
+            0 or max(i, j) >= size
+            or visited_nodes[i][j]
+            or grid[i][j] > time
+        ):
+            return False
+
+        if i == (size - 1) and j == (size - 1):
+            return True
+
+        visited_nodes[i][j] = True
+        return (
+            depth_first_search((i + 1, j), time)
+            or depth_first_search((i - 1, j), time)
+            or depth_first_search((i, j + 1), time)
+            or depth_first_search((i, j - 1), time)
+        )
+
+    size: int = len(grid)
+    visited_nodes: list[list[bool]] = [[False] * size for _ in range(size)]
+    min_height = max_height = grid[0][0]
+    for row in grid:
+        max_height = max(max_height, max(row))
+        min_height = min(min_height, min(row))
+
+    left_idx, right_idx = min_height, max_height
+    while left_idx < right_idx:
+        mid_idx = (left_idx + right_idx) >> 1  # mid_idx = (left_idx + right_idx) // 2
+        if depth_first_search((0, 0), mid_idx):
+            right_idx = mid_idx
+        else:
+            left_idx = mid_idx + 1
+
+        for row_idx in range(size):
+            for col in range(size):
+                visited_nodes[row_idx][col] = False
+
+    return right_idx
+
+
 def test_swim_in_water():
     solutions = [
         swim_in_water_brute_force,
         swim_in_water_dfs,
+        swim_in_water_binary_and_dfs,
     ]
 
     test_cases = [
