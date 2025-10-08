@@ -1,0 +1,80 @@
+"""
+115. Distinct Subsequences
+--------------------------
+Difficulty: Hard
+
+You are given two strings s and t, both consisting of English letters.
+Return the number of distinct subsequences of s which are equal to t.
+
+Example 1:
+Input: s = "caaat", t = "cat"
+Output: 3
+Explanation: There are 3 ways you can generate "cat" from s.
+(c)aa(at)
+(c)a(a)a(t)
+(ca)aa(t)
+
+Example 2:
+Input: s = "xxyxy", t = "xy"
+Output: 5
+Explanation: There are 5 ways you can generate "xy" from s.
+(x)x(y)xy
+(x)xyx(y)
+x(x)(y)xy
+x(x)yx(y)
+xxy(x)(y)
+
+Constraints:
+1 <= s.length, t.length <= 1000
+s and t consist of English letters.
+"""
+
+
+def num_distinct_recursion(longer: str, shorter: str) -> int:
+    """
+    Time complexity: O(2^m)
+    Space complexity: O(m)
+    where m is the length of the string s.
+    """
+    def depth_first_search(i: int, j: int) -> int:
+        if j == len(shorter):
+            return 1
+
+        if i == len(longer):
+            return 0
+
+        num_distinct_subsequences: int = depth_first_search(i + 1, j)
+        if longer[i] == shorter[j]:
+            num_distinct_subsequences += depth_first_search(i + 1, j + 1)
+
+        return num_distinct_subsequences
+
+    if len(shorter) > len(longer):
+        return 0
+
+    return depth_first_search(i=0, j=0)
+
+
+def test_num_distinct():
+    solutions = [
+        num_distinct_recursion,
+    ]
+
+    test_cases = [
+        ('caaat', 'cat', 3),
+        ('xxyxy', 'xy', 5),
+    ]
+
+    for solution in solutions:
+        for longer_string, shorter_string, expected_num_distinct_subsequences in test_cases:
+            # Act
+            num_distinct_subsequences = solution(longer_string, shorter_string)
+
+            # Assert
+            assert num_distinct_subsequences == expected_num_distinct_subsequences
+
+        print(f'Tests passed for {solution.__name__}!')
+
+
+if __name__ == '__main__':
+    test_num_distinct()
