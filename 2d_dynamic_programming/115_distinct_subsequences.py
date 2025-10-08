@@ -107,11 +107,36 @@ def num_distinct_dynamic_bottom_up(longer: str, shorter: str) -> int:
     return num_subsequences_grid[0][0]
 
 
+def num_distinct_bottom_up_optimized_space(longer: str, shorter: str) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(n)
+    where m is the length of the string s and n is the length of the string t.
+    """
+    size_longer: int = len(longer)
+    size_shorter: int = len(shorter)
+    # num_subsequences_list[j] -> ~ for longer[i:] and shorter[j:]
+    num_subsequences_list: list[int] = [0] * (size_shorter + 1)
+    next_num_subsequences_list: list[int] = [0] * (size_shorter + 1)
+
+    num_subsequences_list[size_shorter] = next_num_subsequences_list[size_shorter] = 1
+    for i in range(size_longer - 1, -1, -1):
+        for j in range(size_shorter - 1, -1, -1):
+            next_num_subsequences_list[j] = num_subsequences_list[j]
+            if longer[i] == shorter[j]:
+                next_num_subsequences_list[j] += num_subsequences_list[j + 1]
+
+        num_subsequences_list = next_num_subsequences_list[:]
+
+    return num_subsequences_list[0]
+
+
 def test_num_distinct():
     solutions = [
         num_distinct_recursion,
         num_distinct_dynamic_top_down,
         num_distinct_dynamic_bottom_up,
+        num_distinct_bottom_up_optimized_space,
     ]
 
     test_cases = [
