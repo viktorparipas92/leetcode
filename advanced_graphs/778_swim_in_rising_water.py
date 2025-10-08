@@ -37,9 +37,10 @@ grid.length == grid[i].length
 1 <= grid.length <= 50
 0 <= grid[i][j] < n^2
 """
-
+import heapq
 
 INFINITY = float('inf')
+DIRECTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
 
 def swim_in_water_brute_force(grid: list[list[int]]) -> int:
@@ -164,11 +165,43 @@ def swim_in_water_binary_and_dfs(grid: list[list[int]]) -> int:
     return right_idx
 
 
+def swim_in_water_dijkstra(grid: list[list[int]]) -> int | None:
+    """
+    Time complexity: O(n^2 * log(n))
+    Space complexity: O(n^2)
+    """
+    visited_nodes: set[tuple[int, int]] = set()
+    visited_nodes.add((0, 0))
+
+    size: int = len(grid)
+
+    min_height: list[list[int]] = [[grid[0][0], 0, 0]]  # (time/max-height, r, c)
+    while min_height:
+        time, row_idx, column_idx = heapq.heappop(min_height)
+        if row_idx == size - 1 and column_idx == size - 1:
+            return time
+
+        for dr, dc in DIRECTIONS:
+            i, j = row_idx + dr, column_idx + dc
+            if (
+                i < 0 or j < 0
+                or i == size or j == size
+                or (i, j) in visited_nodes
+            ):
+                continue
+
+            visited_nodes.add((i, j))
+            heapq.heappush(min_height, [max(time, grid[i][j]), i, j])
+
+    return None
+
+
 def test_swim_in_water():
     solutions = [
         swim_in_water_brute_force,
         swim_in_water_dfs,
         swim_in_water_binary_and_dfs,
+        swim_in_water_dijkstra,
     ]
 
     test_cases = [
