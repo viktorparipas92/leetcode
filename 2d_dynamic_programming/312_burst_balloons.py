@@ -77,10 +77,34 @@ def max_coins_dynamic_top_down(numbers: list[int]) -> int:
     return depth_first_search(left=1, right=len(padded_numbers) - 2)
 
 
+def max_coins_dynamic_bottom_up(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n^3)
+    Space complexity: O(n^2)
+    """
+    size: int = len(numbers)
+    padded_numbers: list[int] = [1] + numbers + [1]
+
+    max_coins_grid: list[list[int]]  = [[0] * (size + 2) for _ in range(size + 2)]
+    for left in range(size, 0, -1):
+        for right in range(left, size + 1):
+            for i in range(left, right + 1):
+                coins = (
+                    padded_numbers[left - 1]
+                    * padded_numbers[i]
+                    * padded_numbers[right + 1]
+                )
+                coins += max_coins_grid[left][i - 1] + max_coins_grid[i + 1][right]
+                max_coins_grid[left][right] = max(max_coins_grid[left][right], coins)
+
+    return max_coins_grid[1][size]
+
+
 def test_max_coins():
     solutions = [
         max_coins_brute_force_recursion,
         max_coins_dynamic_top_down,
+        max_coins_dynamic_bottom_up,
     ]
 
     test_cases = [
