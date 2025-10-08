@@ -55,9 +55,40 @@ def num_distinct_recursion(longer: str, shorter: str) -> int:
     return depth_first_search(i=0, j=0)
 
 
+def num_distinct_dynamic_top_down(longer: str, shorter: str) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    where m is the length of the string s and n is the length of the string t.
+    """
+    def depth_first_search(i: int, j: int) -> int:
+        if j == len(shorter):
+            return 1
+
+        if i == len(longer):
+            return 0
+
+        if (i, j) in memory:
+            return memory[(i, j)]
+
+        num_distinct_subsequences = depth_first_search(i + 1, j)
+        if longer[i] == shorter[j]:
+            num_distinct_subsequences += depth_first_search(i + 1, j + 1)
+
+        memory[(i, j)] = num_distinct_subsequences
+        return num_distinct_subsequences
+
+    if len(shorter) > len(longer):
+        return 0
+
+    memory: dict[tuple[int, int], int] = {}  # (i, j) -> num_distinct_subsequences
+    return depth_first_search(i=0, j=0)
+
+
 def test_num_distinct():
     solutions = [
         num_distinct_recursion,
+        num_distinct_dynamic_top_down,
     ]
 
     test_cases = [
