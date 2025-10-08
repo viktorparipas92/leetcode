@@ -39,6 +39,8 @@ grid.length == grid[i].length
 """
 import heapq
 
+from advanced_graphs.shared import DisjointSetUnion
+
 INFINITY = float('inf')
 DIRECTIONS = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
@@ -196,12 +198,36 @@ def swim_in_water_dijkstra(grid: list[list[int]]) -> int | None:
     return None
 
 
+def swim_in_water_kruskal(grid: list[list[int]]) -> int | None:
+    """
+    Time complexity: O(n^2 * log(n))
+    Space complexity: O(n^2)
+    """
+    size: int = len(grid)
+    dsu: DisjointSetUnion = DisjointSetUnion(size * size)
+    positions: list[tuple[int, int, int]] = sorted(
+        (grid[x][y], x, y) for x in range(size) for y in range(size)
+    )
+    for time, row_idx, col_idx in positions:
+        for dr, dc in DIRECTIONS:
+            i = row_idx + dr
+            j = col_idx + dc
+            if 0 <= i < size and 0 <= j < size and grid[i][j] <= time:
+                dsu.union(u=row_idx * size + col_idx, v=i * size + j)
+
+        if dsu.is_connected(u=0, v=size * size - 1):
+            return time
+
+    return None
+
+
 def test_swim_in_water():
     solutions = [
         swim_in_water_brute_force,
         swim_in_water_dfs,
         swim_in_water_binary_and_dfs,
         swim_in_water_dijkstra,
+        swim_in_water_kruskal,
     ]
 
     test_cases = [
