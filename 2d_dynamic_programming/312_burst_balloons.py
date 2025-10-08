@@ -48,9 +48,39 @@ def max_coins_brute_force_recursion(numbers: list[int]) -> int:
     return depth_first_search(padded_numbers)
 
 
+def max_coins_dynamic_top_down(numbers: list[int]) -> int:
+    """
+    Time complexity: O(n^3)
+    Space complexity: O(n^2)
+    """
+    def depth_first_search(left: int, right: int) -> int:
+        if left > right:
+            return 0
+
+        if (left, right) in max_coins_map:
+            return max_coins_map[(left, right)]
+
+        max_coins_map[(left, right)] = 0
+        for i in range(left, right + 1):
+            coins = (
+                padded_numbers[left - 1]
+                * padded_numbers[i]
+                * padded_numbers[right + 1]
+            )
+            coins += depth_first_search(left, i - 1) + depth_first_search(i + 1, right)
+            max_coins_map[(left, right)] = max(max_coins_map[(left, right)], coins)
+
+        return max_coins_map[(left, right)]
+
+    padded_numbers: list[int] = [1] + numbers + [1]
+    max_coins_map: dict[tuple[int, int], int] = {}
+    return depth_first_search(left=1, right=len(padded_numbers) - 2)
+
+
 def test_max_coins():
     solutions = [
         max_coins_brute_force_recursion,
+        max_coins_dynamic_top_down,
     ]
 
     test_cases = [
