@@ -85,10 +85,33 @@ def num_distinct_dynamic_top_down(longer: str, shorter: str) -> int:
     return depth_first_search(i=0, j=0)
 
 
+def num_distinct_dynamic_bottom_up(longer: str, shorter: str) -> int:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    where m is the length of the string s and n is the length of the string t.
+    """
+    size_longer: int = len(longer)
+    size_shorter: int = len(shorter)
+    num_subsequences_grid: list[list[int]] = [[0] * (size_shorter + 1) for _ in range(size_longer + 1)]
+
+    for i in range(size_longer + 1):
+        num_subsequences_grid[i][size_shorter] = 1
+
+    for i in range(size_longer - 1, -1, -1):
+        for j in range(size_shorter - 1, -1, -1):
+            num_subsequences_grid[i][j] = num_subsequences_grid[i + 1][j]
+            if longer[i] == shorter[j]:
+                num_subsequences_grid[i][j] += num_subsequences_grid[i + 1][j + 1]
+
+    return num_subsequences_grid[0][0]
+
+
 def test_num_distinct():
     solutions = [
         num_distinct_recursion,
         num_distinct_dynamic_top_down,
+        num_distinct_dynamic_bottom_up,
     ]
 
     test_cases = [
