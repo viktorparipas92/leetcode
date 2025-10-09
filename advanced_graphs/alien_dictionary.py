@@ -39,6 +39,7 @@ The input words will contain characters only from lowercase 'a' to 'z'.
 1 <= words.length <= 100
 1 <= words[i].length <= 100
 """
+from collections import deque
 
 
 def foreign_dictionary_dfs(words: list[str]) -> str:
@@ -86,9 +87,56 @@ def foreign_dictionary_dfs(words: list[str]) -> str:
     return ''.join(alphabet)
 
 
+def foreign_dictionary_topological_sort_kahn(words: list[str]) -> str:
+    """
+    Time complexity: O(N + V + E)
+    Space complexity: O(V + E)
+    where N is the total length of all words in the input list,
+    V is the number of unique characters in the input list,
+    and E is the number of edges in the graph, i.e. the number of precedence relations.
+    """
+    adjacency_map: dict[str, set[str]] = {
+        char: set() for word in words for char in word
+    }
+    # Count of incoming edges for each node
+    indegree_map: dict[str, int] = {c: 0 for c in adjacency_map}
+    for i in range(len(words) - 1):
+        word_1 = words[i]
+        word_2 = words[i + 1]
+        min_length: int = min(len(word_1), len(word_2))
+        if len(word_1) > len(word_2) and word_1[:min_length] == word_2[:min_length]:
+            return ''
+
+        for j in range(min_length):
+            char_1 = word_1[j]
+            char_2 = word_2[j]
+            if char_1 != char_2:
+                if char_2 not in adjacency_map[char_1]:
+                    adjacency_map[char_1].add(char_2)
+                    indegree_map[char_2] += 1
+
+                break
+
+    queue: deque = deque([char for char in indegree_map if indegree_map[char] == 0])
+    alphabet: list[str] = []
+    while queue:
+        character = queue.popleft()
+        alphabet.append(character)
+        for neighbour in adjacency_map[character]:
+            indegree_map[neighbour] -= 1
+            if indegree_map[neighbour] == 0:
+                queue.append(neighbour)
+
+    if len(alphabet) != len(indegree_map):
+        return ''
+
+    return ''.join(alphabet)
+
+
 def test_foreign_dictionary():
     solutions = [
         foreign_dictionary_dfs,
+        foreign_dictionary_topological_sort_kahn,
     ]
 
     test_cases = [
