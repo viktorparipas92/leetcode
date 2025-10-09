@@ -98,10 +98,42 @@ def is_match_dynamic_top_down(string: str, pattern: str) -> bool:
     return depth_first_search(i=0, j=0)
 
 
+def is_match_dynamic_bottom_up_optimal(string: str, pattern: str) -> bool:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(n)
+    """
+    pattern_size = len(pattern)
+    is_match_map: list[bool] = [False] * (pattern_size + 1)
+    is_match_map[pattern_size] = True
+
+    string_size = len(string)
+    for i in range(string_size, -1, -1):
+        is_match: bool = is_match_map[pattern_size]
+        is_match_map[pattern_size] = (i == string_size)
+
+        for j in range(pattern_size - 1, -1, -1):
+            match = (
+                i < string_size
+                and (string[i] == pattern[j] or pattern[j] == '.')
+            )
+            result: bool = False
+            if (j + 1) < pattern_size and pattern[j + 1] == '*':
+                result = is_match_map[j + 2]
+                if match:
+                    result |= is_match_map[j]
+            elif match:
+                result = is_match
+            is_match_map[j], is_match = result, is_match_map[j]
+
+    return is_match_map[0]
+
+
 def test_is_match():
     solutions = [
         is_match_recursion,
         is_match_dynamic_top_down,
+        is_match_dynamic_bottom_up_optimal,
     ]
 
     test_cases = [
