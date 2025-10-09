@@ -62,9 +62,46 @@ def is_match_recursion(string: str, pattern: str) -> bool:
     return depth_first_search(i=0, j=0)
 
 
+def is_match_dynamic_top_down(string: str, pattern: str) -> bool:
+    """
+    Time complexity: O(m * n)
+    Space complexity: O(m * n)
+    """
+    def depth_first_search(i: int, j: int) -> bool:
+        if j == pattern_size:
+            return i == string_size
+
+        if (i, j) in cache:
+            return cache[(i, j)]
+
+        match = (
+            i < string_size
+            and (string[i] == pattern[j] or pattern[j] == '.')
+        )
+        if (j + 1) < pattern_size and pattern[j + 1] == '*':
+            cache[(i, j)] = (
+                depth_first_search(i, j + 2)
+                or (match and depth_first_search(i + 1, j))
+            )
+            return cache[(i, j)]
+
+        if match:
+            cache[(i, j)] = depth_first_search(i + 1, j + 1)
+            return cache[(i, j)]
+
+        cache[(i, j)] = False
+        return False
+
+    string_size = len(string)
+    pattern_size = len(pattern)
+    cache: dict = {}
+    return depth_first_search(i=0, j=0)
+
+
 def test_is_match():
     solutions = [
         is_match_recursion,
+        is_match_dynamic_top_down,
     ]
 
     test_cases = [
