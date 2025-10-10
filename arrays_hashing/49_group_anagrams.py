@@ -12,10 +12,10 @@ different word or phrase, typically using all the original letters exactly once.
 from collections import defaultdict
 
 
-def group_anagrams(strs: list[str]) -> list[list[str]]:
-    anagram_groups = defaultdict(list)
-    for word in strs:
-        key = tuple(sorted(word))
+def group_anagrams(words: list[str]) -> list[list[str]]:
+    anagram_groups: dict[tuple, list] = defaultdict(list)
+    for word in words:
+        key: tuple = tuple(sorted(word))
         anagram_groups[key].append(word)
 
     return list(anagram_groups.values())

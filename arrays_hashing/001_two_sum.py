@@ -16,6 +16,8 @@ def two_sum(nums: list[int], target: int) -> tuple[int, int]:
 
         num_to_index[number] = i
 
+    return None
+
 
 def test_two_sum():
     assert two_sum([2, 7, 11, 15], 9) == (0, 1)
